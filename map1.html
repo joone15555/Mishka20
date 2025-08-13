@@ -274,8 +274,11 @@ function focusAndSpeak(id) {
   const loc = locations[id];
   if (!loc) return;
 
+  const selectedLang = document.getElementById('languageSelect')?.value || 'en-US';
+
+  // تحديث البوب أب والخرائط
   map.setView(loc.coords, 17);
-  markers[id].openPopup();
+  markers[id].setPopupContent(`<b>${loc.name[selectedLang]}</b>`).openPopup();
 
   if (routingControl) {
     map.removeControl(routingControl);
@@ -284,10 +287,9 @@ function focusAndSpeak(id) {
 
   const start = userLocation;
   const end = loc.coords;
-  const selectedLang = document.getElementById('languageSelect')?.value || 'ar-SA';
 
-  // قراءة اسم المكان مرة واحدة فقط
-  speakText(loc.name[selectedLang] || loc.name['ar-SA'], selectedLang);
+  // قراءة اسم المكان حسب اللغة المختارة
+  speakText(loc.name[selectedLang], selectedLang);
 
   routingControl = L.Routing.control({
     waypoints: [L.latLng(start), L.latLng(end)],
@@ -296,10 +298,7 @@ function focusAndSpeak(id) {
   }).on('routesfound', function(e) {
     const route = e.routes[0];
     if (route && route.instructions) {
-      const instructions = route.instructions.filter(instr => 
-        instr.text !== (loc.name[selectedLang] || loc.name['ar-SA'])
-      );
-      readInstructions(instructions, selectedLang);
+      readInstructions(route.instructions, selectedLang);
     } else if (route && route.summary) {
       const distKm = (route.summary.totalDistance / 1000).toFixed(1);
       const mins = Math.round(route.summary.totalTime / 60);
@@ -424,3 +423,5 @@ with open("/mnt/data/multilingual_map_with_speech.html", "w", encoding="utf-8") 
   <script src="assets/js/main.js"></script>
 </body>
 </html>
+
+

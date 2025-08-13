@@ -188,8 +188,6 @@
     }
   });
 </script>
-
-			<!-- Banner -->
 <!-- Banner -->
 <div id="banner-wrapper" style="background-color: #f8f9fa; padding: 40px 0;">
   <div id="banner" class="box container" style="
@@ -197,30 +195,38 @@
     border-radius: 12px; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
     padding: 30px;
+    text-align: center;
   ">
     <div class="row">
-      <div class="col-7 col-12-medium" style="text-align: center;">
-        <h2 id="changing-text" style="color: white;">مرحباً بك في موقعنا</h2>
+      <div class="col-12" id="image-container">
+        <img src="image1.jpg" alt="الصورة الأولى" style="max-width:100%; border-radius: 10px;">
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  const phrases = [
-    "مرحباً بك في موقعنا",
-    "نحن هنا لخدمتك",
-    "استمتع بتصفح المحتوى",
+  const images = [
+    { src: "image1.jpg", link: "" },               // بدون رابط
+    { src: "ph8.JPG", link: "page2.html" },     // برابط
+    { src: "image3.jpg", link: "page3.html" }      // برابط
   ];
 
-  let index = 0;
-  const textElement = document.getElementById("changing-text");
+  let imgIndex = 0;
+  const container = document.getElementById("image-container");
 
   setInterval(() => {
-    index = (index + 1) % phrases.length;
-    textElement.textContent = phrases[index];
-  }, 4000); // يتغير كل 3 ثواني
+    imgIndex = (imgIndex + 1) % images.length;
+    const { src, link } = images[imgIndex];
+
+    if (link) {
+      container.innerHTML = `<a href="${link}"><img src="${src}" style="max-width:100%; border-radius: 10px;"></a>`;
+    } else {
+      container.innerHTML = `<img src="${src}" style="max-width:100%; border-radius: 10px;">`;
+    }
+  }, 4000); // يتغير كل 4 ثواني
 </script>
+
 <div id="features-wrapper">
   <div class="container">
     <div class="row">
@@ -465,3 +471,4 @@
 
 	</body>
 </html>
+

@@ -241,102 +241,289 @@
     </div>
   </footer>
 </div>
+<!-- Leaflet CSS -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<!-- Leaflet Routing Machine CSS -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css"
+/>
+
+<style>
+  /* لازم تعطي خريطة ارتفاع */
+  #map {
+    width: 100%;
+    height: 480px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  .toolbar {
+    margin: 10px 0 14px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+</style>
+
+<div class="toolbar">
+  <label for="languageSelect">اللغة:</label>
+  <select id="languageSelect">
+    <option value="ar-SA" selected>العربية</option>
+    <option value="en-US">English</option>
+    <option value="es-ES">Español</option>
+  </select>
+  <small>🔔 يجب فتح الصفحة عبر HTTPS ليعمل تحديد الموقع.</small>
+</div>
+
+<div id="map"></div>
+
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <!-- Leaflet Routing Machine -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
 <script>
-  const map = L.map('map').setView([21.4225, 39.8262], 15);
+  // خريطة البداية (الحرم كمثال)
+  const map = L.map("map").setView([21.4225, 39.8262], 15);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
 
+  // بيانات الأماكن بثلاث لغات
   const locations = {
-    restaurant1: { name: { "ar-SA": "مطعم الفتح", "en-US": "Al-Fath Restaurant", "es-ES": "Restaurante Al-Fath" }, coords: [21.4235, 39.8280] },
-    restaurant2: { name: { "ar-SA": "مطعم الزهراء", "en-US": "Zahra Restaurant", "es-ES": "Restaurante Zahra" }, coords: [21.4210, 39.8250] },
-    restaurant3: { name: { "ar-SA": "مطعم النجمة", "en-US": "Al-Najma Restaurant", "es-ES": "Restaurante Al-Najma" }, coords: [21.4200, 39.8290] },
-    restaurant4: { name: { "ar-SA": "مطعم المدينة", "en-US": "Al-Madina Restaurant", "es-ES": "Restaurante Al-Madina" }, coords: [21.4240, 39.8230] },
-    atm1: { name: { "ar-SA": "صرافة الراجحي", "en-US": "Al Rajhi ATM", "es-ES": "Cajero Al Rajhi" }, coords: [21.4220, 39.8275] },
-    atm2: { name: { "ar-SA": "صرافة الأهلي", "en-US": "Al Ahli ATM", "es-ES": "Cajero Al Ahli" }, coords: [21.4230, 39.8245] },
-    pharmacy1: { name: { "ar-SA": "صيدلية النهدي", "en-US": "Al Nahdi Pharmacy", "es-ES": "Farmacia Al Nahdi" }, coords: [21.4215, 39.8265] },
-    pharmacy2: { name: { "ar-SA": "صيدلية الدواء", "en-US": "Al Dawaa Pharmacy", "es-ES": "Farmacia Al Dawaa" }, coords: [21.4245, 39.8255] }
+    restaurant1: {
+      name: {
+        "ar-SA": "مطعم الفتح",
+        "en-US": "Al-Fath Restaurant",
+        "es-ES": "Restaurante Al-Fath",
+      },
+      coords: [21.4235, 39.828],
+    },
+    restaurant2: {
+      name: {
+        "ar-SA": "مطعم الزهراء",
+        "en-US": "Zahra Restaurant",
+        "es-ES": "Restaurante Zahra",
+      },
+      coords: [21.421, 39.825],
+    },
+    restaurant3: {
+      name: {
+        "ar-SA": "مطعم النجمة",
+        "en-US": "Al-Najma Restaurant",
+        "es-ES": "Restaurante Al-Najma",
+      },
+      coords: [21.42, 39.829],
+    },
+    restaurant4: {
+      name: {
+        "ar-SA": "مطعم المدينة",
+        "en-US": "Al-Madina Restaurant",
+        "es-ES": "Restaurante Al-Madina",
+      },
+      coords: [21.424, 39.823],
+    },
+    atm1: {
+      name: {
+        "ar-SA": "صرافة الراجحي",
+        "en-US": "Al Rajhi ATM",
+        "es-ES": "Cajero Al Rajhi",
+      },
+      coords: [21.422, 39.8275],
+    },
+    atm2: {
+      name: {
+        "ar-SA": "صرافة الأهلي",
+        "en-US": "Al Ahli ATM",
+        "es-ES": "Cajero Al Ahli",
+      },
+      coords: [21.423, 39.8245],
+    },
+    pharmacy1: {
+      name: {
+        "ar-SA": "صيدلية النهدي",
+        "en-US": "Al Nahdi Pharmacy",
+        "es-ES": "Farmacia Al Nahdi",
+      },
+      coords: [21.4215, 39.8265],
+    },
+    pharmacy2: {
+      name: {
+        "ar-SA": "صيدلية الدواء",
+        "en-US": "Al Dawaa Pharmacy",
+        "es-ES": "Farmacia Al Dawaa",
+      },
+      coords: [21.4245, 39.8255],
+    },
   };
 
+  // مساعدات اللغة
+  function getSelectedLang() {
+    const v =
+      document.getElementById("languageSelect")?.value?.trim() || "ar-SA";
+    // Leaflet Routing Machine يأخذ رمز مختصر (ar/en/es)
+    const routingLang = v.slice(0, 2);
+    return { ttsLang: v, routingLang, key: v };
+  }
+
+  // إنشاء الماركرات
   const markers = {};
   for (const key in locations) {
     const loc = locations[key];
-    const marker = L.marker(loc.coords).addTo(map).bindPopup(`<b>${loc.name["ar-SA"]}</b>`);
+    const marker = L.marker(loc.coords)
+      .addTo(map)
+      .bindPopup(() => {
+        const { key: langKey } = getSelectedLang();
+        return `<b>${loc.name[langKey] || loc.name["ar-SA"]}</b>`;
+      });
+
     markers[key] = marker;
 
-    // تشغيل الصوت مع رسم الطريق عند الضغط على الماركر
-    marker.on('click', () => {
+    // رسم الطريق وتشغيل الصوت عند الضغط
+    marker.on("click", () => {
       showRouteTo(key);
     });
   }
 
-  let routingControl;
+  let routingControl = null;
 
-  // دالة رسم الطريق وتشغيل الصوت
+  // رسم الطريق + قراءة اسم المكان + التعليمات
   function showRouteTo(id) {
-    if (!navigator.geolocation) {
+    if (!("geolocation" in navigator)) {
       alert("المتصفح لا يدعم تحديد الموقع");
       return;
     }
 
-    navigator.geolocation.getCurrentPosition((pos) => {
-      const userCoords = [pos.coords.latitude, pos.coords.longitude];
-      const destCoords = locations[id].coords;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const userCoords = [pos.coords.latitude, pos.coords.longitude];
+        const destCoords = locations[id].coords;
+        const { routingLang, ttsLang, key: langKey } = getSelectedLang();
 
-      // إزالة المسار القديم
-      if (routingControl) {
-        map.removeControl(routingControl);
-      }
-
-      routingControl = L.Routing.control({
-        waypoints: [
-          L.latLng(userCoords),
-          L.latLng(destCoords)
-        ],
-        language: 'ar',
-        routeWhileDragging: false,
-        createMarker: () => null
-      }).on('routesfound', function (e) {
-        // قراءة اسم المكان
-        speak(id);
-
-        // قراءة التعليمات خطوة خطوة
-        let textToSpeak = "";
-        e.routes[0].instructions.forEach(instr => {
-          textToSpeak += instr.text + ". ";
-        });
-
-        if ('speechSynthesis' in window) {
-          const utterance = new SpeechSynthesisUtterance(textToSpeak);
-          utterance.lang = 'ar-SA';
-          speechSynthesis.speak(utterance);
+        // إزالة المسار القديم
+        if (routingControl) {
+          map.removeControl(routingControl);
+          routingControl = null;
         }
-      }).addTo(map);
 
-    }, () => {
-      alert("لم أتمكن من الحصول على موقعك الحالي");
-    });
+        // إيقاف أي قراءة صوتية سابقة
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+        }
+
+        routingControl = L.Routing.control({
+          waypoints: [L.latLng(userCoords), L.latLng(destCoords)],
+          language: routingLang, // ar / en / es
+          routeWhileDragging: false,
+          addWaypoints: false,
+          show: true,
+          draggableWaypoints: false,
+          fitSelectedRoutes: true,
+          // إظهار ماركر الوجهة فقط
+          createMarker: (i, wp) => {
+            if (i === 1) {
+              return L.marker(wp.latLng);
+            }
+            return null; // إخفاء ماركر البداية
+          },
+        })
+          .on("routesfound", function (e) {
+            // قراءة اسم المكان أولاً
+            const placeName =
+              locations[id].name[langKey] || locations[id].name["ar-SA"];
+            speakText(placeName, ttsLang);
+
+            // بعدها قراءة التعليمات (إن وُجدت)
+            const route = e.routes && e.routes[0];
+            let textToSpeak = "";
+
+            if (route && Array.isArray(route.instructions)) {
+              // بعض الإصدارات توفّر مصفوفة تعليمات
+              route.instructions.forEach((instr) => {
+                if (instr && instr.text) {
+                  textToSpeak += instr.text + ". ";
+                }
+              });
+            } else if (route && route.summary) {
+              // بديل: وصف مختصر إذا ما كان فيه instructions
+              const distKm = (route.summary.totalDistance / 1000).toFixed(1);
+              const mins = Math.round(route.summary.totalTime / 60);
+              if (ttsLang.startsWith("ar")) {
+                textToSpeak = `المسافة حوالي ${distKm} كيلومتر، والوقت المقدر ${mins} دقيقة.`;
+              } else if (ttsLang.startsWith("es")) {
+                textToSpeak = `La distancia es aproximadamente ${distKm} kilómetros y el tiempo estimado es ${mins} minutos.`;
+              } else {
+                textToSpeak = `Distance is about ${distKm} kilometers, estimated time ${mins} minutes.`;
+              }
+            }
+
+            if (textToSpeak) {
+              // نعطي مهلة قصيرة عشان ما يتداخل مع اسم المكان
+              setTimeout(() => speakText(textToSpeak, ttsLang), 800);
+            }
+          })
+          .addTo(map);
+      },
+      (err) => {
+        alert("لم أتمكن من الحصول على موقعك الحالي");
+        console.error(err);
+      },
+      { enableHighAccuracy: true, timeout: 15000 }
+    );
   }
 
-  // دالة تشغيل الصوت باسم المكان
-  function speak(id) {
-    if ('speechSynthesis' in window) {
-      const synth = window.speechSynthesis;
-      const selectedLang = document.getElementById('languageSelect')?.value || 'ar-SA';
-      const loc = locations[id];
-      const text = loc.name[selectedLang] || loc.name['ar-SA'];
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = selectedLang;
-      synth.speak(utterance);
+  // تحويل نص إلى كلام
+  function speakText(text, lang) {
+    if (!("speechSynthesis" in window)) return;
+    const synth = window.speechSynthesis;
+    synth.cancel(); // أوقف أي قراءة سابقة
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang;
+    synth.speak(u);
+  }
+
+  // تغيير اللغة أثناء العمل
+  document.getElementById("languageSelect").addEventListener("change", () => {
+    // إعادة فتح آخر بوب أب لو ظاهر
+    Object.values(markers).forEach((m) => {
+      if (m.isPopupOpen && m.isPopupOpen()) {
+        m.setPopupContent(m.getPopup().getContent()); // سيعاد بنص اللغة الجديدة
+      }
+    });
+    // لو في مسار ظاهر، نعيد طلبه بنفس النقاط ليتحدث باللغة الجديدة
+    if (routingControl) {
+      const wps = routingControl.getWaypoints().map((w) => w.latLng);
+      map.removeControl(routingControl);
+      routingControl = null;
+      if (wps.length === 2 && wps[0] && wps[1]) {
+        // hack بسيط: نعمل مسار جديد لنفس النقاط بنفس اللغة
+        const fakeId = "_tmp";
+        locations[fakeId] = {
+          name: {
+            "ar-SA": "المسار الحالي",
+            "en-US": "Current route",
+            "es-ES": "Ruta actual",
+          },
+          coords: [wps[1].lat, wps[1].lng],
+        };
+        showRouteTo(fakeId);
+        // تنظيف
+        delete locations[fakeId];
+      }
     }
+  });
+
+  // نصيحة: لو الصفحة ليست HTTPS، جيولكيشن قد لا يعمل
+  if (location.protocol !== "https:" && location.hostname !== "localhost") {
+    console.warn(
+      "Geolocation requires HTTPS in most browsers. Open this page over https."
+    );
   }
 </script>
 
@@ -368,4 +555,5 @@ with open("/mnt/data/multilingual_map_with_speech.html", "w", encoding="utf-8") 
   <script src="assets/js/main.js"></script>
 </body>
 </html>
+
 

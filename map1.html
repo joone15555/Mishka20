@@ -173,25 +173,9 @@
       </header>
     </div>
   </div>
+<!-- Main Map Section -->
+<h2 style="text-align:center; color:#a7957c;">الخدمات القريبة من الحرم المكي</h2>
 
-  <!-- سكريبت القائمة -->
-  <script>
-    function toggleLanguageMenu() {
-      const menu = document.getElementById('language-menu');
-      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    }
-
-    document.addEventListener('click', function (e) {
-      const menu = document.getElementById('language-menu');
-      const button = e.target.closest('button');
-      if (!e.target.closest('#language-menu') && (!button || button.innerText !== '🌐')) {
-        menu.style.display = 'none';
-      }
-    });
-  </script>
-
-    <!-- Main Map Section -->
-    <h2 style="text-align:center; color:#a7957c;">الخدمات القريبة من الحرم المكي</h2>
 <!-- اختيار اللغة -->
 <div style="text-align: center; margin-bottom: 15px;">
   <label for="languageSelect" style="font-weight: bold; margin-right: 8px;">اختر لغة الصوت:</label>
@@ -223,77 +207,204 @@
   </div>
 </div>
 
-<!-- Footer -->
-<div id="footer-wrapper">
-  <footer id="footer" class="container">
-    <div class="row">
-      <div class="col-3 col-6-medium col-12-small">
-        <section class="widget contact last">
-          <h3>للتواصل</h3>
-          <ul>
-            <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-            <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-            <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-          </ul>
-          <p>1234 Fictional Road<br />Nashville, TN 00000<br />(800) 555-0000</p>
-        </section>
-      </div>
-    </div>
-  </footer>
-</div>
-<div class="toolbar">
-  <label for="languageSelect">اللغة:</label>
-  <select id="languageSelect">
-    <option value="ar-SA" selected>العربية</option>
-    <option value="en-US">English</option>
-    <option value="es-ES">Español</option>
-  </select>
+<!-- زر تسجيل الصوت -->
+<div style="text-align:center; margin:15px 0;">
+  <button id="voiceBtn" style="padding:10px 20px; font-size:16px; border-radius:8px; cursor:pointer;">
+    🎤 تحدث الآن
+  </button>
+  <p id="voiceStatus" style="font-weight:bold; color:#a7957c;"></p>
 </div>
 
-<!-- مثال على القائمة -->
-<ul id="instructionsList">
-  <li>اتجه للأمام لمسافة 200 متر</li>
-  <li>انعطف يسارًا عند الإشارة</li>
-  <li>استمر حتى تصل إلى وجهتك</li>
-</ul>
-
-<button onclick="startReading()">تشغيل الصوت</button>
+<!-- Leaflet JS و Leaflet Routing Machine -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
 <script>
-  // جلب اللغة المختارة
-  function getSelectedLang() {
-    return document.getElementById("languageSelect").value || "ar-SA";
+const map = L.map('map').setView([21.4225, 39.8262], 15);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+}).addTo(map);
+
+const locations = {
+  restaurant1: { name: { "ar-SA": "مطعم الفتح", "en-US": "Al-Fath Restaurant", "es-ES": "Restaurante Al-Fath" }, coords: [21.4235, 39.8280] },
+  restaurant2: { name: { "ar-SA": "مطعم الزهراء", "en-US": "Zahra Restaurant", "es-ES": "Restaurante Zahra" }, coords: [21.4210, 39.8250] },
+  restaurant3: { name: { "ar-SA": "مطعم النجمة", "en-US": "Al-Najma Restaurant", "es-ES": "Restaurante Al-Najma" }, coords: [21.4200, 39.8290] },
+  restaurant4: { name: { "ar-SA": "مطعم المدينة", "en-US": "Al-Madina Restaurant", "es-ES": "Restaurante Al-Madina" }, coords: [21.4240, 39.8230] },
+  atm1: { name: { "ar-SA": "صرافة الراجحي", "en-US": "Al Rajhi ATM", "es-ES": "Cajero Al Rajhi" }, coords: [21.4220, 39.8275] },
+  atm2: { name: { "ar-SA": "صرافة الأهلي", "en-US": "Al Ahli ATM", "es-ES": "Cajero Al Ahli" }, coords: [21.4230, 39.8245] },
+  pharmacy1: { name: { "ar-SA": "صيدلية النهدي", "en-US": "Al Nahdi Pharmacy", "es-ES": "Farmacia Al Nahdi" }, coords: [21.4215, 39.8265] },
+  pharmacy2: { name: { "ar-SA": "صيدلية الدواء", "en-US": "Al Dawaa Pharmacy", "es-ES": "Farmacia Al Dawaa" }, coords: [21.4245, 39.8255] }
+};
+
+const markers = {};
+for (const key in locations) {
+  const loc = locations[key];
+  const marker = L.marker(loc.coords).addTo(map).bindPopup(`<b>${loc.name["ar-SA"]}</b>`);
+  markers[key] = marker;
+}
+
+let routingControl = null;
+let userLocation = [21.4225, 39.8262];
+let voicesLoaded = false;
+let voices = [];
+
+// تحميل الأصوات
+function loadVoices() {
+  voices = window.speechSynthesis.getVoices();
+  if (voices.length) voicesLoaded = true;
+}
+window.speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
+
+// تحديد موقع المستخدم
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      userLocation = [pos.coords.latitude, pos.coords.longitude];
+      map.setView(userLocation, 15);
+      L.marker(userLocation).addTo(map).bindPopup("موقعك الحالي").openPopup();
+    },
+    err => console.warn("لم يتم الحصول على موقعك الحالي، سيتم استخدام الموقع الافتراضي")
+  );
+}
+
+// التركيز على المكان وقراءة التعليمات
+function focusAndSpeak(id) {
+  const loc = locations[id];
+  if (!loc) return;
+
+  map.setView(loc.coords, 17);
+  markers[id].openPopup();
+
+  if (routingControl) {
+    map.removeControl(routingControl);
+    routingControl = null;
   }
 
-  // قراءة نص بصوت
-  function speakText(text, lang, callback) {
-    if (!("speechSynthesis" in window)) return;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang;
-    utterance.onend = callback; // بعد ما يخلص، ينفذ اللي بعده
-    window.speechSynthesis.speak(utterance);
-  }
+  const start = userLocation;
+  const end = loc.coords;
+  const selectedLang = document.getElementById('languageSelect')?.value || 'ar-SA';
 
-  // تشغيل قراءة القائمة خطوة بخطوة
-  function startReading() {
-    const lang = getSelectedLang();
-    const items = document.querySelectorAll("#instructionsList li");
-    let index = 0;
+  // قراءة اسم المكان مرة واحدة فقط
+  speakText(loc.name[selectedLang] || loc.name['ar-SA'], selectedLang);
 
-    function readNext() {
-      if (index < items.length) {
-        const text = items[index].textContent.trim();
-        speakText(text, lang, () => {
-          index++;
-          setTimeout(readNext, 1000); // مهلة 1 ثانية بين الخطوات
-        });
-      }
+  routingControl = L.Routing.control({
+    waypoints: [L.latLng(start), L.latLng(end)],
+    routeWhileDragging: false,
+    createMarker: () => null
+  }).on('routesfound', function(e) {
+    const route = e.routes[0];
+    if (route && route.instructions) {
+      const instructions = route.instructions.filter(instr => 
+        instr.text !== (loc.name[selectedLang] || loc.name['ar-SA'])
+      );
+      readInstructions(instructions, selectedLang);
+    } else if (route && route.summary) {
+      const distKm = (route.summary.totalDistance / 1000).toFixed(1);
+      const mins = Math.round(route.summary.totalTime / 60);
+      let text = selectedLang.startsWith('ar') ? 
+        `المسافة حوالي ${distKm} كيلومتر، والوقت المقدر ${mins} دقيقة.` :
+        selectedLang.startsWith('es') ? 
+        `La distancia es aproximadamente ${distKm} kilómetros, tiempo estimado ${mins} minutos.` :
+        `Distance is about ${distKm} km, estimated time ${mins} minutes.`;
+      speakText(text, selectedLang);
     }
+  }).addTo(map);
+}
 
-    window.speechSynthesis.cancel(); // إيقاف أي قراءة سابقة
-    readNext();
+// تحويل نص إلى كلام
+function speakText(text, lang) {
+  if (!('speechSynthesis' in window)) return;
+  const synth = window.speechSynthesis;
+  synth.cancel();
+  if (!voicesLoaded) voices = synth.getVoices();
+
+  let voice = null;
+  if (voices.length) {
+    voice = lang.startsWith('ar') ? voices.find(v=>v.lang.startsWith('ar')) :
+            lang.startsWith('en') ? voices.find(v=>v.lang.startsWith('en')) :
+            lang.startsWith('es') ? voices.find(v=>v.lang.startsWith('es')) : voices[0];
   }
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = lang;
+  if (voice) utterance.voice = voice;
+  synth.speak(utterance);
+}
+
+// قراءة التعليمات خطوة خطوة بدون تداخل
+function readInstructions(instructions, lang) {
+  const synth = window.speechSynthesis;
+
+  function speakPromise(text) {
+    return new Promise(resolve => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+      if (voices.length) {
+        utterance.voice = lang.startsWith('ar') ? voices.find(v=>v.lang.startsWith('ar')) :
+                          lang.startsWith('en') ? voices.find(v=>v.lang.startsWith('en')) :
+                          lang.startsWith('es') ? voices.find(v=>v.lang.startsWith('es')) : voices[0];
+      }
+      utterance.onend = resolve;
+      synth.speak(utterance);
+    });
+  }
+
+  (async () => {
+    for (const instr of instructions) {
+      await speakPromise(instr.text);
+    }
+  })();
+}
+
+// التعرف على الصوت
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SpeechRecognition) {
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'ar-SA';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  document.getElementById('voiceBtn').addEventListener('click', () => {
+    recognition.start();
+    document.getElementById('voiceStatus').innerText = "استمع الآن...";
+  });
+
+  recognition.onresult = (event) => {
+    const spokenText = event.results[0][0].transcript.trim();
+    document.getElementById('voiceStatus').innerText = `لقد قلت: "${spokenText}"`;
+
+    let found = false;
+    for (const key in locations) {
+      for (const lang in locations[key].name) {
+        if (locations[key].name[lang] === spokenText) {
+          focusAndSpeak(key);
+          found = true;
+          break;
+        }
+      }
+      if (found) break;
+    }
+    if (!found) document.getElementById('voiceStatus').innerText = `لم يتم التعرف على المكان: "${spokenText}"`;
+  };
+
+  recognition.onerror = (event) => {
+    document.getElementById('voiceStatus').innerText = `خطأ في التعرف على الصوت: ${event.error}`;
+  };
+} else {
+  document.getElementById('voiceStatus').innerText = "المتصفح لا يدعم التعرف على الصوت.";
+}
+
+// إخفاء شاشة التحميل
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const intro = document.getElementById("intro-screen");
+    if (intro) intro.style.display = "none";
+  }, 1500);
+});
 </script>
+
 </body>
 """
 
@@ -313,6 +424,3 @@ with open("/mnt/data/multilingual_map_with_speech.html", "w", encoding="utf-8") 
   <script src="assets/js/main.js"></script>
 </body>
 </html>
-
-
-

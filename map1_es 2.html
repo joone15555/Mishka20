@@ -1,436 +1,312 @@
 <!DOCTYPE HTML>
-<html lang="ar" dir="rtl">
+<html lang="ru" dir="ltr">
 <head>
-  <title>خريطة الخدمات قرب الحرم</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <title>Карта ближайших сервисов</title>
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 
   <style>
+    /* Экран загрузки */
     #intro-screen {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #ffffff;
-      color: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #ffffff; color: #000;
+      display: flex; justify-content: center; align-items: center; flex-direction: column;
       font-family: sans-serif;
       z-index: 9999;
     }
+    #intro-screen img { margin-bottom: 20px; max-width: 200px; }
 
-    #intro-screen img {
-      margin-bottom: 20px;
-      max-width: 200px;
-    }
-
+    /* Карта и списки */
     .container-map {
-      display: flex;
-      max-width: 1200px;
-      margin: 30px auto;
-      gap: 20px;
-      flex-wrap: wrap;
-      padding: 0 20px;
+      display:flex; flex-direction:column;
+      max-width:1200px; margin:30px auto; gap:10px; padding:0 20px; position:relative;
     }
+    #map { width:100%; height:500px; border-radius:12px; }
+    #lists { width:100%; background:#f9f9f9; padding:10px 20px; border-radius:12px; max-height:300px; overflow-y:auto; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+    #lists details { margin-bottom:8px; border:1px solid #ddd; border-radius:6px; padding:4px; background:#fafafa; }
+    .list-item { display:flex; align-items:center; justify-content:space-between; padding:6px; border-bottom:1px solid #eee; cursor:pointer; }
+    .list-item:hover { background:#f0f0f0; }
+    .item-name { flex:1; margin:0 8px; display:flex; align-items:center; gap:6px; }
+    .item-dist { color:gray; font-size:0.9em; }
+    .cat-count { font-weight:bold; color:#333; }
 
-    #map {
-      flex: 2;
-      height: 500px;
-      border-radius: 12px;
-    }
+    /* Иконки категорий */
+    .icon { width:20px; height:20px; display:inline-block; text-align:center; font-size:16px; }
 
-    .list {
-      flex: 1;
-      background-color: #f9f9f9;
-      padding: 20px;
-      border-radius: 12px;
-      height: 500px;
-      overflow-y: auto;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Контролы над картой */
+    #controls {
+      position:absolute; top:-60px; right:0;
+      display:flex; gap:10px; flex-wrap:wrap; z-index:1000;
     }
+    #controls button, #controls select {
+      padding:8px 16px; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:14px; transition:0.3s;
+    }
+    #speech-toggle { background-color:#28a745; color:#fff; }
+    #speech-toggle:hover { background-color:#218838; }
+    #voice-btn { background-color:#17a2b8; color:#fff; }
+    #voice-btn:hover { background-color:#117a8b; }
+    #lang-select { background-color:#ffc107; color:#212529; }
+    #lang-select:hover { background-color:#e0a800; }
 
-    .list h3 {
-      color: #a7957c;
-      margin-top: 0;
-    }
-
-    .list-item {
-      margin-bottom: 10px;
-      padding: 10px;
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .list-item:hover {
-      background-color: #f0e6f0;
-    }
+    /* Footer */
+    #footer-wrapper { margin-top:30px; }
+    #footer { text-align:left; font-size:14px; padding:20px 0; }
   </style>
 </head>
 <body class="is-preload homepage">
-  <!-- Intro Screen -->
+
+  <!-- Экран загрузки -->
   <div id="intro-screen">
-    <img src="loading-image.png" alt="تحميل" />
-    <p style="font-size: 18px;">Cargando...</p>
+    <img src="loading-image.png" alt="Загрузка" />
+    <p style="font-size:18px;">Загрузка...</p>
   </div>
 
   <div id="page-wrapper">
     <!-- Header -->
     <div id="header-wrapper">
-      <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: rtl;">
-        <!-- Logo -->
-        <div id="logo" style="order: 1;">
-          <a href="index_es 2.html">
-            <img src="loading-image.png" alt="شعار الموقع" style="max-width: 150px; height: auto;" />
+      <header id="header" class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; direction:ltr;">
+        <div id="logo" style="order:1;">
+          <a href="index.html">
+            <img src="loading-image.png" alt="Логотип" style="max-width:150px; height:auto;" />
           </a>
         </div>
 
-        <!-- Navigation -->
-        <nav style="order: 2; display: flex; align-items: center;">
-          <ul style="display: flex; gap: 20px; list-style: none; margin: 0; padding: 0; align-items: center; position: relative;">
-            <li><a href="index_es 2.html" style="font-weight: bold; text-decoration: none; color: #444; padding: 8px 16px; border-radius: 8px;">Hogar</a></li>
-            <li><a href="futcher work_es 2" style="font-weight: bold; text-decoration: none; color: #444; padding: 8px 16px; border-radius: 8px;">Negocio futuro</a></li>
-            <li><a href="card_es 2.html" style="font-weight: bold; text-decoration: none; color: #444; padding: 8px 16px; border-radius: 8px;">Tarjeta de Mishkat</a></li>
+        <!-- Навигация -->
+        <nav style="order:2; display:flex; align-items:center;">
+          <ul style="display:flex; gap:20px; list-style:none; margin:0; padding:0; align-items:center; position:relative;">
+            <li style="display:flex; align-items:center;">
+              <a href="index.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px; transition:0.3s;"
+                onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
+                onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';">Главная</a>
+            </li>
+            <li style="display:flex; align-items:center;">
+              <a href="futcher work.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px; transition:0.3s;"
+                onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
+                onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';">Будущие работы</a>
+            </li>
+            <li style="display:flex; align-items:center;">
+              <a href="card.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px; transition:0.3s;"
+                onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
+                onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';">Карта Мишкат</a>
+            </li>
 
-            <!-- 🌐 Language Dropdown -->
-                 <li style="position: relative;">
-              <button onclick="toggleLanguageMenu()" style="
-                background: none;
-                border: none;
-                font-size: 24px;
-                cursor: pointer;
-                padding: 8px;
-              " title="Change Language">🌐</button>
-              <ul id="language-menu" style="
-                display: none;
-                position: absolute;
-                top: 40px;
-                left: 0;
-                background-color: #fff;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                list-style: none;
-                padding: 10px 0;
-                margin: 0;
-                min-width: 160px;
-                z-index: 1000;
-              ">
-   <!-- Language Dropdown -->
-            <li style="position: relative;">
-              <button onclick="toggleLanguageMenu()" style="
-                background: none;
-                border: none;
-                font-size: 24px;
-                cursor: pointer;
-                padding: 8px;
-              " title="Change Language">🌐</button>
-              <ul id="language-menu" style="
-                display: none;
-                position: absolute;
-                top: 40px;
-                left: 0;
-                background-color: #fff;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                list-style: none;
-                padding: 10px 0;
-                margin: 0;
-                min-width: 160px;
-                z-index: 1000;
-              ">
-                <li>
-                  <a href="index.html" style="
-                    display: flex;
-                    align-items: center;
-                    padding: 8px 16px;
-                    text-decoration: none;
-                    color: #444;
-                    font-weight: bold;
-                    transition: background 0.3s;
-                  " onmouseover="this.style.backgroundColor='#f0f0f0';"
-                    onmouseout="this.style.backgroundColor='transparent';">
-                    🇸🇦 &nbsp; Arabic
-                  </a>
-                </li>
-                <li>
-                  <a href="index_en.html" style="
-                    display: flex;
-                    align-items: center;
-                    padding: 8px 16px;
-                    text-decoration: none;
-                    color: #444;
-                    font-weight: bold;
-                    transition: background 0.3s;
-                  " onmouseover="this.style.backgroundColor='#f0f0f0';"
-                    onmouseout="this.style.backgroundColor='transparent';">
-                    🇺🇸 &nbsp; English
-                  </a>
-                </li>
-                <li>
-                  <a href="index_es 2.html" style="
-                    display: flex;
-                    align-items: center;
-                    padding: 8px 16px;
-                    text-decoration: none;
-                    color: #444;
-                    font-weight: bold;
-                    transition: background 0.3s;
-                  " onmouseover="this.style.backgroundColor='#f0f0f0';"
-                    onmouseout="this.style.backgroundColor='transparent';">
-                    🇪🇸 &nbsp; Español
-                  </a>
-                </li>
+            <!-- Селектор языка -->
+            <li style="position:relative;">
+              <button onclick="toggleLanguageMenu()" style="background:none; border:none; font-size:24px; cursor:pointer; padding:8px;" title="Сменить язык">🌐</button>
+              <ul id="language-menu" style="display:none; position:absolute; top:40px; left:0; background:#fff; border:1px solid #ddd; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); list-style:none; padding:10px 0; margin:0; min-width:160px; z-index:1000;">
+                <li><a href="index.html" style="display:flex; align-items:center; padding:8px 16px; color:#444; font-weight:bold;">🇸🇦 Арабский</a></li>
+                <li><a href="index_en.html" style="display:flex; align-items:center; padding:8px 16px; color:#444; font-weight:bold;">🇺🇸 Английский</a></li>
+                <li><a href="index_ru.html" style="display:flex; align-items:center; padding:8px 16px; color:#444; font-weight:bold;">🇷🇺 Русский</a></li>
+                <li><a href="index_ur.html" style="display:flex; align-items:center; padding:8px 16px; color:#444; font-weight:bold;">🇵🇰 Урду</a></li>
               </ul>
             </li>
           </ul>
         </nav>
       </header>
     </div>
-  </div>
-
-  <!-- سكريبت القائمة -->
-  <script>
-    function toggleLanguageMenu() {
-      const menu = document.getElementById('language-menu');
-      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    }
-
-    document.addEventListener('click', function (e) {
-      const menu = document.getElementById('language-menu');
-      const button = e.target.closest('button');
-      if (!e.target.closest('#language-menu') && (!button || button.innerText !== '🌐')) {
-        menu.style.display = 'none';
-      }
-    });
-  </script>
-
-    <!-- Main Map Section -->
-    <h2 style="text-align:center; color:#a7957c;">Servicios cerca de la Gran Mezquita</h2>
-
-    <!-- اختيار اللغة -->
-   <div style="text-align: center; margin-bottom: 15px;">
-<label for="languageSelect" style="font-weight: bold; margin-right: 8px;">Seleccionar idioma del audio:</label>
-<select id="languageSelect">
-<option value="ar-SA" selected>Árabe</option>
-<option value="en-US">Inglés</option>
-<option value="es-ES">Español</option>
-</select>
-</div>
-
-    <div class="container-map">
-      <div id="map"></div>
-
-      <div class="list">
-<h3>Restaurantes 🍽️</h3>
-<div class="list-item" onclick="focusOn('restaurant1')">Restaurante Al Fath</div>
-<div class="list-item" onclick="focusOn('restaurant2')">Restaurante Al Zahra</div>
-<div class="list-item" onclick="focusOn('restaurant3')">Restaurante Al Najma</div>
-<div class="list-item" onclick="focusOn('restaurant4')">Restaurante Al Madina</div>
-
-<h3>Cajeros automáticos 💵</h3>
-<div class="list-item" onclick="focusOn('atm1')">Caja de cambio Al Rajhi</div>
-<div class="list-item" onclick="focusOn('atm2')">Caja de cambio Al Ahli</div>
-
-<h3>Farmacias 💊</h3>
-<div class="list-item" onclick="focusOn('pharmacy1')">Farmacia Nahdi</div>
-<div class="list-item" onclick="focusOn('pharmacy2')">Farmacia Al-Dawaa</div>
-</div>
-</div>
-
-    <!-- Footer -->
-    <div id="footer-wrapper">
-      <footer id="footer" class="container">
-        <div class="row">
-          <div class="col-3 col-6-medium col-12-small">
-            <section class="widget contact last">
-              <h3>للتواصل</h3>
-              <ul>
-                <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-                <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-                <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-              </ul>
-              <p>1234 Fictional Road<br />Nashville, TN 00000<br />(800) 555-0000</p>
-            </section>
-          </div>
-        </div>
-      </footer>
-    </div>
-  </div>
-<!-- اختيار اللغة -->
-<div style="text-align: center; margin-bottom: 15px;">
-  <label for="languageSelect" style="font-weight: bold; margin-right: 8px;">اختر لغة الصوت:</label>
-  <select id="languageSelect" style="padding: 6px;">
-    <option value="ar-SA">العربية</option>
-    <option value="en-US">الإنجليزية</option>
-    <option value="es-ES" selected>الإسبانية</option>
-  </select>
-</div>
-
-<!-- خريطة ليفلت -->
-<div id="map" style="height: 500px;"></div>
-
-<!-- تحميل مكتبة Leaflet CSS -->
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
-
-<!-- تحميل مكتبة Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-  // إنشاء الخريطة مع مركزها وتكبيرها
-  const map = L.map('map').setView([21.4225, 39.8262], 15);
+function toggleLanguageMenu(){
+  const menu = document.getElementById("language-menu");
+  menu.style.display = (menu.style.display === "block") ? "none" : "block";
+}
+document.addEventListener('click', function(event){
+  const menu = document.getElementById("language-menu");
+  const button = menu.previousElementSibling;
+  if(!menu.contains(event.target) && !button.contains(event.target)){
+    menu.style.display = "none";
+  }
+});
+</script>
 
-  // إضافة طبقة الخريطة من OpenStreetMap
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  <!-- Карта и список -->
+  <div class="container-map">
+    <div id="controls">
+      <button id="speech-toggle">Включить описание маршрута</button>
+      <button id="voice-btn">Говорить</button>
+      <select id="lang-select">
+        <option value="ru-RU" selected>Русский</option>
+        <option value="en-US">Английский</option>
+        <option value="ar-SA">Арабский</option>
+        <option value="ur-PK">Урду</option>
+      </select>
+    </div>
+
+    <div id="map"></div>
+    <div id="lists"></div>
+  </div>
+
+<!-- Footer -->
+<div id="footer-wrapper">
+  <footer id="footer" class="container" style="text-align:left; padding:20px 0;">
+    <div class="row" style="margin-bottom:15px;">
+      <div class="col-3 col-6-medium col-12-small">
+        <section class="widget contact last">
+          <h3>Контакты</h3>
+          <ul style="list-style:none; padding:0; margin:0;">
+            <li><a href="#" class="icon brands fa-twitter" style="text-decoration:none; color:#444;">Twitter</a></li>
+            <li><a href="#" class="icon brands fa-facebook-f" style="text-decoration:none; color:#444;">Facebook</a></li>
+            <li><a href="#" class="icon brands fa-instagram" style="text-decoration:none; color:#444;">Instagram</a></li>
+            <li><a href="#" class="icon brands fa-dribbble" style="text-decoration:none; color:#444;">Dribbble</a></li>
+            <li><a href="#" class="icon brands fa-pinterest" style="text-decoration:none; color:#444;">Pinterest</a></li>
+          </ul>
+          <p style="margin-top:10px;">1234 Fictional Road<br />
+          Nashville, TN 00000<br />
+          (800) 555-0000</p>
+        </section>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div id="copyright">
+          <ul style="list-style:none; padding:0; margin:0;">
+            <li>&copy; Untitled. Все права защищены</li>
+            <li>Дизайн: <a href="http://html5up.net" style="text-decoration:none; color:#444;">HTML5 UP</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+<script>
+const categories = {
+  "Рестораны": {filter:'amenity=restaurant', icon:'🍴'},
+  "Отели": {filter:'tourism=hotel', icon:'🏨'},
+  "Банкоматы": {filter:'amenity=atm', icon:'🏧'},
+  "Аптеки": {filter:'amenity=pharmacy', icon:'💊'},
+  "Больницы": {filter:'amenity=hospital', icon:'🏥'},
+  "Магазины": {filter:'shop=*', icon:'🛍️'},
+  "Кафе": {filter:'amenity=cafe', icon:'☕'},
+  "Туалеты": {filter:'amenity=toilets', icon:'🚻'}
+};
+
+let userLocation = [21.4225,39.8262];
+let speechEnabled = true;
+let lang = "ru-RU";
+
+document.getElementById("speech-toggle").addEventListener("click", () => {
+  speechEnabled = !speechEnabled;
+  document.getElementById("speech-toggle").innerText = speechEnabled ? "Включить описание маршрута" : "Выключить описание маршрута";
+});
+
+document.getElementById("lang-select").addEventListener("change", (e) => { lang = e.target.value; });
+
+const map = L.map('map').setView(userLocation, 16);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'&copy; OpenStreetMap contributors' }).addTo(map);
+
+let userMarker = L.marker(userLocation).addTo(map).bindPopup("Ваше местоположение").openPopup();
+let routingControl = null;
+let allPlaces = [];
+
+navigator.geolocation.getCurrentPosition(pos => {
+  userLocation = [pos.coords.latitude, pos.coords.longitude];
+  userMarker.setLatLng(userLocation).bindPopup("Ваше местоположение");
+}, ()=>{});
+
+function loadPlaces(lat, lon){
+  const listsDiv = document.getElementById("lists");
+  listsDiv.innerHTML = "";
+  allPlaces = [];
+  for(const [name, cat] of Object.entries(categories)){
+    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:1500,${lat},${lon});out;`;
+    fetch(overpassUrl)
+      .then(res=>res.json())
+      .then(data=>{
+        let html = `<details open><summary>${cat.icon} ${name} (<span class="cat-count">${data.elements.length}</span>)</summary>`;
+        data.elements.forEach((el,index)=>{
+          const placeLat = el.lat;
+          const placeLon = el.lon;
+          let placeName = el.tags.name || "Без названия";
+          if(name==="Банкоматы"){
+            const atmNames = ["AlRajhi ATM 1","AlRajhi ATM 2","AlAhli ATM 1","AlAhli ATM 2","Samba ATM 1","Samba ATM 2","Riyad ATM 1","Riyad ATM 2","AlJazira ATM","AlInma ATM"];
+            placeName = atmNames[index % atmNames.length];
+          }
+          allPlaces.push({name:placeName,lat:placeLat,lon:placeLon});
+          const dist = calcDistance(userLocation[0],userLocation[1],placeLat,placeLon).toFixed(2);
+          L.marker([placeLat, placeLon]).addTo(map).bindPopup(`${placeName}<br>${dist} км`);
+          html += `<div class="list-item" onclick="focusPlace(${placeLat},${placeLon},'${placeName}')"><span class="item-name"><span class="icon">${cat.icon}</span>${placeName}</span><span class="item-dist">${dist} км</span></div>`;
+        });
+        html += "</details>";
+        listsDiv.innerHTML += html;
+      });
+  }
+}
+
+function focusPlace(lat, lon, name){
+  map.setView([lat, lon],18);
+  L.popup().setLatLng([lat,lon]).setContent(name).openOn(map);
+  speak(name);
+
+  if(!speechEnabled) return;
+
+  if(routingControl) map.removeControl(routingControl);
+  routingControl = L.Routing.control({
+    waypoints:[L.latLng(userLocation[0],userLocation[1]),L.latLng(lat,lon)],
+    lineOptions:{styles:[{color:'blue',opacity:0.6,weight:5}]},
+    addWaypoints:false,
+    draggableWaypoints:false,
+    routeWhileDragging:false,
+    showAlternatives:false,
+    createMarker:()=>null
   }).addTo(map);
 
-  // بيانات الأماكن مع أسماء بثلاث لغات وإحداثياتها
-  const locations = {
-    restaurant1: {
-      name: {
-        "ar-SA": "مطعم الفتح",
-        "en-US": "Al-Fath Restaurant",
-        "es-ES": "Restaurante Al-Fath"
-      },
-      coords: [21.4235, 39.8280]
-    },
-    restaurant2: {
-      name: {
-        "ar-SA": "مطعم الزهراء",
-        "en-US": "Zahra Restaurant",
-        "es-ES": "Restaurante Zahra"
-      },
-      coords: [21.4210, 39.8250]
-    },
-    restaurant3: {
-      name: {
-        "ar-SA": "مطعم النجمة",
-        "en-US": "Al-Najma Restaurant",
-        "es-ES": "Restaurante Al-Najma"
-      },
-      coords: [21.4200, 39.8290]
-    },
-    restaurant4: {
-      name: {
-        "ar-SA": "مطعم المدينة",
-        "en-US": "Al-Madina Restaurant",
-        "es-ES": "Restaurante Al-Madina"
-      },
-      coords: [21.4240, 39.8230]
-    },
-    atm1: {
-      name: {
-        "ar-SA": "صرافة الراجحي",
-        "en-US": "Al Rajhi ATM",
-        "es-ES": "Cajero Al Rajhi"
-      },
-      coords: [21.4220, 39.8275]
-    },
-    atm2: {
-      name: {
-        "ar-SA": "صرافة الأهلي",
-        "en-US": "Al Ahli ATM",
-        "es-ES": "Cajero Al Ahli"
-      },
-      coords: [21.4230, 39.8245]
-    },
-    pharmacy1: {
-      name: {
-        "ar-SA": "صيدلية النهدي",
-        "en-US": "Al Nahdi Pharmacy",
-        "es-ES": "Farmacia Al Nahdi"
-      },
-      coords: [21.4215, 39.8265]
-    },
-    pharmacy2: {
-      name: {
-        "ar-SA": "صيدلية الدواء",
-        "en-US": "Al Dawaa Pharmacy",
-        "es-ES": "Farmacia Al Dawaa"
-      },
-      coords: [21.4245, 39.8255]
-    }
-  };
+  describeRoute(userLocation,[lat,lon],name);
+}
 
-  // تخزين الماركرات
-  const markers = {};
+function describeRoute(start,end,placeName){
+  const latDiff=end[0]-start[0];
+  const lonDiff=end[1]-start[1];
+  let text=`Идите от вашего текущего местоположения до ${placeName}. `;
+  text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"Двигайтесь на север. ":"Двигайтесь на юг. "):(lonDiff>0?"Двигайтесь на восток. ":"Двигайтесь на запад. ");
+  speak(text);
+}
 
-  // إنشاء الماركرات مع اسم المكان بالإسبانية فقط (حسب طلبك)
-  for (const key in locations) {
-    const loc = locations[key];
-    markers[key] = L.marker(loc.coords)
-      .addTo(map)
-      .bindPopup(`<b>${loc.name["es-ES"]}</b>`);
-  }
+function speak(text){
+  const utterance=new SpeechSynthesisUtterance(text);
+  utterance.lang=lang;
+  speechSynthesis.speak(utterance);
+}
 
-  // دالة تشغيل الصوت بلغة مختارة
-  function speak(id) {
-    if ('speechSynthesis' in window) {
-      const synth = window.speechSynthesis;
-      // قراءة قيمة اللغة من القائمة
-      const selectedLang = document.getElementById('languageSelect').value || 'es-ES';
-      const loc = locations[id];
-      // نص منطوق حسب اللغة المختارة، أو الإسبانية كافتراضي
-      const text = loc.name[selectedLang] || loc.name["es-ES"];
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = selectedLang;
-      synth.speak(utterance);
-    } else {
-      alert("المتصفح لا يدعم خاصية الصوت");
-    }
-  }
+function calcDistance(lat1,lon1,lat2,lon2){
+  const R=6371;
+  const dLat=(lat2-lat1)*Math.PI/180;
+  const dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
 
-  // دالة تركز على المكان المحدد، تفتح البوب أب، وتشغل الصوت
-  function focusOn(id) {
-    const loc = locations[id];
-    if (loc) {
-      map.setView(loc.coords, 17);
-      markers[id].openPopup();
-      speak(id);
-    }
-  }
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.lang = lang;
+recognition.continuous = false;
+recognition.interimResults = false;
+
+document.getElementById("voice-btn").addEventListener("click", ()=>{ recognition.lang = lang; recognition.start(); });
+
+recognition.onresult = function(event){
+  const speech = event.results[0][0].transcript.toLowerCase();
+  let found = allPlaces.find(p => p.name.toLowerCase().includes(speech));
+  if(found){ focusPlace(found.lat, found.lon,found.name); } else { speak("Место не найдено"); }
+}
+
+loadPlaces(userLocation[0],userLocation[1]);
+window.onload = ()=>{ document.getElementById('intro-screen').style.display='none'; };
 </script>
 
-<!-- إخفاء شاشة التحميل -->
-<script>
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      const intro = document.getElementById("intro-screen");
-      if (intro) intro.style.display = "none";
-    }, 1500);
-  });
-</script>
-
-</body>
-"""
-
-with open("/mnt/data/multilingual_map_with_speech.html", "w", encoding="utf-8") as f:
-    f.write(updated_code)
-
-"/mnt/data/multilingual_map_with_speech.html"
-
-
-
-  <!-- Main Scripts -->
-  <script src="assets/js/jquery.min.js"></script>
-  <script src="assets/js/jquery.dropotron.min.js"></script>
-  <script src="assets/js/browser.min.js"></script>
-  <script src="assets/js/breakpoints.min.js"></script>
-  <script src="assets/js/util.js"></script>
-  <script src="assets/js/main.js"></script>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.dropotron.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>
-

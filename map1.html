@@ -37,8 +37,21 @@
       padding:0 20px;
       position:relative;
     }
-    #map { width:100%; height:500px; border-radius:12px; }
-    #lists { width:100%; background:#f9f9f9; padding:10px 20px; border-radius:12px; max-height:300px; overflow-y:auto; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+    #map { 
+      width:100%; 
+      height:70vh; /* مرن لتناسب جميع الأجهزة */
+      border-radius:12px; 
+    }
+    #lists { 
+      width:100%; 
+      background:#f9f9f9; 
+      padding:10px 20px; 
+      border-radius:12px; 
+      max-height:300px; 
+      overflow-y:auto; 
+      box-shadow:0 0 10px rgba(0,0,0,0.1); 
+      font-size: 0.95em;
+    }
     #lists details { margin-bottom:8px; border:1px solid #ddd; border-radius:6px; padding:4px; background:#fafafa; }
     .list-item { display:flex; align-items:center; justify-content:space-between; padding:6px; border-bottom:1px solid #eee; cursor:pointer; }
     .list-item:hover { background:#f0f0f0; }
@@ -52,8 +65,8 @@
     /* أزرار التحكم فوق الخريطة */
     #controls {
       position:absolute;
-      top:-60px; /* فوق الخريطة */
-      right:0;
+      top:10px; /* مسافة مناسبة من أعلى الخريطة */
+      right:10px;
       display:flex;
       gap:10px;
       flex-wrap:wrap;
@@ -78,6 +91,12 @@
     /* Footer نص عادي */
     #footer-wrapper { margin-top:30px; }
     #footer { text-align:center; font-size:14px; padding:20px 0; }
+
+    /* تحسين الشاشات الصغيرة */
+    @media screen and (max-width:768px){
+      #controls { flex-direction: column; top:15px; right:10px; }
+      #lists { max-height:250px; font-size:0.9em; }
+    }
   </style>
 </head>
 <body class="is-preload homepage">
@@ -155,10 +174,9 @@ function toggleLanguageMenu(){
   menu.style.display = (menu.style.display === "block") ? "none" : "block";
 }
 
-// إخفاء القائمة عند الضغط خارجها
 document.addEventListener('click', function(event){
   const menu = document.getElementById("language-menu");
-  const button = menu.previousElementSibling; // الزر قبل القائمة
+  const button = menu.previousElementSibling;
   if(!menu.contains(event.target) && !button.contains(event.target)){
     menu.style.display = "none";
   }
@@ -167,7 +185,6 @@ document.addEventListener('click', function(event){
 
     <!-- الخريطة والقائمة -->
     <div class="container-map">
-      <!-- أزرار التحكم فوق الخريطة -->
       <div id="controls">
         <button id="speech-toggle">تشغيل وصف الطريق</button>
         <button id="voice-btn">تحدث بصوتك</button>
@@ -182,10 +199,10 @@ document.addEventListener('click', function(event){
       <div id="map"></div>
       <div id="lists"></div>
     </div>
+
 <!-- Footer -->
 <div id="footer-wrapper">
   <footer id="footer" class="container" style="text-align:left; padding:20px 0;">
-    <!-- صف التواصل -->
     <div class="row" style="text-align:left; margin-bottom:15px;">
       <div class="col-3 col-6-medium col-12-small" style="text-align:left;">
         <section class="widget contact last" style="text-align:left;">
@@ -204,7 +221,6 @@ document.addEventListener('click', function(event){
       </div>
     </div>
 
-    <!-- صف حقوق الطبع -->
     <div class="row" style="text-align:left;">
       <div class="col-12" style="text-align:left;">
         <div id="copyright" style="text-align:left;">
@@ -217,155 +233,151 @@ document.addEventListener('click', function(event){
     </div>
   </footer>
 </div>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
-  <script>
-    const categories = {
-      "المطاعم": {filter:'amenity=restaurant', icon:'🍴'},
-      "فنادق": {filter:'tourism=hotel', icon:'🏨'},
-      "صرافات": {filter:'amenity=atm', icon:'🏧'},
-      "صيدليات": {filter:'amenity=pharmacy', icon:'💊'},
-      "مستشفيات": {filter:'amenity=hospital', icon:'🏥'},
-      "محلات": {filter:'shop=*', icon:'🛍️'},
-      "المقاهي": {filter:'amenity=cafe', icon:'☕'},
-      "دورات المياه": {filter:'amenity=toilets', icon:'🚻'}
-    };
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
-    let userLocation = [21.4225,39.8262];
-    let speechEnabled = true;
-    let lang = "ar-SA";
+<script>
+const categories = {
+  "المطاعم": {filter:'amenity=restaurant', icon:'🍴'},
+  "فنادق": {filter:'tourism=hotel', icon:'🏨'},
+  "صرافات": {filter:'amenity=atm', icon:'🏧'},
+  "صيدليات": {filter:'amenity=pharmacy', icon:'💊'},
+  "مستشفيات": {filter:'amenity=hospital', icon:'🏥'},
+  "محلات": {filter:'shop=*', icon:'🛍️'},
+  "المقاهي": {filter:'amenity=cafe', icon:'☕'},
+  "دورات المياه": {filter:'amenity=toilets', icon:'🚻'}
+};
 
-    document.getElementById("speech-toggle").addEventListener("click", () => {
-      speechEnabled = !speechEnabled;
-      document.getElementById("speech-toggle").innerText = speechEnabled ? "تشغيل وصف الطريق" : "إيقاف وصف الطريق";
-    });
+let userLocation = [21.4225,39.8262];
+let speechEnabled = true;
+let lang = "ar-SA";
 
-    document.getElementById("lang-select").addEventListener("change", (e) => { lang = e.target.value; });
+document.getElementById("speech-toggle").addEventListener("click", () => {
+  speechEnabled = !speechEnabled;
+  document.getElementById("speech-toggle").innerText = speechEnabled ? "تشغيل وصف الطريق" : "إيقاف وصف الطريق";
+});
 
-    const map = L.map('map').setView(userLocation, 16);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'&copy; OpenStreetMap contributors' }).addTo(map);
+document.getElementById("lang-select").addEventListener("change", (e) => { lang = e.target.value; });
 
-    let userMarker = L.marker(userLocation).addTo(map).bindPopup("موقعك الحالي").openPopup();
-    let routingControl = null;
-    let allPlaces = [];
+const map = L.map('map').setView(userLocation, 16);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'&copy; OpenStreetMap contributors' }).addTo(map);
 
-    navigator.geolocation.getCurrentPosition(pos => {
-      userLocation = [pos.coords.latitude, pos.coords.longitude];
-      userMarker.setLatLng(userLocation).bindPopup("موقعك الحالي");
-    }, ()=>{});
+let userMarker = L.marker(userLocation).addTo(map).bindPopup("موقعك الحالي").openPopup();
+let routingControl = null;
+let allPlaces = [];
 
-    function loadPlaces(lat, lon){
-      const listsDiv = document.getElementById("lists");
-      listsDiv.innerHTML = "";
-      allPlaces = [];
-      for(const [name, cat] of Object.entries(categories)){
-        const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:1500,${lat},${lon});out;`;
-        fetch(overpassUrl)
-          .then(res=>res.json())
-          .then(data=>{
-            let html = `<details open><summary>${cat.icon} ${name} (<span class="cat-count">${data.elements.length}</span>)</summary>`;
-            data.elements.forEach((el,index)=>{
-              const placeLat = el.lat;
-              const placeLon = el.lon;
-              let placeName = el.tags.name || "بدون اسم";
-              if(name==="صرافات"){
-                const atmNames = ["صراف الراجحي 1","صراف الراجحي 2","صراف الأهلي 1","صراف الأهلي 2","صراف سامبا 1","صراف سامبا 2","صراف الرياض 1","صراف الرياض 2","صراف بنك الجزيرة","صراف بنك الإنماء"];
-                placeName = atmNames[index % atmNames.length];
-              }
-              allPlaces.push({name:placeName,lat:placeLat,lon:placeLon});
-              const dist = calcDistance(userLocation[0],userLocation[1],placeLat,placeLon).toFixed(2);
-              L.marker([placeLat, placeLon]).addTo(map).bindPopup(`${placeName}<br>${dist} كم`);
-              html += `<div class="list-item" onclick="focusPlace(${placeLat},${placeLon},'${placeName}')"><span class="item-name"><span class="icon">${cat.icon}</span>${placeName}</span><span class="item-dist">${dist} كم</span></div>`;
-            });
-            html += "</details>";
-            listsDiv.innerHTML += html;
-          });
-      }
-    }
+navigator.geolocation.getCurrentPosition(pos => {
+  userLocation = [pos.coords.latitude, pos.coords.longitude];
+  userMarker.setLatLng(userLocation).bindPopup("موقعك الحالي");
+  loadPlaces(userLocation[0],userLocation[1]);
+}, ()=>{ loadPlaces(userLocation[0],userLocation[1]); });
 
-    function focusPlace(lat, lon, name){
-      map.setView([lat, lon],18);
-      L.popup().setLatLng([lat,lon]).setContent(name).openOn(map);
-      speak(name);
+function loadPlaces(lat, lon){
+  const listsDiv = document.getElementById("lists");
+  listsDiv.innerHTML = "";
+  allPlaces = [];
+  for(const [name, cat] of Object.entries(categories)){
+    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:1500,${lat},${lon});out;`;
+    fetch(overpassUrl)
+      .then(res=>res.json())
+      .then(data=>{
+        let html = `<details open><summary>${cat.icon} ${name} (<span class="cat-count">${data.elements.length}</span>)</summary>`;
+        data.elements.forEach((el,index)=>{
+          const placeLat = el.lat;
+          const placeLon = el.lon;
+          let placeName = el.tags.name || "بدون اسم";
+          if(name==="صرافات"){
+            const atmNames = ["صراف الراجحي 1","صراف الراجحي 2","صراف الأهلي 1","صراف الأهلي 2","صراف سامبا 1","صراف سامبا 2","صراف الرياض 1","صراف الرياض 2","صراف بنك الجزيرة","صراف بنك الإنماء"];
+            placeName = atmNames[index % atmNames.length];
+          }
+          allPlaces.push({name:placeName,lat:placeLat,lon:placeLon});
+          const dist = calcDistance(userLocation[0],userLocation[1],placeLat,placeLon).toFixed(2);
+          L.marker([placeLat, placeLon]).addTo(map).bindPopup(`${placeName}<br>${dist} كم`);
+          html += `<div class="list-item" onclick="focusPlace(${placeLat},${placeLon},'${placeName}')"><span class="item-name"><span class="icon">${cat.icon}</span>${placeName}</span><span class="item-dist">${dist} كم</span></div>`;
+        });
+        html += "</details>";
+        listsDiv.innerHTML += html;
+      });
+  }
+}
 
-      if(!speechEnabled) return;
+function focusPlace(lat, lon, name){
+  map.setView([lat, lon],18);
+  L.popup().setLatLng([lat,lon]).setContent(name).openOn(map);
+  speak(name);
 
-      if(routingControl) map.removeControl(routingControl);
-      routingControl = L.Routing.control({
-        waypoints:[L.latLng(userLocation[0],userLocation[1]),L.latLng(lat,lon)],
-        lineOptions:{styles:[{color:'blue',opacity:0.6,weight:5}]},
-        addWaypoints:false,
-        draggableWaypoints:false,
-        routeWhileDragging:false,
-        showAlternatives:false,
-        createMarker:()=>null
-      }).addTo(map);
+  if(!speechEnabled) return;
 
-      describeRoute(userLocation,[lat,lon],name);
-    }
+  if(routingControl) map.removeControl(routingControl);
+  routingControl = L.Routing.control({
+    waypoints:[L.latLng(userLocation[0],userLocation[1]),L.latLng(lat,lon)],
+    lineOptions:{styles:[{color:'blue',opacity:0.6,weight:5}]},
+    addWaypoints:false,
+    draggableWaypoints:false,
+    routeWhileDragging:false,
+    showAlternatives:false,
+    createMarker:()=>null
+  }).addTo(map);
 
-    function describeRoute(start,end,placeName){
-      const latDiff=end[0]-start[0];
-      const lonDiff=end[1]-start[1];
-      let text="";
-      switch(lang){
-        case "ar-SA": text=`اتجه من موقعك الحالي إلى ${placeName}. `; text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"تحرك شمالاً. ":"تحرك جنوباً. "):(lonDiff>0?"تحرك شرقاً. ":"تحرك غرباً. "); break;
-        case "en-US": text=`Go from your current location to ${placeName}. `; text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"Move north. ":"Move south. "):(lonDiff>0?"Move east. ":"Move west. "); break;
-        case "ru-RU": text=`Идите от вашего текущего местоположения до ${placeName}. `; text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"Двигайтесь на север. ":"Двигайтесь на юг. "):(lonDiff>0?"Двигайтесь на восток. ":"Двигайтесь на запад. "); break;
-        case "ur-PK": text=`اپنی موجودہ جگہ سے ${placeName} کی طرف جائیں۔ `; text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"شمال کی طرف جائیں۔ ":"جنوب کی طرف جائیں۔ "):(lonDiff>0?"مشرق کی طرف جائیں۔ ":"مغرب کی طرف جائیں۔ "); break;
-      }
-      speak(text);
-    }
+  describeRoute(userLocation,[lat,lon],name);
+}
 
-    function speak(text){
-      const utterance=new SpeechSynthesisUtterance(text);
-      utterance.lang=lang;
-      speechSynthesis.speak(utterance);
-    }
+function describeRoute(start,end,placeName){
+  const latDiff=end[0]-start[0];
+  const lonDiff=end[1]-start[1];
+  let text="";
+  switch(lang){
+    case "ar-SA": text=`اتجه من موقعك الحالي إلى ${placeName}. `; text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"تحرك شمالاً. ":"تحرك جنوباً. "):(lonDiff>0?"تحرك شرقاً. ":"تحرك غرباً. "); break;
+    case "en-US": text=`Go from your current location to ${placeName}. `; text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"Move north. ":"Move south. "):(lonDiff>0?"Move east. ":"Move west. "); break;
+    case "ru-RU": text=`Идите от вашего текущего местоположения до ${placeName}. `; text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"Двигайтесь на север. ":"Двигайтесь на юг. "):(lonDiff>0?"Двигайтесь на восток. ":"Двигайтесь на запад. "); break;
+    case "ur-PK": text=`اپنی موجودہ جگہ سے ${placeName} کی طرف جائیں۔ `; text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"شمال کی طرف جائیں۔ ":"جنوب کی طرف جائیں۔ "):(lonDiff>0?"مشرق کی طرف جائیں۔ ":"مغرب کی طرف جائیں۔ "); break;
+  }
+  speak(text);
+}
 
-    function calcDistance(lat1,lon1,lat2,lon2){
-      const R=6371;
-      const dLat=(lat2-lat1)*Math.PI/180;
-      const dLon=(lon2-lon1)*Math.PI/180;
-      const a=Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
-      return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-    }
+function speak(text){
+  const utterance=new SpeechSynthesisUtterance(text);
+  utterance.lang=lang;
+  speechSynthesis.speak(utterance);
+}
 
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = lang;
-    recognition.continuous = false;
-    recognition.interimResults = false;
+function calcDistance(lat1,lon1,lat2,lon2){
+  const R=6371;
+  const dLat=(lat2-lat1)*Math.PI/180;
+  const dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
 
-    document.getElementById("voice-btn").addEventListener("click", ()=>{
-      recognition.lang = lang;
-      recognition.start();
-    });
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.lang = lang;
+recognition.continuous = false;
+recognition.interimResults = false;
 
-    recognition.onresult = function(event){
-      const speech = event.results[0][0].transcript.toLowerCase();
-      let found = allPlaces.find(p => p.name.toLowerCase().includes(speech));
-      if(found){
-        focusPlace(found.lat, found.lon,found.name);
-      } else {
-        speak(lang==="ar-SA"?"المكان غير موجود":"Place not found");
-      }
-    }
+document.getElementById("voice-btn").addEventListener("click", ()=>{
+  recognition.lang = lang;
+  recognition.start();
+});
 
-    loadPlaces(userLocation[0],userLocation[1]);
-    window.onload = ()=>{ document.getElementById('intro-screen').style.display='none'; };
-  </script>
+recognition.onresult = function(event){
+  const speech = event.results[0][0].transcript.toLowerCase();
+  let found = allPlaces.find(p => p.name.toLowerCase().includes(speech));
+  if(found){
+    focusPlace(found.lat, found.lon,found.name);
+  } else {
+    speak(lang==="ar-SA"?"المكان غير موجود":"Place not found");
+  }
+}
 
-  <script src="assets/js/jquery.min.js"></script>
-  <script src="assets/js/jquery.dropotron.min.js"></script>
-  <script src="assets/js/browser.min.js"></script>
-  <script src="assets/js/breakpoints.min.js"></script>
-  <script src="assets/js/util.js"></script>
-  <script src="assets/js/main.js"></script>
+window.onload = ()=>{ document.getElementById('intro-screen').style.display='none'; };
+</script>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.dropotron.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>
-
-
-
-
-

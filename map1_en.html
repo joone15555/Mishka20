@@ -1,9 +1,9 @@
 <!DOCTYPE HTML>
-<html lang="en" dir="ltr">
+<html lang="ur" dir="rtl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <title>Nearby Services Map</title>
+  <title>قریبی خدمات کا نقشہ</title>
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
@@ -63,31 +63,30 @@
   <!-- Loading screen -->
   <div id="intro-screen">
     <img src="loading-image.png" alt="Loading" />
-    <p style="font-size:18px;">Loading...</p>
+    <p style="font-size:18px;">لوڈ ہو رہا ہے...</p>
   </div>
 
   <div id="page-wrapper">
     <!-- Header -->
     <div id="header-wrapper">
-      <header id="header" class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; direction:ltr;">
+      <header id="header" class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
         <div id="logo" style="order:1;">
           <a href="index.html">
-            <img src="loading-image.png" alt="Logo" style="max-width:150px; height:auto;" />
+            <img src="loading-image.png" alt="لوگو" style="max-width:150px; height:auto;" />
           </a>
         </div>
 
-        <!-- Nav -->
+        <!-- Navigation -->
         <nav style="order:2; display:flex; align-items:center;">
           <ul style="display:flex; gap:20px; list-style:none; margin:0; padding:0; align-items:center; position:relative;">
             <li style="display:flex; align-items:center;">
-              <a href="index.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px; transition:0.3s;"
-                onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
-                onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';">Home</a>
+              <a href="index.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">ہوم</a>
             </li>
             <li style="display:flex; align-items:center;">
-              <a href="card.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px; transition:0.3s;"
-                onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
-                onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';">Mishkat Card</a>
+              <a href="future work.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">مستقبل کے کام</a>
+            </li>
+            <li style="display:flex; align-items:center;">
+              <a href="card.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">مِشکات کارڈ</a>
             </li>
           </ul>
         </nav>
@@ -97,10 +96,10 @@
   <!-- Map and list -->
   <div class="container-map">
     <div id="controls">
-      <button id="speech-toggle">Enable route description</button>
-      <button id="voice-btn">Speak</button>
+      <button id="speech-toggle">روٹ کی وضاحت فعال کریں</button>
+      <button id="voice-btn">بولیں</button>
       <select id="lang-select">
-        <option value="en-US">English</option>
+        <option value="ur-PK" selected>اردو</option>
       </select>
     </div>
 
@@ -110,18 +109,18 @@
 
 <!-- Footer -->
 <div id="footer-wrapper">
-  <footer id="footer" class="container" style="text-align:left; padding:20px 0;">
+  <footer id="footer" class="container">
     <div class="row" style="margin-bottom:15px;">
       <div class="col-3 col-6-medium col-12-small">
         <section class="widget contact last">
-          <h3>Contact</h3>
+          <h3>رابطہ</h3>
           <ul style="list-style:none; padding:0; margin:0;">
-            <li><a href="#" class="icon brands fa-twitter" style="text-decoration:none; color:#444;">Twitter</a></li>
-            <li><a href="#" class="icon brands fa-facebook-f" style="text-decoration:none; color:#444;">Facebook</a></li>
-            <li><a href="#" class="icon brands fa-instagram" style="text-decoration:none; color:#444;">Instagram</a></li>
+            <li><a href="#" class="icon brands fa-twitter" style="text-decoration:none; color:#444;">ٹوئٹر</a></li>
+            <li><a href="#" class="icon brands fa-facebook-f" style="text-decoration:none; color:#444;">فیس بک</a></li>
+            <li><a href="#" class="icon brands fa-instagram" style="text-decoration:none; color:#444;">انسٹاگرام</a></li>
           </ul>
-          <p style="margin-top:10px;">1234 Fictional Road<br />
-          Nashville, TN 00000<br />
+          <p style="margin-top:10px;">1234 فرضی سڑک<br />
+          نیشول, TN 00000<br />
           (800) 555-0000</p>
         </section>
       </div>
@@ -131,8 +130,8 @@
       <div class="col-12">
         <div id="copyright">
           <ul style="list-style:none; padding:0; margin:0;">
-            <li>&copy; Untitled. All rights reserved</li>
-            <li>Design: <a href="http://html5up.net" style="text-decoration:none; color:#444;">HTML5 UP</a></li>
+            <li>&copy; جملہ حقوق محفوظ ہیں</li>
+            <li>ڈیزائن: <a href="http://html5up.net" style="text-decoration:none; color:#444;">HTML5 UP</a></li>
           </ul>
         </div>
       </div>
@@ -145,35 +144,35 @@
 
 <script>
 const categories = {
-  "Restaurants": {filter:'amenity=restaurant', icon:'🍴'},
-  "Hotels": {filter:'tourism=hotel', icon:'🏨'},
-  "ATMs": {filter:'amenity=atm', icon:'🏧'},
-  "Pharmacies": {filter:'amenity=pharmacy', icon:'💊'},
-  "Hospitals": {filter:'amenity=hospital', icon:'🏥'},
-  "Shops": {filter:'shop=*', icon:'🛍️'},
-  "Cafes": {filter:'amenity=cafe', icon:'☕'},
-  "Toilets": {filter:'amenity=toilets', icon:'🚻'}
+  "ریستوران": {filter:'amenity=restaurant', icon:'🍴'},
+  "ہوٹل": {filter:'tourism=hotel', icon:'🏨'},
+  "اے ٹی ایم": {filter:'amenity=atm', icon:'🏧'},
+  "فارمیسی": {filter:'amenity=pharmacy', icon:'💊'},
+  "ہسپتال": {filter:'amenity=hospital', icon:'🏥'},
+  "دکانیں": {filter:'shop=*', icon:'🛍️'},
+  "کافی شاپ": {filter:'amenity=cafe', icon:'☕'},
+  "ٹوائلٹ": {filter:'amenity=toilets', icon:'🚻'}
 };
 
 let userLocation = [21.4225,39.8262];
 let speechEnabled = true;
-let lang = "en-US";
+let lang = "ur-PK";
 
 document.getElementById("speech-toggle").addEventListener("click", () => {
   speechEnabled = !speechEnabled;
-  document.getElementById("speech-toggle").innerText = speechEnabled ? "Enable route description" : "Disable route description";
+  document.getElementById("speech-toggle").innerText = speechEnabled ? "روٹ کی وضاحت فعال کریں" : "روٹ کی وضاحت غیر فعال کریں";
 });
 
 const map = L.map('map').setView(userLocation, 16);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'&copy; OpenStreetMap contributors' }).addTo(map);
 
-let userMarker = L.marker(userLocation).addTo(map).bindPopup("Your location").openPopup();
+let userMarker = L.marker(userLocation).addTo(map).bindPopup("آپ کا مقام").openPopup();
 let routingControl = null;
 let allPlaces = [];
 
 navigator.geolocation.getCurrentPosition(pos => {
   userLocation = [pos.coords.latitude, pos.coords.longitude];
-  userMarker.setLatLng(userLocation).bindPopup("Your location");
+  userMarker.setLatLng(userLocation).bindPopup("آپ کا مقام");
 }, ()=>{});
 
 function loadPlaces(lat, lon){
@@ -189,15 +188,15 @@ function loadPlaces(lat, lon){
         data.elements.forEach((el,index)=>{
           const placeLat = el.lat;
           const placeLon = el.lon;
-          let placeName = el.tags.name || "Unnamed";
-          if(name==="ATMs"){
+          let placeName = el.tags.name || "نامعلوم";
+          if(name==="اے ٹی ایم"){
             const atmNames = ["AlRajhi ATM 1","AlRajhi ATM 2","AlAhli ATM 1","AlAhli ATM 2","Samba ATM 1","Samba ATM 2","Riyad ATM 1","Riyad ATM 2","AlJazira ATM","AlInma ATM"];
             placeName = atmNames[index % atmNames.length];
           }
           allPlaces.push({name:placeName,lat:placeLat,lon:placeLon});
           const dist = calcDistance(userLocation[0],userLocation[1],placeLat,placeLon).toFixed(2);
-          L.marker([placeLat, placeLon]).addTo(map).bindPopup(`${placeName}<br>${dist} km`);
-          html += `<div class="list-item" onclick="focusPlace(${placeLat},${placeLon},'${placeName}')"><span class="item-name"><span class="icon">${cat.icon}</span>${placeName}</span><span class="item-dist">${dist} km</span></div>`;
+          L.marker([placeLat, placeLon]).addTo(map).bindPopup(`${placeName}<br>${dist} کلومیٹر`);
+          html += `<div class="list-item" onclick="focusPlace(${placeLat},${placeLon},'${placeName}')"><span class="item-name"><span class="icon">${cat.icon}</span>${placeName}</span><span class="item-dist">${dist} کلومیٹر</span></div>`;
         });
         html += "</details>";
         listsDiv.innerHTML += html;
@@ -229,14 +228,14 @@ function focusPlace(lat, lon, name){
 function describeRoute(start,end,placeName){
   const latDiff=end[0]-start[0];
   const lonDiff=end[1]-start[1];
-  let text=`Go from your current location to ${placeName}. `;
-  text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"Move north. ":"Move south. "):(lonDiff>0?"Move east. ":"Move west. ");
+  let text=`اپنی موجودہ جگہ سے ${placeName} کی طرف جائیں۔ `;
+  text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"شمال کی طرف جائیں۔ ":"جنوب کی طرف جائیں۔ "):(lonDiff>0?"مشرق کی طرف جائیں۔ ":"مغرب کی طرف جائیں۔ ");
   speak(text);
 }
 
 function speak(text){
   const utterance=new SpeechSynthesisUtterance(text);
-  utterance.lang="en-US";
+  utterance.lang=lang;
   speechSynthesis.speak(utterance);
 }
 
@@ -249,17 +248,16 @@ function calcDistance(lat1,lon1,lat2,lon2){
 }
 
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-recognition.lang = "en-US";
+recognition.lang = lang;
 recognition.continuous = false;
 recognition.interimResults = false;
 
-document.getElementById("voice-btn").addEventListener("click", ()=>{ recognition.start(); });
+document.getElementById("voice-btn").addEventListener("click", ()=>{ recognition.lang = lang; recognition.start(); });
 
 recognition.onresult = function(event){
   const speech = event.results[0][0].transcript.toLowerCase();
   let found = allPlaces.find(p => p.name.toLowerCase().includes(speech));
-  if(found){ focusPlace(found.lat, found.lon,found.name); } 
-  else { speak("Place not found"); }
+  if(found){ focusPlace(found.lat, found.lon,found.name); } else { speak("مقام نہیں ملا"); }
 }
 
 loadPlaces(userLocation[0],userLocation[1]);

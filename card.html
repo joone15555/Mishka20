@@ -5,156 +5,294 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="assets/css/main.css" />
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f8f8f8 0%, #f2f0ed 100%);
-            min-height:100vh;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            padding:20px;
-        }
-        /* Intro Screen */
-        #intro-screen {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background:#fff; color:#000;
-            display:flex; justify-content:center; align-items:center;
-            flex-direction:column; font-family:sans-serif; z-index:9999;
-        }
-        #intro-screen img { margin-bottom:20px; max-width:200px; }
-        #intro-screen p { font-size:18px; }
-
-        /* Header + Nav */
-        #header-wrapper { width:100%; margin-bottom:20px; }
-        #header {
-            display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; direction:rtl;
-        }
-        #header #logo img { max-width:150px; height:auto; }
-        nav ul { display:flex; gap:20px; list-style:none; margin:0; padding:0; align-items:center; }
-        nav ul li a {
-            font-weight:bold; text-decoration:none; color:#444;
-            padding:8px 16px; border-radius:8px; transition:0.3s;
-        }
-        nav ul li a:hover { background:#f0f0f0; color:#000; }
-
-        /* Phone container */
-        .phone-container {
-            width:375px; background:#f5f1eb;
-            border-radius:40px; padding:60px 30px 40px;
-            box-shadow:0 20px 40px rgba(0,0,0,0.1);
-            display:flex; flex-direction:column; align-items:center;
-        }
-        .header { text-align:center; margin-bottom:30px; }
-        .logo { width:150px; height:150px; margin:0 auto 10px; display:block; }
-        .instruction { color:#000; font-size:16px; line-height:1.4; text-align:center; margin-bottom:40px; }
-
-        /* Services Grid */
-        .services-grid {
-            display:grid; grid-template-columns:repeat(3,1fr);
-            gap:15px; width:100%; max-width:300px;
-        }
-        .service-item {
-            background:#a6967c; border-radius:15px; padding:20px 10px;
-            text-align:center; cursor:pointer; transition:all 0.3s ease;
-            display:flex; flex-direction:column; align-items:center; justify-content:center;
-            min-height:80px;
-        }
-        .service-item:hover { background:#9a8a70; transform:translateY(-3px); }
-        .service-icon { width:50px; height:40px; margin-bottom:5px; object-fit:contain; transform:scale(2); transform-origin:center; }
-        .service-name { color:#2d2d2d; font-size:12px; font-weight:500; }
-
-        @media(max-width:400px){ .phone-container{ width:100%; height:100vh; border-radius:0; } }
-    </style>
 </head>
-<body>
-    <!-- Intro Screen -->
-    <div id="intro-screen">
-        <img src="loading-image.png" alt="تحميل">
-        <p>جارٍ التحميل...</p>
-    </div>
+<body class="is-preload homepage">
+  <!-- Intro Screen -->
+  <div id="intro-screen" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #ffffff;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: sans-serif;
+    z-index: 9999;
+  ">
+    <img src="loading-image.png" alt="تحميل" style="margin-bottom: 20px; max-width: 200px;">
+    <p style="font-size: 18px;">جارٍ التحميل...</p>
+  </div>
 
+  <div id="page-wrapper">
     <!-- Header -->
     <div id="header-wrapper">
-        <header id="header">
-            <div id="logo">
-                <a href="index_en.html"><img src="loading-image.png" alt="الشعار"></a>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="index_en.html">الرئيسية</a></li>
-                    <li><a href="futcher work _en.html">أعمال مستقبلية</a></li>
-                    <li><a href="map1_en.html">بطاقة مشكاة</a></li>
-                </ul>
-            </nav>
-        </header>
-    </div>
-
-    <!-- Phone container with services grid -->
-    <div class="phone-container">
-        <div class="header">
-            <img src="LOGO2.png" alt="مشكاة" class="logo">
-            <div class="instruction">اضغط على أيقونة الخدمة لمعرفة موقعها الأقرب إليك</div>
+      <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: rtl;">
+        <!-- Logo Left -->
+        <div id="logo" style="order: 1;">
+          <a href="index.html">
+            <img src="loading-image.png" alt="شعار الموقع" style="max-width: 150px; height: auto;">
+          </a>
         </div>
-        <section id="services">
-            <div class="services-grid">
-                <div class="service-item" onclick="selectService('barber')"><img src="6.png" class="service-icon"><div class="service-name">حلاق</div></div>
-                <div class="service-item" onclick="selectService('restroom')"><img src="17.png" class="service-icon"><div class="service-name">دورة مياه</div></div>
-                <div class="service-item" onclick="window.location.href='صيدلية-ماب.html'"><img src="7.png" class="service-icon"><div class="service-name">صيدلية</div></div>
-                <div class="service-item" onclick="window.location.href='مستشفى-ماب.html'"><img src="15.png" class="service-icon"><div class="service-name">مستشفى</div></div>
-                <div class="service-item" onclick="window.location.href='مقهى-ماب.html'"><img src="11.png" class="service-icon"><div class="service-name">مقهى</div></div>
-                <div class="service-item" onclick="window.location.href='مطعم-ماب.html'"><img src="13.png" class="service-icon"><div class="service-name">مطعم</div></div>
-                <div class="service-item" onclick="window.location.href='بقالة-ماب.html'"><img src="14.png" class="service-icon"><div class="service-name">بقالة</div></div>
-                <div class="service-item" onclick="window.location.href='هدايا تذكارية-ماب.html'"><img src="12.png" class="service-icon"><div class="service-name">هدايا تذكارية</div></div>
-                <div class="service-item" onclick="window.location.href='سوق-ماب.html'"><img src="16.png" class="service-icon"><div class="service-name">سوق</div></div>
-                <div class="service-item" onclick="window.location.href='تحويل عملات-ماب.html'"><img src="9.png" class="service-icon"><div class="service-name">تحويل عملات</div></div>
-                <div class="service-item" onclick="window.location.href='صراف-ماب.html'"><img src="8.png" class="service-icon"><div class="service-name">صراف آلي</div></div>
-                <div class="service-item" onclick="window.location.href='اتصالات-ماب.html'"><img src="10.png" class="service-icon"><div class="service-name">اتصالات</div></div>
-            </div>
-        </section>
-    </div>
 
-    <!-- Footer -->
-    <div id="footer-wrapper">
-        <footer id="footer" class="container">
-            <div class="row">
-                <div class="col-3 col-6-medium col-12-small">
-                    <section class="widget contact last">
-                        <h3>تواصل معنا</h3>
-                        <ul>
-                            <li><a href="#" class="icon brands fa-twitter"><span class="label">تويتر</span></a></li>
-                            <li><a href="#" class="icon brands fa-facebook-f"><span class="label">فيسبوك</span></a></li>
-                            <li><a href="#" class="icon brands fa-instagram"><span class="label">انستغرام</span></a></li>
-                        </ul>
-                        <p>1234 Fictional Road<br />Nashville, TN 00000<br />(800) 555-0000</p>
-                    </section>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div id="copyright">
-                        <ul class="menu">
-                            <li>&copy; كل الحقوق محفوظة</li><li>تصميم: <a href="http://html5up.net">HTML5 UP</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </footer>
+        <!-- Nav Right -->
+        <nav style="order: 2; display: flex; align-items: center;">
+          <ul style="
+            display: flex; 
+            gap: 20px; 
+            list-style: none; 
+            margin: 0; 
+            padding: 0; 
+            align-items: center;
+            position: relative;
+          ">
+            <li style="display: flex; align-items: center;">
+              <a href="index.html" style="
+                font-weight: bold;
+                text-decoration: none;
+                color: #444;
+                padding: 8px 16px;
+                border-radius: 8px;
+                transition: background-color 0.3s, color 0.3s;
+              " 
+              onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
+              onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
+              >الرئيسية</a>
+            </li>
+            <li style="display: flex; align-items: center;">
+              <a href="futcher work.html" style="
+                font-weight: bold;
+                text-decoration: none;
+                color: #444;
+                padding: 8px 16px;
+                border-radius: 8px;
+                transition: background-color 0.3s, color 0.3s;
+              " 
+              onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
+              onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
+              >العمل المستقبلي</a>
+            </li>
+            <li style="display: flex; align-items: center;">
+              <a href="card.html" style="
+                font-weight: bold;
+                text-decoration: none;
+                color: #444;
+                padding: 8px 16px;
+                border-radius: 8px;
+                transition: background-color 0.3s, color 0.3s;
+              " 
+              onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
+              onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
+              >بطاقة مشكاة</a>
+            </li>
+            <!-- Language Dropdown -->
+            <li style="position: relative;">
+              <button onclick="toggleLanguageMenu()" style="
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                padding: 8px;
+              " title="تغيير اللغة">🌐</button>
+              <ul id="language-menu" style="
+                display: none;
+                position: absolute;
+                top: 40px;
+                left: 0;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                list-style: none;
+                padding: 10px 0;
+                margin: 0;
+                min-width: 160px;
+                z-index: 1000;
+              ">
+                <li>
+                  <a href="index.html" style="
+                    display: flex;
+                    align-items: center;
+                    padding: 8px 16px;
+                    text-decoration: none;
+                    color: #444;
+                    font-weight: bold;
+                    transition: background 0.3s;
+                  " onmouseover="this.style.backgroundColor='#f0f0f0';"
+                    onmouseout="this.style.backgroundColor='transparent';">
+                    🇸🇦 &nbsp; العربية
+                  </a>
+                </li>
+                <li>
+                  <a href="index_en.html" style="
+                    display: flex;
+                    align-items: center;
+                    padding: 8px 16px;
+                    text-decoration: none;
+                    color: #444;
+                    font-weight: bold;
+                    transition: background 0.3s;
+                  " onmouseover="this.style.backgroundColor='#f0f0f0';"
+                    onmouseout="this.style.backgroundColor='transparent';">
+                    🇺🇸 &nbsp; English
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </header>
     </div>
+  </div>
 
-    <!-- Scripts -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/jquery.dropotron.min.js"></script>
-    <script src="assets/js/browser.min.js"></script>
-    <script src="assets/js/breakpoints.min.js"></script>
-    <script src="assets/js/util.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script>
-        window.addEventListener('load', () => { 
-            setTimeout(() => { const intro=document.getElementById("intro-screen"); if(intro) intro.style.display="none"; }, 1500);
-        });
-        function selectService(service){ alert('الخدمة المختارة: ' + service); }
-    </script>
+  <!-- لغة التبديل -->
+  <script>
+    function toggleLanguageMenu() {
+      const menu = document.getElementById('language-menu');
+      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    document.addEventListener('click', function (e) {
+      const menu = document.getElementById('language-menu');
+      const button = e.target.closest('button');
+      if (!e.target.closest('#language-menu') && (!button || button.innerText !== '🌐')) {
+        menu.style.display = 'none';
+      }
+    });
+  </script>
+
+  <!-- البطاقة -->
+  <style>
+    .center-card-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 50px 0;
+    }
+    .flip-card {
+      background-color: transparent;
+      width: 400px;
+      height: 400px;
+      perspective: 1000px;
+    }
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+    .flip-card:hover .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-card-front,
+    .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 16px;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+      color: white;
+      background-color: #a7957c;
+      text-align: center;
+    }
+    .flip-card-front img {
+      width: 180px;
+      height: 180px;
+      border-radius: 16px;
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
+    .flip-card-front h2,
+    .flip-card-back h2 {
+      margin: 0;
+      font-size: 1.8em;
+    }
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
+    .flip-card-back a {
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: white;
+      color: #a7957c;
+      border-radius: 10px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 1em;
+    }
+  </style>
+
+  <div class="center-card-wrapper">
+    <div class="flip-card">
+      <div class="flip-card-inner">
+        <!-- الوجه الأمامي -->
+        <div class="flip-card-front">
+          <img src="ph1.png" alt="بطاقة مشكاة">
+          <h2>بطاقة مشكاة</h2>
+        </div>
+
+        <!-- الوجه الخلفي -->
+        <div class="flip-card-back">
+          <h2>المزيد</h2>
+          <a href="map1.html">اضغط هنا</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br><br>
+  <!-- Footer -->
+  <div id="footer-wrapper">
+    <footer id="footer" class="container">
+      <div class="row">
+        <div class="col-3 col-6-medium col-12-small">
+          <section class="widget contact last">
+            <h3>التواصل</h3>
+            <ul>
+              <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+              <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+              <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+            </ul>
+            <p>1234 Fictional Road<br />
+            Nashville, TN 00000<br />
+            (800) 555-0000</p>
+          </section>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div id="copyright">
+            <ul class="menu">
+              <li>&copy; جميع الحقوق محفوظة</li><li>تصميم: <a href="http://html5up.net">HTML5 UP</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/jquery.dropotron.min.js"></script>
+  <script src="assets/js/browser.min.js"></script>
+  <script src="assets/js/breakpoints.min.js"></script>
+  <script src="assets/js/util.js"></script>
+  <script src="assets/js/main.js"></script>
+
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const intro = document.getElementById("intro-screen");
+        if (intro) intro.style.display = "none";
+      }, 1500);
+    });
+  </script>
 </body>
 </html>

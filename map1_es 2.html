@@ -9,34 +9,43 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 
   <style>
-    /* لوڈنگ سکرین */
+    /* Loading screen */
     #intro-screen {
-      position: fixed; top:0; left:0; width:100%; height:100%;
-      background:#ffffff; color:#000;
-      display:flex; justify-content:center; align-items:center; flex-direction:column;
-      font-family:sans-serif; z-index:9999;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #ffffff; color: #000;
+      display: flex; justify-content: center; align-items: center; flex-direction: column;
+      font-family: sans-serif;
+      z-index: 9999;
     }
-    #intro-screen img { margin-bottom:20px; max-width:200px; }
+    #intro-screen img { margin-bottom: 20px; max-width: 200px; }
 
-    /* نقشہ اور فہرست */
+    /* Map and lists */
     .container-map {
-      display:flex; flex-direction:column; max-width:1200px; margin:30px auto;
-      gap:10px; padding:0 20px; position:relative;
+      display:flex; flex-direction:column;
+      max-width:1200px; margin:30px auto; gap:10px; padding:0 20px; position:relative;
     }
     #map { width:100%; height:500px; border-radius:12px; }
-    #lists { width:100%; background:#f9f9f9; padding:10px 20px; border-radius:12px;
-      max-height:300px; overflow-y:auto; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+    #lists { width:100%; background:#f9f9f9; padding:10px 20px; border-radius:12px; max-height:300px; overflow-y:auto; box-shadow:0 0 10px rgba(0,0,0,0.1); }
     #lists details { margin-bottom:8px; border:1px solid #ddd; border-radius:6px; padding:4px; background:#fafafa; }
     .list-item { display:flex; align-items:center; justify-content:space-between; padding:6px; border-bottom:1px solid #eee; cursor:pointer; }
     .list-item:hover { background:#f0f0f0; }
     .item-name { flex:1; margin:0 8px; display:flex; align-items:center; gap:6px; }
     .item-dist { color:gray; font-size:0.9em; }
     .cat-count { font-weight:bold; color:#333; }
+
+    /* Category icons */
     .icon { width:20px; height:20px; display:inline-block; text-align:center; font-size:16px; }
 
-    /* کنٹرولز */
-    #controls { position:absolute; top:-60px; right:0; display:flex; gap:10px; flex-wrap:wrap; z-index:1000; }
-    #controls button, #controls select { padding:8px 16px; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:14px; transition:0.3s; }
+    /* Controls above map */
+    #controls {
+      position:absolute; top:-60px; right:0;
+      display:flex; gap:10px; flex-wrap:wrap; z-index:1000;
+    }
+    #controls button, #controls select {
+      padding:8px 16px; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:14px; transition:0.3s;
+    }
     #speech-toggle { background-color:#28a745; color:#fff; }
     #speech-toggle:hover { background-color:#218838; }
     #voice-btn { background-color:#17a2b8; color:#fff; }
@@ -44,57 +53,87 @@
     #lang-select { background-color:#ffc107; color:#212529; }
     #lang-select:hover { background-color:#e0a800; }
 
-    /* فوٹر */
+    /* Footer */
     #footer-wrapper { margin-top:30px; }
     #footer { text-align:left; font-size:14px; padding:20px 0; }
   </style>
 </head>
 <body class="is-preload homepage">
 
-<!-- لوڈنگ سکرین -->
-<div id="intro-screen">
-  <img src="loading-image.png" alt="لوڈ ہورہا ہے" />
-  <p style="font-size:18px;">لوڈ ہورہا ہے...</p>
-</div>
-
-<div id="page-wrapper">
-  <!-- ہیڈر -->
-  <div id="header-wrapper">
-    <header id="header" class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-      <div id="logo">
-        <a href="index.html">
-          <img src="loading-image.png" alt="لوگو" style="max-width:150px; height:auto;" />
-        </a>
-      </div>
-      <nav>
-        <ul style="display:flex; gap:20px; list-style:none; margin:0; padding:0; align-items:center;">
-          <li><a href="index.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">ہوم</a></li>
-          <li><a href="card.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">مشکات کارڈ</a></li>
-        </ul>
-      </nav>
-    </header>
+  <!-- Loading screen -->
+  <div id="intro-screen">
+    <img src="loading-image.png" alt="Loading" />
+    <p style="font-size:18px;">لوڈ ہو رہا ہے...</p>
   </div>
 
-  <!-- نقشہ اور کنٹرولز -->
+  <div id="page-wrapper">
+    <!-- Header -->
+    <div id="header-wrapper">
+      <header id="header" class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+        <div id="logo" style="order:1;">
+          <a href="index.html">
+            <img src="loading-image.png" alt="لوگو" style="max-width:150px; height:auto;" />
+          </a>
+        </div>
+
+        <!-- Navigation -->
+        <nav style="order:2; display:flex; align-items:center;">
+          <ul style="display:flex; gap:20px; list-style:none; margin:0; padding:0; align-items:center; position:relative;">
+            <li style="display:flex; align-items:center;">
+              <a href="index.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">ہوم</a>
+            </li>
+            <li style="display:flex; align-items:center;">
+              <a href="future work.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">مستقبل کے کام</a>
+            </li>
+            <li style="display:flex; align-items:center;">
+              <a href="card.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">مِشکات کارڈ</a>
+            </li>
+          </ul>
+        </nav>
+      </header>
+    </div>
+
+  <!-- Map and list -->
   <div class="container-map">
     <div id="controls">
-      <button id="speech-toggle">راستہ کی وضاحت فعال کریں</button>
+      <button id="speech-toggle">روٹ کی وضاحت فعال کریں</button>
       <button id="voice-btn">بولیں</button>
       <select id="lang-select">
         <option value="ur-PK" selected>اردو</option>
       </select>
     </div>
+
     <div id="map"></div>
     <div id="lists"></div>
   </div>
 
-<!-- فوٹر -->
+<!-- Footer -->
 <div id="footer-wrapper">
   <footer id="footer" class="container">
+    <div class="row" style="margin-bottom:15px;">
+      <div class="col-3 col-6-medium col-12-small">
+        <section class="widget contact last">
+          <h3>رابطہ</h3>
+          <ul style="list-style:none; padding:0; margin:0;">
+            <li><a href="#" class="icon brands fa-twitter" style="text-decoration:none; color:#444;">ٹوئٹر</a></li>
+            <li><a href="#" class="icon brands fa-facebook-f" style="text-decoration:none; color:#444;">فیس بک</a></li>
+            <li><a href="#" class="icon brands fa-instagram" style="text-decoration:none; color:#444;">انسٹاگرام</a></li>
+          </ul>
+          <p style="margin-top:10px;">1234 فرضی سڑک<br />
+          نیشول, TN 00000<br />
+          (800) 555-0000</p>
+        </section>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-12">
-        <p>© تمام حقوق محفوظ ہیں</p>
-        <p>ڈیزائن: <a href="http://html5up.net" style="text-decoration:none; color:#444;">HTML5 UP</a></p>
+        <div id="copyright">
+          <ul style="list-style:none; padding:0; margin:0;">
+            <li>&copy; جملہ حقوق محفوظ ہیں</li>
+            <li>ڈیزائن: <a href="http://html5up.net" style="text-decoration:none; color:#444;">HTML5 UP</a></li>
+          </ul>
+        </div>
       </div>
     </div>
   </footer>
@@ -106,7 +145,7 @@
 <script>
 const categories = {
   "ریستوران": {filter:'amenity=restaurant', icon:'🍴'},
-  "ہوٹلز": {filter:'tourism=hotel', icon:'🏨'},
+  "ہوٹل": {filter:'tourism=hotel', icon:'🏨'},
   "اے ٹی ایم": {filter:'amenity=atm', icon:'🏧'},
   "فارمیسی": {filter:'amenity=pharmacy', icon:'💊'},
   "ہسپتال": {filter:'amenity=hospital', icon:'🏥'},
@@ -121,7 +160,7 @@ let lang = "ur-PK";
 
 document.getElementById("speech-toggle").addEventListener("click", () => {
   speechEnabled = !speechEnabled;
-  document.getElementById("speech-toggle").innerText = speechEnabled ? "راستہ کی وضاحت فعال کریں" : "راستہ کی وضاحت غیر فعال کریں";
+  document.getElementById("speech-toggle").innerText = speechEnabled ? "روٹ کی وضاحت فعال کریں" : "روٹ کی وضاحت غیر فعال کریں";
 });
 
 const map = L.map('map').setView(userLocation, 16);
@@ -176,8 +215,10 @@ function focusPlace(lat, lon, name){
   routingControl = L.Routing.control({
     waypoints:[L.latLng(userLocation[0],userLocation[1]),L.latLng(lat,lon)],
     lineOptions:{styles:[{color:'blue',opacity:0.6,weight:5}]},
-    addWaypoints:false, draggableWaypoints:false,
-    routeWhileDragging:false, showAlternatives:false,
+    addWaypoints:false,
+    draggableWaypoints:false,
+    routeWhileDragging:false,
+    showAlternatives:false,
     createMarker:()=>null
   }).addTo(map);
 
@@ -187,7 +228,7 @@ function focusPlace(lat, lon, name){
 function describeRoute(start,end,placeName){
   const latDiff=end[0]-start[0];
   const lonDiff=end[1]-start[1];
-  let text=`اپنے موجودہ مقام سے ${placeName} جائیں۔ `;
+  let text=`اپنی موجودہ جگہ سے ${placeName} کی طرف جائیں۔ `;
   text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"شمال کی طرف جائیں۔ ":"جنوب کی طرف جائیں۔ "):(lonDiff>0?"مشرق کی طرف جائیں۔ ":"مغرب کی طرف جائیں۔ ");
   speak(text);
 }

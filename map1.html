@@ -1,15 +1,15 @@
 <!DOCTYPE HTML>
-<html lang="ar" dir="rtl">
+<html lang="ur" dir="rtl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <title>خريطة الخدمات القريبة</title>
+  <title>قریبی خدمات کا نقشہ</title>
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 
   <style>
-    /* شاشة التحميل */
+    /* Loading screen */
     #intro-screen {
       position: fixed;
       top: 0; left: 0;
@@ -21,13 +21,13 @@
     }
     #intro-screen img { margin-bottom: 20px; max-width: 200px; }
 
-    /* الخريطة والقوائم */
+    /* Map and list container */
     .container-map {
-      display:flex; flex-direction:column;
+      display:flex; flex-direction:row; /* row instead of column */
       max-width:1200px; margin:30px auto; gap:10px; padding:0 20px; position:relative;
     }
-    #map { width:100%; height:500px; border-radius:12px; }
-    #lists { width:100%; background:#f9f9f9; padding:10px 20px; border-radius:12px; max-height:300px; overflow-y:auto; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+    #map { width:70%; height:600px; border-radius:12px; }
+    #lists { width:30%; background:#f9f9f9; padding:10px 20px; border-radius:12px; max-height:600px; overflow-y:auto; box-shadow:0 0 10px rgba(0,0,0,0.1); }
     #lists details { margin-bottom:8px; border:1px solid #ddd; border-radius:6px; padding:4px; background:#fafafa; }
     .list-item { display:flex; align-items:center; justify-content:space-between; padding:6px; border-bottom:1px solid #eee; cursor:pointer; }
     .list-item:hover { background:#f0f0f0; }
@@ -35,10 +35,10 @@
     .item-dist { color:gray; font-size:0.9em; }
     .cat-count { font-weight:bold; color:#333; }
 
-    /* أيقونات الفئات */
+    /* Category icons */
     .icon { width:20px; height:20px; display:inline-block; text-align:center; font-size:16px; }
 
-    /* أزرار التحكم */
+    /* Controls above map */
     #controls {
       position:absolute; top:-60px; right:0;
       display:flex; gap:10px; flex-wrap:wrap; z-index:1000;
@@ -52,76 +52,25 @@
     #voice-btn:hover { background-color:#117a8b; }
     #lang-select { background-color:#ffc107; color:#212529; }
     #lang-select:hover { background-color:#e0a800; }
-
-    /* الفوتر */
-    #footer-wrapper { margin-top:30px; }
-    #footer { text-align:right; font-size:14px; padding:20px 0; }
   </style>
 </head>
 <body class="is-preload homepage">
 
-  <!-- شاشة التحميل -->
+  <!-- Loading screen -->
   <div id="intro-screen">
-    <img src="loading-image.png" alt="جارٍ التحميل" />
-    <p style="font-size:18px;">جارٍ التحميل...</p>
+    <img src="loading-image.png" alt="Loading" />
+    <p style="font-size:18px;">لوڈ ہو رہا ہے...</p>
   </div>
 
   <div id="page-wrapper">
-    <!-- الهيدر -->
-    <div id="header-wrapper">
-      <header id="header" class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-        <div id="logo" style="order:1;">
-          <a href="index.html">
-            <img src="loading-image.png" alt="الشعار" style="max-width:150px; height:auto;" />
-          </a>
-        </div>
 
-        <!-- قائمة التنقل -->
-        <nav style="order:2; display:flex; align-items:center;">
-          <ul style="display:flex; gap:20px; list-style:none; margin:0; padding:0; align-items:center; position:relative;">
-            <li style="display:flex; align-items:center;">
-              <a href="index.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">الرئيسية</a>
-            </li>
-            <li style="display:flex; align-items:center;">
-              <a href="future work.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">الأعمال المستقبلية</a>
-            </li>
-            <li style="display:flex; align-items:center;">
-              <a href="card.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">بطاقة مشكاة</a>
-            </li>
-
-            <!-- اختيار اللغة -->
-            <li style="position:relative;">
-              <button onclick="toggleLanguageMenu()" style="background:none; border:none; font-size:24px; cursor:pointer; padding:8px;" title="تغيير اللغة">🌐</button>
-              <ul id="language-menu" style="display:none; position:absolute; top:40px; left:0; background:#fff; border:1px solid #ddd; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); list-style:none; padding:10px 0; margin:0; min-width:160px; z-index:1000;">
-                <li><a href="index.html" style="display:flex; align-items:center; padding:8px 16px; color:#444; font-weight:bold;">🇸🇦 العربية</a></li>
-              </ul>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    </div>
-
-<script>
-function toggleLanguageMenu(){
-  const menu = document.getElementById("language-menu");
-  menu.style.display = (menu.style.display === "block") ? "none" : "block";
-}
-document.addEventListener('click', function(event){
-  const menu = document.getElementById("language-menu");
-  const button = menu.previousElementSibling;
-  if(!menu.contains(event.target) && !button.contains(event.target)){
-    menu.style.display = "none";
-  }
-});
-</script>
-
-  <!-- الخريطة والقائمة -->
+  <!-- Map and list -->
   <div class="container-map">
     <div id="controls">
-      <button id="speech-toggle">تفعيل وصف المسار</button>
-      <button id="voice-btn">التحدث</button>
+      <button id="speech-toggle">روٹ کی وضاحت فعال کریں</button>
+      <button id="voice-btn">بولیں</button>
       <select id="lang-select">
-        <option value="ar-SA" selected>العربية</option>
+        <option value="ur-PK" selected>اردو</option>
       </select>
     </div>
 
@@ -129,72 +78,40 @@ document.addEventListener('click', function(event){
     <div id="lists"></div>
   </div>
 
-<!-- الفوتر -->
-<div id="footer-wrapper">
-  <footer id="footer" class="container">
-    <div class="row" style="margin-bottom:15px;">
-      <div class="col-3 col-6-medium col-12-small">
-        <section class="widget contact last">
-          <h3>تواصل معنا</h3>
-          <ul style="list-style:none; padding:0; margin:0;">
-            <li><a href="#" class="icon brands fa-twitter" style="text-decoration:none; color:#444;">تويتر</a></li>
-            <li><a href="#" class="icon brands fa-facebook-f" style="text-decoration:none; color:#444;">فيسبوك</a></li>
-            <li><a href="#" class="icon brands fa-instagram" style="text-decoration:none; color:#444;">إنستغرام</a></li>
-          </ul>
-          <p style="margin-top:10px;">1234 شارع خيالي<br />
-          الرياض، المملكة العربية السعودية<br />
-          800-555-0000</p>
-        </section>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-12">
-        <div id="copyright">
-          <ul style="list-style:none; padding:0; margin:0;">
-            <li>&copy; جميع الحقوق محفوظة</li>
-            <li>تصميم: <a href="http://html5up.net" style="text-decoration:none; color:#444;">HTML5 UP</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </footer>
-</div>
-
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
 <script>
 const categories = {
-  "مطاعم": {filter:'amenity=restaurant', icon:'🍴'},
-  "فنادق": {filter:'tourism=hotel', icon:'🏨'},
-  "أجهزة صراف آلي": {filter:'amenity=atm', icon:'🏧'},
-  "صيدليات": {filter:'amenity=pharmacy', icon:'💊'},
-  "مستشفيات": {filter:'amenity=hospital', icon:'🏥'},
-  "متاجر": {filter:'shop=*', icon:'🛍️'},
-  "مقاهي": {filter:'amenity=cafe', icon:'☕'},
-  "دورات مياه": {filter:'amenity=toilets', icon:'🚻'}
+  "ریستوران": {filter:'amenity=restaurant', icon:'🍴'},
+  "ہوٹل": {filter:'tourism=hotel', icon:'🏨'},
+  "اے ٹی ایم": {filter:'amenity=atm', icon:'🏧'},
+  "فارمیسی": {filter:'amenity=pharmacy', icon:'💊'},
+  "ہسپتال": {filter:'amenity=hospital', icon:'🏥'},
+  "دکانیں": {filter:'shop=*', icon:'🛍️'},
+  "کافی شاپ": {filter:'amenity=cafe', icon:'☕'},
+  "ٹوائلٹ": {filter:'amenity=toilets', icon:'🚻'}
 };
 
 let userLocation = [21.4225,39.8262];
 let speechEnabled = true;
-let lang = "ar-SA";
+let lang = "ur-PK";
 
 document.getElementById("speech-toggle").addEventListener("click", () => {
   speechEnabled = !speechEnabled;
-  document.getElementById("speech-toggle").innerText = speechEnabled ? "تفعيل وصف المسار" : "إيقاف وصف المسار";
+  document.getElementById("speech-toggle").innerText = speechEnabled ? "روٹ کی وضاحت فعال کریں" : "روٹ کی وضاحت غیر فعال کریں";
 });
 
 const map = L.map('map').setView(userLocation, 16);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'&copy; OpenStreetMap contributors' }).addTo(map);
 
-let userMarker = L.marker(userLocation).addTo(map).bindPopup("موقعك الحالي").openPopup();
+let userMarker = L.marker(userLocation).addTo(map).bindPopup("آپ کا مقام").openPopup();
 let routingControl = null;
 let allPlaces = [];
 
 navigator.geolocation.getCurrentPosition(pos => {
   userLocation = [pos.coords.latitude, pos.coords.longitude];
-  userMarker.setLatLng(userLocation).bindPopup("موقعك الحالي");
+  userMarker.setLatLng(userLocation).bindPopup("آپ کا مقام");
 }, ()=>{});
 
 function loadPlaces(lat, lon){
@@ -210,15 +127,15 @@ function loadPlaces(lat, lon){
         data.elements.forEach((el,index)=>{
           const placeLat = el.lat;
           const placeLon = el.lon;
-          let placeName = el.tags.name || "بدون اسم";
-          if(name==="أجهزة صراف آلي"){
-            const atmNames = ["مصرف الراجحي 1","مصرف الراجحي 2","مصرف الأهلي 1","مصرف الأهلي 2","سامبا 1","سامبا 2","الرياض 1","الرياض 2","الجزيرة","الإنماء"];
+          let placeName = el.tags.name || "نامعلوم";
+          if(name==="اے ٹی ایم"){
+            const atmNames = ["AlRajhi ATM 1","AlRajhi ATM 2","AlAhli ATM 1","AlAhli ATM 2","Samba ATM 1","Samba ATM 2","Riyad ATM 1","Riyad ATM 2","AlJazira ATM","AlInma ATM"];
             placeName = atmNames[index % atmNames.length];
           }
           allPlaces.push({name:placeName,lat:placeLat,lon:placeLon});
           const dist = calcDistance(userLocation[0],userLocation[1],placeLat,placeLon).toFixed(2);
-          L.marker([placeLat, placeLon]).addTo(map).bindPopup(`${placeName}<br>${dist} كم`);
-          html += `<div class="list-item" onclick="focusPlace(${placeLat},${placeLon},'${placeName}')"><span class="item-name"><span class="icon">${cat.icon}</span>${placeName}</span><span class="item-dist">${dist} كم</span></div>`;
+          L.marker([placeLat, placeLon]).addTo(map).bindPopup(`${placeName}<br>${dist} کلومیٹر`);
+          html += `<div class="list-item" onclick="focusPlace(${placeLat},${placeLon},'${placeName}')"><span class="item-name"><span class="icon">${cat.icon}</span>${placeName}</span><span class="item-dist">${dist} کلومیٹر</span></div>`;
         });
         html += "</details>";
         listsDiv.innerHTML += html;
@@ -250,8 +167,8 @@ function focusPlace(lat, lon, name){
 function describeRoute(start,end,placeName){
   const latDiff=end[0]-start[0];
   const lonDiff=end[1]-start[1];
-  let text=`اتجه من موقعك الحالي إلى ${placeName}. `;
-  text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"تحرك شمالاً. ":"تحرك جنوباً. "):(lonDiff>0?"تحرك شرقاً. ":"تحرك غرباً. ");
+  let text=`اپنی موجودہ جگہ سے ${placeName} کی طرف جائیں۔ `;
+  text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"شمال کی طرف جائیں۔ ":"جنوب کی طرف جائیں۔ "):(lonDiff>0?"مشرق کی طرف جائیں۔ ":"مغرب کی طرف جائیں۔ ");
   speak(text);
 }
 
@@ -279,7 +196,7 @@ document.getElementById("voice-btn").addEventListener("click", ()=>{ recognition
 recognition.onresult = function(event){
   const speech = event.results[0][0].transcript.toLowerCase();
   let found = allPlaces.find(p => p.name.toLowerCase().includes(speech));
-  if(found){ focusPlace(found.lat, found.lon,found.name); } else { speak("المكان غير موجود"); }
+  if(found){ focusPlace(found.lat, found.lon,found.name); } else { speak("مقام نہیں ملا"); }
 }
 
 loadPlaces(userLocation[0],userLocation[1]);
@@ -294,3 +211,5 @@ window.onload = ()=>{ document.getElementById('intro-screen').style.display='non
 <script src="assets/js/main.js"></script>
 </body>
 </html>
+
+

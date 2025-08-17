@@ -50,6 +50,101 @@
           <li><a href="card.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">مشکاة کارڈ</a></li>
         </ul>
       </nav>
+            <!-- Language Dropdown -->
+<li style="position: relative;">
+  <button onclick="toggleLanguageMenu()" style="
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 8px;
+  " title="Change Language">🌐</button>
+  <ul id="language-menu" style="
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+    min-width: 160px;
+    z-index: 1000;
+  ">
+    <li>
+      <a href="map1.html" style="
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        text-decoration: none;
+        color: #444;
+        font-weight: bold;
+        transition: background 0.3s;
+      " onmouseover="this.style.backgroundColor='#f0f0f0';"
+        onmouseout="this.style.backgroundColor='transparent';">
+        🇸🇦 &nbsp; Arabic
+      </a>
+    </li>
+    <li>
+      <a href="map1_en.html" style="
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        text-decoration: none;
+        color: #444;
+        font-weight: bold;
+        transition: background 0.3s;
+      " onmouseover="this.style.backgroundColor='#f0f0f0';"
+        onmouseout="this.style.backgroundColor='transparent';">
+        🇺🇸 &nbsp; English
+      </a>
+    </li>
+    <li>
+      <a href="map1_es 2.html" style="
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        text-decoration: none;
+        color: #444;
+        font-weight: bold;
+        transition: background 0.3s;
+      " onmouseover="this.style.backgroundColor='#f0f0f0';"
+        onmouseout="this.style.backgroundColor='transparent';">
+        🇵🇰 &nbsp; Urdu
+      </a>
+    </li>
+  </ul>
+</li>
+</ul>
+</nav>
+
+</header>
+</div>
+
+<!-- Script to open/close the menu -->
+<script>
+  function toggleLanguageMenu() {
+    const menu = document.getElementById('language-menu');
+    if (menu.style.display === 'block') {
+      menu.style.display = 'none';
+    } else {
+      menu.style.display = 'block';
+    }
+  }
+
+  // Close the menu if the user clicks outside
+  document.addEventListener('click', function (e) {
+    const menu = document.getElementById('language-menu');
+    const button = e.target.closest('button');
+    if (!e.target.closest('#language-menu') && (!button || button.innerText !== '🌐')) {
+      menu.style.display = 'none';
+    }
+  });
+</script>
+
     </header>
   </div>
 
@@ -199,3 +294,4 @@ window.onload = ()=>{ document.getElementById('intro-screen').style.display='non
 </script>
 </body>
 </html>
+

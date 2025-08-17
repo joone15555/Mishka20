@@ -1,17 +1,12 @@
 <!DOCTYPE HTML>
-<!--
-	Verti by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
 	<head>
-<title>Future Projects</title>
+		<title>Verti by HTML5 UP</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<style>
-			/* تنسيق الفقرة */
+			/* Paragraph styling */
 			.project-info {
 				max-width: 800px;
 				margin: 40px auto;
@@ -21,8 +16,8 @@
 				box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 				color: #333;
-				direction: rtl;
-				text-align: right;
+				direction: ltr;
+				text-align: left;
 			}
 			.project-info img {
 				display: block;
@@ -56,22 +51,22 @@
     font-family: sans-serif;
     z-index: 9999;
   ">
-    <img src="loading-image.png" alt="تحميل" style="margin-bottom: 20px; max-width: 200px;">
+    <img src="loading-image.png" alt="Loading" style="margin-bottom: 20px; max-width: 200px;">
     <p style="font-size: 18px;">Loading...</p>
   </div>
 
   <div id="page-wrapper">
     <!-- Header -->
     <div id="header-wrapper">
-      <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: rtl;">
-        <!-- Logo Left -->
+      <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: ltr;">
+        <!-- Logo -->
         <div id="logo" style="order: 1;">
-          <a href="index_en.html">
-            <img src="loading-image.png" alt="شعار الموقع" style="max-width: 150px; height: auto;">
+          <a href="index.html">
+            <img src="loading-image.png" alt="Site Logo" style="max-width: 150px; height: auto;">
           </a>
         </div>
 
-        <!-- Nav Right -->
+        <!-- Navigation -->
         <nav style="order: 2; display: flex; align-items: center;">
           <ul style="
             display: flex; 
@@ -83,7 +78,7 @@
             position: relative;
           ">
             <li style="display: flex; align-items: center;">
-              <a href="index_en.html" style="
+              <a href="index.html" style="
                 font-weight: bold;
                 text-decoration: none;
                 color: #444;
@@ -96,7 +91,7 @@
               >Home</a>
             </li>
             <li style="display: flex; align-items: center;">
-              <a href="futcher work _en.html" style="
+              <a href="futcher work.html" style="
                 font-weight: bold;
                 text-decoration: none;
                 color: #444;
@@ -106,10 +101,10 @@
               " 
               onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
               onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
-              >Future business</a>
+              >Future Work</a>
             </li>
             <li style="display: flex; align-items: center;">
-              <a href="map1_en.html" style="
+              <a href="card.html" style="
                 font-weight: bold;
                 text-decoration: none;
                 color: #444;
@@ -119,99 +114,57 @@
               " 
               onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
               onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
-              >Mishkat card</a>
+              >Mishkat Card</a>
             </li>
-            <!-- Language Dropdown -->
-            
-  <!-- لغة التبديل -->
-  <script>
-    function toggleLanguageMenu() {
-      const menu = document.getElementById('language-menu');
-      if (menu.style.display === 'block') {
-        menu.style.display = 'none';
-      } else {
-        menu.style.display = 'block';
-      }
-    }
 
-    // إغلاق القائمة إذا ضغط المستخدم خارجها
-    document.addEventListener('click', function (e) {
-      const menu = document.getElementById('language-menu');
-      const button = e.target.closest('button');
-      if (!e.target.closest('#language-menu') && (!button || button.innerText !== '🌐')) {
-        menu.style.display = 'none';
-      }
+  <!-- Footer -->
+  <div id="footer-wrapper">
+    <footer id="footer" class="container">
+      <div class="row">
+        <div class="col-3 col-6-medium col-12-small">
+          <section class="widget contact last">
+            <h3>Contact</h3>
+            <ul>
+              <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+              <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+              <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+              <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+              <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+            </ul>
+            <p>1234 Fictional Road<br />
+            Nashville, TN 00000<br />
+            (800) 555-0000</p>
+          </section>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div id="copyright">
+            <ul class="menu">
+              <li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/jquery.dropotron.min.js"></script>
+  <script src="assets/js/browser.min.js"></script>
+  <script src="assets/js/breakpoints.min.js"></script>
+  <script src="assets/js/util.js"></script>
+  <script src="assets/js/main.js"></script>
+
+  <!-- Hide intro screen after 1.5 seconds -->
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const intro = document.getElementById("intro-screen");
+        if (intro) intro.style.display = "none";
+      }, 1500);
     });
   </script>
 </body>
-
-		  <!-- المحتوى الجديد (صورة + شرح) -->
-		  <section class="project-info">
-  <img src="photo-output.JPEG" alt="Project Image" />
-
-  <h2>Translation Feature</h2>
-  <p>
-    The interactive Peace Card includes distinctive symbols, along with a unique <strong>QR</strong> code that allows visitors to instantly access the voice translation service. This service enables visitors to communicate easily and effectively with others regardless of language barriers, as it converts texts or symbols into instant voice translation in the visitor's language. This smart solution helps facilitate requesting assistance and provides a safer and more comfortable experience within the Grand Mosque.
-  </p>
-
-  <h2>Smart Prayer Rug</h2>
-  <p>
-    The Smart Prayer Rug of Mecca is an innovative part of the project, featuring built-in smart <strong>QR</strong> codes that allow visitors to locate the nearest available rug within the Grand Mosque. Visitors can scan the QR code using a dedicated app or rely on smart color signals to guide them to available prayer rug areas with ease. The smart rug aims to enhance the prayer and movement experience inside the mosque, promoting comfort and organization in the holy places.
-  </p>
-</section>
-
-		  <!-- Footer -->
-		  <div id="footer-wrapper">
-			<footer id="footer" class="container">
-			  <div class="row">
-				<div class="col-3 col-6-medium col-12-small">
-				  <!-- Contact -->
-				  <section class="widget contact last">
-					<h3>To continue</h3>
-					<ul>
-					  <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-					  <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-					  <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-					  <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-					  <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-					</ul>
-					<p>1234 Fictional Road<br />
-					Nashville, TN 00000<br />
-					(800) 555-0000</p>
-				  </section>
-				</div>
-			  </div>
-			  <div class="row">
-				<div class="col-12">
-				  <div id="copyright">
-					<ul class="menu">
-					  <li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-					</ul>
-				  </div>
-				</div>
-			  </div>
-			</footer>
-		  </div>
-
-		</div>
-
-		<!-- Scripts -->
-		<script src="assets/js/jquery.min.js"></script>
-		<script src="assets/js/jquery.dropotron.min.js"></script>
-		<script src="assets/js/browser.min.js"></script>
-		<script src="assets/js/breakpoints.min.js"></script>
-		<script src="assets/js/util.js"></script>
-		<script src="assets/js/main.js"></script>
-		<!-- Hide intro screen after 3 seconds -->
-		<script>
-		  window.addEventListener('load', () => {
-			setTimeout(() => {
-			  const intro = document.getElementById("intro-screen");
-			  if (intro) intro.style.display = "none";
-			}, 1500);
-		  });
-		</script>
-	</body>
 </html>
-
-

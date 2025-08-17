@@ -189,52 +189,51 @@
 </script>
 
 			<!-- Banner -->
-<!-- Banner -->
 <div id="banner-wrapper" style="background-color: #f8f9fa; padding: 40px 0;">
   <div id="banner" class="box container" style="
     background-color: #a7957c; 
     border-radius: 12px; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
     padding: 30px;
+    text-align: center;
   ">
     <div class="row">
-      <div class="col-7 col-12-medium" style="text-align: center;">
-        <h2 id="changing-text" style="color: white;">Bienvenido a nuestro sitio web</h2>
+      <div class="col-12" id="image-container" style="position: relative; overflow: hidden;">
+        <a id="img-link" href="">
+          <img id="slideshow" src="IMG_0211.JPG" alt="الصورة الأولى" 
+               style="max-width:100%; border-radius: 10px; opacity: 1; transition: opacity 1s ease-in-out;">
+        </a>
       </div>
     </div>
   </div>
 </div>
 
-<script>const phrases = [
-"Bienvenido a nuestro sitio web",
-"Estamos aquí para servirle",
-"Disfrute explorando el contenido",];
+<script>
+  const images = [
+    { src: "IMG_02112.JPG", link: "" },
+    { src: "IMG_02113.JPG", link: "" }
+  ];
 
-  let index = 0;
-  const textElement = document.getElementById("changing-text");
+  let imgIndex = 0;
+  const imgElement = document.getElementById("slideshow");
+  const linkElement = document.getElementById("img-link");
 
   setInterval(() => {
-    index = (index + 1) % phrases.length;
-    textElement.textContent = phrases[index];
-  }, 4000); // يتغير كل 3 ثواني
+    imgIndex = (imgIndex + 1) % images.length;
+    const { src, link } = images[imgIndex];
+
+    // Fade out
+    imgElement.style.opacity = 0;
+
+    setTimeout(() => {
+      imgElement.src = src;
+      linkElement.href = link || "#"; // لو ما فيه رابط يحط #
+      // Fade in
+      imgElement.style.opacity = 1;
+    }, 1000); // يطابق مدة transition
+  }, 4000);
 </script>
-<div id="features-wrapper">
-  <div class="container">
-    <div class="row">
-      <div class="col-12 col-12-medium">
-        <section class="box feature" style="
-          background-color: #a7957c;
-          border-radius: 12px;
-          padding: 30px;
-          color: white;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          text-align: center;
-          min-height: 250px;
-        ">
+
          <div class="inner">
 <header>
 <h2 style="font-size: 50px; margin-bottom: 20px;">Sobre Nosotros</h2>
@@ -463,3 +462,4 @@
 	</body>
 
 </html>
+

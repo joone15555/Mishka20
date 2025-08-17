@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-    <title>البطاقة الالكترونية</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="assets/css/main.css" />
-</head>
-<body class="is-preload homepage">
-  <!-- Intro Screen -->
+	<head>
+		<title>Verti by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="is-preload homepage">
+  <!-- شاشة التحميل -->
   <div id="intro-screen" style="
     position: fixed;
     top: 0; left: 0;
@@ -21,22 +21,22 @@
     font-family: sans-serif;
     z-index: 9999;
   ">
-    <img src="loading-image.png" alt="تحميل" style="margin-bottom: 20px; max-width: 200px;">
+    <img src="loading-image.png" alt="جاري التحميل" style="margin-bottom: 20px; max-width: 200px;">
     <p style="font-size: 18px;">جاري التحميل...</p>
   </div>
 
   <div id="page-wrapper">
-    <!-- Header -->
+    <!-- الهيدر -->
     <div id="header-wrapper">
-      <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: rtl;">
-        <!-- Logo Left -->
+      <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: ltr;">
+        <!-- الشعار -->
         <div id="logo" style="order: 1;">
-          <a href="index.html">
+          <a href="index_es 2.html">
             <img src="loading-image.png" alt="شعار الموقع" style="max-width: 150px; height: auto;">
           </a>
         </div>
 
-        <!-- Nav Right -->
+        <!-- القائمة الرئيسية -->
         <nav style="order: 2; display: flex; align-items: center;">
           <ul style="
             display: flex; 
@@ -48,7 +48,7 @@
             position: relative;
           ">
             <li style="display: flex; align-items: center;">
-              <a href="index.html" style="
+              <a href="index_es 2.html" style="
                 font-weight: bold;
                 text-decoration: none;
                 color: #444;
@@ -61,7 +61,20 @@
               >الرئيسية</a>
             </li>
             <li style="display: flex; align-items: center;">
-              <a href="card.html" style="
+              <a href="futcher work_es 2.html" style="
+                font-weight: bold;
+                text-decoration: none;
+                color: #444;
+                padding: 8px 16px;
+                border-radius: 8px;
+                transition: background-color 0.3s, color 0.3s;
+              " 
+              onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
+              onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
+              >الأعمال المستقبلية</a>
+            </li>
+            <li style="display: flex; align-items: center;">
+              <a href="card_es 2.html" style="
                 font-weight: bold;
                 text-decoration: none;
                 color: #444;
@@ -73,7 +86,31 @@
               onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
               >بطاقة مشكاة</a>
             </li>
-  <!-- البطاقة -->
+      </header>
+    </div>
+  </div>
+
+  <!-- شاشة اختيار اللغة -->
+  <script>
+    function toggleLanguageMenu() {
+      const menu = document.getElementById('language-menu');
+      if (menu.style.display === 'block') {
+        menu.style.display = 'none';
+      } else {
+        menu.style.display = 'block';
+      }
+    }
+
+    // إغلاق القائمة عند النقر خارجها
+    document.addEventListener('click', function (e) {
+      const menu = document.getElementById('language-menu');
+      const button = e.target.closest('button');
+      if (!e.target.closest('#language-menu') && (!button || button.innerText !== '🌐')) {
+        menu.style.display = 'none';
+      }
+    });
+  </script>
+
   <style>
     .center-card-wrapper {
       display: flex;
@@ -81,12 +118,14 @@
       align-items: center;
       padding: 50px 0;
     }
+
     .flip-card {
       background-color: transparent;
       width: 400px;
       height: 400px;
       perspective: 1000px;
     }
+
     .flip-card-inner {
       position: relative;
       width: 100%;
@@ -94,9 +133,11 @@
       transition: transform 0.6s;
       transform-style: preserve-3d;
     }
+
     .flip-card:hover .flip-card-inner {
       transform: rotateY(180deg);
     }
+
     .flip-card-front,
     .flip-card-back {
       position: absolute;
@@ -113,6 +154,7 @@
       background-color: #a7957c;
       text-align: center;
     }
+
     .flip-card-front img {
       width: 180px;
       height: 180px;
@@ -120,14 +162,17 @@
       object-fit: cover;
       margin-bottom: 20px;
     }
+
     .flip-card-front h2,
     .flip-card-back h2 {
       margin: 0;
       font-size: 1.8em;
     }
+
     .flip-card-back {
       transform: rotateY(180deg);
     }
+
     .flip-card-back a {
       margin-top: 20px;
       padding: 12px 24px;
@@ -152,27 +197,31 @@
         <!-- الوجه الخلفي -->
         <div class="flip-card-back">
           <h2>المزيد</h2>
-          <a href="map1.html">اضغط هنا</a>
+          <a href="map1_es 2.html">اضغط هنا</a>
         </div>
       </div>
     </div>
   </div>
 
-  <br><br>
-  <!-- Footer -->
+<br><br>
+
+  <!-- الفوتر -->
   <div id="footer-wrapper">
     <footer id="footer" class="container">
       <div class="row">
         <div class="col-3 col-6-medium col-12-small">
+          <!-- معلومات الاتصال -->
           <section class="widget contact last">
-            <h3>التواصل</h3>
+            <h3>اتصل بنا</h3>
             <ul>
-              <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-              <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-              <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+              <li><a href="#" class="icon brands fa-twitter"><span class="label">تويتر</span></a></li>
+              <li><a href="#" class="icon brands fa-facebook-f"><span class="label">فيسبوك</span></a></li>
+              <li><a href="#" class="icon brands fa-instagram"><span class="label">إنستغرام</span></a></li>
+              <li><a href="#" class="icon brands fa-dribbble"><span class="label">دريبيل</span></a></li>
+              <li><a href="#" class="icon brands fa-pinterest"><span class="label">بنترست</span></a></li>
             </ul>
-            <p>1234 Fictional Road<br />
-            Nashville, TN 00000<br />
+            <p>1234 طريق خيالي<br />
+            ناشفيل، TN 00000<br />
             (800) 555-0000</p>
           </section>
         </div>
@@ -181,7 +230,7 @@
         <div class="col-12">
           <div id="copyright">
             <ul class="menu">
-              <li>&copy; جميع الحقوق محفوظة</li><li>تصميم: <a href="http://html5up.net">HTML5 UP</a></li>
+              <li>&copy; كل الحقوق محفوظة</li><li>تصميم: <a href="http://html5up.net">HTML5 UP</a></li>
             </ul>
           </div>
         </div>
@@ -189,7 +238,7 @@
     </footer>
   </div>
 
-  <!-- Scripts -->
+  <!-- السكربتات -->
   <script src="assets/js/jquery.min.js"></script>
   <script src="assets/js/jquery.dropotron.min.js"></script>
   <script src="assets/js/browser.min.js"></script>
@@ -197,6 +246,7 @@
   <script src="assets/js/util.js"></script>
   <script src="assets/js/main.js"></script>
 
+  <!-- إخفاء شاشة التحميل بعد 1.5 ثانية -->
   <script>
     window.addEventListener('load', () => {
       setTimeout(() => {
@@ -205,8 +255,7 @@
       }, 1500);
     });
   </script>
-</body>
+
+	</body>
 </html>
-
-
 

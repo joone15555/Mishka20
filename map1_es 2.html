@@ -54,21 +54,312 @@
         </ul>
       </nav>
 
-      <!-- Language Dropdown -->
-      <li style="position: relative; list-style:none;">
-        <button onclick="toggleLanguageMenu()" style="background: none; border: none; font-size: 24px; cursor: pointer; padding: 8px;" title="زبان تبدیل کریں">🌐</button>
-        <ul id="language-menu" style="display: none; position: absolute; top: 40px; left: 0; background-color: #fff; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); list-style: none; padding: 10px 0; margin: 0; min-width: 160px; z-index: 1000;">
-          <li>
-            <a href="map1.html" style="display: flex; align-items: center; padding: 8px 16px; text-decoration: none; color: #444; font-weight: bold;">🇸🇦 عربی</a>
-          </li>
-          <li>
-            <a href="map1_en.html" style="display: flex; align-items: center; padding: 8px 16px; text-decoration: none; color: #444; font-weight: bold;">🇺🇸 انگریزی</a>
-          </li>
-          <li>
-            <a href="map1_ur.html" style="display: flex; align-items: center; padding: 8px 16px; text-decoration: none; color: #444; font-weight: bold;">🇵🇰 اردو</a>
-          </li>
+     <!DOCTYPE HTML>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<title>Nearby Services Map</title>
+<link rel="stylesheet" href="assets/css/main.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+
+<style>
+.container-map { display: flex; flex-direction: row; max-width: 1200px; margin: 30px auto; gap: 20px; padding: 0 20px; position: relative; }
+#map { flex: 2; height: 600px; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.15); }
+#lists { flex: 1; background: #fff; padding: 15px; border-radius: 16px; max-height: 600px; overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.08); font-family: "Cairo", sans-serif; }
+#lists details { margin-bottom: 12px; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; background: #fdfdfd; transition: 0.3s; }
+#lists details:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.07); border-color: #d6d6d6; }
+#lists summary { font-weight: bold; font-size: 16px; padding: 10px; background: linear-gradient(to right, #4facfe, #00f2fe); color: white; border-bottom: 1px solid #ddd; cursor: pointer; outline: none; }
+.list-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid #f1f1f1; cursor: pointer; transition: background 0.3s; }
+.list-item:last-child { border-bottom: none; }
+.list-item:hover { background: #f5f9ff; }
+.item-name { flex: 1; margin: 0 8px; display: flex; align-items: center; gap: 8px; font-size: 15px; color: #333; }
+.item-dist { color: #666; font-size: 13px; background: #eef3ff; padding: 2px 8px; border-radius: 8px; }
+.icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 50%; background: #4facfe; color: white; flex-shrink: 0; }
+#controls { position: absolute; top: 20px; left: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
+#controls button, #controls select { padding: 8px 16px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; }
+#speech-toggle { background-color: #28a745; color: #fff; }
+#speech-toggle:hover { background-color: #218838; }
+#voice-btn { background-color: #17a2b8; color: #fff; }
+#voice-btn:hover { background-color: #117a8b; }
+#lang-select { background-color: #ffc107; color: #212529; }
+#lang-select:hover { background-color: #e0a800; }
+</style>
+</head>
+
+<body class="is-preload homepage">
+
+<!-- Intro Screen -->
+<div id="intro-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; color: #000; display: flex; justify-content: center; align-items: center; flex-direction: column; font-family: sans-serif; z-index: 9999;">
+  <img src="loading-image.png" alt="Loading" style="margin-bottom: 20px; max-width: 200px;">
+  <p style="font-size: 18px;">Loading...</p>
+</div>
+
+<div id="page-wrapper">
+  <div id="header-wrapper">
+    <header id="header" class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+      <div id="logo" style="order:1;">
+        <a href="index_en.html"><img src="loading-image.png" alt="Logo" style="max-width:150px; height:auto;" /></a>
+      </div>
+      <nav style="order:2; display:flex; align-items:center;">
+        <ul style="display:flex; gap:20px; list-style:none; margin:0; padding:0; align-items:center;">
+          <li><a href="index.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">Home</a></li>
+          <li><a href="future work.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">Future Work</a></li>
+          <li><a href="card.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">Mishkat Card</a></li>
         </ul>
-      </li>
+      </nav>
+
+      <!-- Language Dropdown -->
+<li style="position: relative;">
+  <button onclick="toggleLanguageMenu()" style="
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 8px;
+  " title="Change Language">🌐</button>
+  <ul id="language-menu" style="
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+    min-width: 160px;
+    z-index: 1000;
+  ">
+    <li>
+      <a href="map1.html" style="
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        text-decoration: none;
+        color: #444;
+        font-weight: bold;
+        transition: background 0.3s;
+      " onmouseover="this.style.backgroundColor='#f0f0f0';"
+        onmouseout="this.style.backgroundColor='transparent';">
+        🇸🇦 &nbsp; Arabic
+      </a>
+    </li>
+    <li>
+      <a href="map1_en.html" style="
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        text-decoration: none;
+        color: #444;
+        font-weight: bold;
+        transition: background 0.3s;
+      " onmouseover="this.style.backgroundColor='#f0f0f0';"
+        onmouseout="this.style.backgroundColor='transparent';">
+        🇺🇸 &nbsp; English
+      </a>
+    </li>
+    <li>
+      <a href="map1_es 2.html" style="
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        text-decoration: none;
+        color: #444;
+        font-weight: bold;
+        transition: background 0.3s;
+      " onmouseover="this.style.backgroundColor='#f0f0f0';"
+        onmouseout="this.style.backgroundColor='transparent';">
+        🇵🇰 &nbsp; Urdu
+      </a>
+    </li>
+  </ul>
+</li>
+</ul>
+</nav>
+    </header>
+  </div>
+
+  <div class="container-map">
+    <div id="controls">
+      <button id="speech-toggle">Enable Route Description</button>
+      <button id="voice-btn">Speak</button>
+      <select id="lang-select">
+        <option value="en-US" selected>English</option>
+        <option value="ar-SA">Arabic</option>
+        <option value="ur-PK">Urdu</option>
+      </select>
+    </div>
+
+    <div id="map"></div>
+    <div id="lists"></div>
+  </div>
+</div>
+
+<footer id="footer" class="container" style="margin-top:30px;">
+  <p style="text-align:center;">&copy; All Rights Reserved</p>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+<script>
+// Categories translated to English
+const categories = {
+  "Restaurants": {filter:'amenity=restaurant', icon:'🍴'},
+  "Hotels": {filter:'tourism=hotel', icon:'🏨'},
+  "ATMs": {filter:'amenity=atm', icon:'🏧'},
+  "Pharmacies": {filter:'amenity=pharmacy', icon:'💊'},
+  "Hospitals": {filter:'amenity=hospital', icon:'🏥'},
+  "Shops": {filter:'shop=*', icon:'🛍️'},
+  "Cafes": {filter:'amenity=cafe', icon:'☕'},
+  "Toilets": {filter:'amenity=toilets', icon:'🚻'}
+};
+
+let userLocation = [21.4225,39.8262]; // Default Mecca
+let speechEnabled = true;
+let lang = "en-US";
+
+const map = L.map('map').setView(userLocation, 16);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'&copy; OpenStreetMap contributors' }).addTo(map);
+let userMarker = L.marker(userLocation).addTo(map).bindPopup("Your current location").openPopup();
+let routingControl = null;
+let allPlaces = [];
+
+navigator.geolocation.getCurrentPosition(pos => {
+  userLocation = [pos.coords.latitude, pos.coords.longitude];
+  userMarker.setLatLng(userLocation).bindPopup("Your current location");
+}, ()=>{});
+
+document.getElementById("speech-toggle").addEventListener("click", () => {
+  speechEnabled = !speechEnabled;
+  document.getElementById("speech-toggle").innerText = speechEnabled ? "Enable Route Description" : "Disable Route Description";
+});
+
+document.getElementById("lang-select").addEventListener("change", (e)=>{
+  lang = e.target.value;
+});
+
+function loadPlaces(lat, lon){
+  const listsDiv = document.getElementById("lists");
+  listsDiv.innerHTML = "";
+  allPlaces = [];
+  for(const [name, cat] of Object.entries(categories)){
+    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:1500,${lat},${lon});out;`;
+    fetch(overpassUrl)
+      .then(res=>res.json())
+      .then(data=>{
+        let html = `<details open><summary>${cat.icon} ${name} (<span class="cat-count">${data.elements.length}</span>)</summary>`;
+        data.elements.forEach((el,index)=>{
+          const placeLat = el.lat;
+          const placeLon = el.lon;
+          let placeName = el.tags.name || "Unnamed";
+          if(name==="ATMs"){
+            const atmNames = ["AlRajhi ATM 1","AlRajhi ATM 2","AlAhli ATM 1","AlAhli ATM 2","Samba ATM 1","Samba ATM 2","Riyadh ATM 1","Riyadh ATM 2","AlJazeera ATM","AlInma ATM"];
+            placeName = atmNames[index % atmNames.length];
+          }
+          allPlaces.push({name:placeName,lat:placeLat,lon:placeLon});
+          const dist = calcDistance(userLocation[0],userLocation[1],placeLat,placeLon).toFixed(2);
+          L.marker([placeLat, placeLon]).addTo(map).bindPopup(`${placeName}<br>${dist} km`);
+          html += `<div class="list-item" onclick="focusPlace(${placeLat},${placeLon},'${placeName}')"><span class="item-name"><span class="icon">${cat.icon}</span>${placeName}</span><span class="item-dist">${dist} km</span></div>`;
+        });
+        html += "</details>";
+        listsDiv.innerHTML += html;
+      });
+  }
+}
+
+function focusPlace(lat, lon, name){
+  map.setView([lat, lon],18);
+  L.popup().setLatLng([lat,lon]).setContent(name).openOn(map);
+  speak(name);
+  if(!speechEnabled) return;
+  if(routingControl) map.removeControl(routingControl);
+  routingControl = L.Routing.control({
+    waypoints:[L.latLng(userLocation[0],userLocation[1]),L.latLng(lat,lon)],
+    lineOptions:{styles:[{color:'blue',opacity:0.6,weight:5}]},
+    addWaypoints:false,
+    draggableWaypoints:false,
+    routeWhileDragging:false,
+    showAlternatives:false,
+    createMarker:()=>null
+  }).addTo(map);
+  describeRoute(userLocation,[lat,lon],name);
+}
+
+function describeRoute(start,end,placeName){
+  const latDiff=end[0]-start[0];
+  const lonDiff=end[1]-start[1];
+  let text = "";
+  if(lang==="en-US"){
+    text=`Go from your current location to ${placeName}. `;
+    text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"Head north. ":"Head south. "):(lonDiff>0?"Head east. ":"Head west. ");
+  } else if(lang==="ar-SA"){
+    text=`اذهب من موقعك الحالي إلى ${placeName}. `;
+    text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"اتجه شمالًا. ":"اتجه جنوبًا. "):(lonDiff>0?"اتجه شرقًا. ":"اتجه غربًا. ");
+  } else if(lang==="ur-PK"){
+    text=`اپنے موجودہ مقام سے ${placeName} جائیں۔ `;
+    text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"شمال کی طرف جائیں۔ ":"جنوب کی طرف جائیں۔ "):(lonDiff>0?"مشرق کی طرف جائیں۔ ":"مغرب کی طرف جائیں۔ ");
+  }
+  speak(text);
+}
+
+function speak(text){
+  const utterance=new SpeechSynthesisUtterance(text);
+  utterance.lang = lang;
+  speechSynthesis.speak(utterance);
+}
+
+function calcDistance(lat1,lon1,lat2,lon2){
+  const R=6371;
+  const dLat=(lat2-lat1)*Math.PI/180;
+  const dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.continuous = false;
+recognition.interimResults = false;
+
+document.getElementById("voice-btn").addEventListener("click", ()=>{ recognition.lang = lang; recognition.start(); });
+recognition.onresult = function(event){
+  const speech = event.results[0][0].transcript.toLowerCase();
+  let found = allPlaces.find(p => p.name.toLowerCase().includes(speech));
+  if(found){ focusPlace(found.lat,found.lon,found.name); } else { speak(lang==="en-US"?"Place not found":lang==="ar-SA"?"المكان غير موجود":"جگہ موجود نہیں"); }
+}
+
+// Load places on page load
+loadPlaces(userLocation[0],userLocation[1]);
+
+// Loading screen 3 seconds
+window.onload = () => {
+  setTimeout(() => {
+    document.getElementById('intro-screen').style.display = 'none';
+  }, 3000);
+};
+
+// Language menu toggle
+function toggleLanguageMenu() {
+  const menu = document.getElementById('language-menu');
+  menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+document.addEventListener('click', function (e) {
+  const menu = document.getElementById('language-menu');
+  const button = e.target.closest('button');
+  if (!e.target.closest('#language-menu') && (!button || button.innerText !== '🌐')) {
+    menu.style.display = 'none';
+  }
+});
+</script>
+</body>
+</html>
+
+
+
 
     </header>
   </div>
@@ -247,5 +538,6 @@ document.addEventListener('click', function (e) {
 </script>
 </body>
 </html>
+
 
 

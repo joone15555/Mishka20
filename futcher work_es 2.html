@@ -1,17 +1,12 @@
 <!DOCTYPE HTML>
-<!--
-	Verti by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
 	<head>
-<title>مستقبل کے منصوبے</title>
+		<title>Verti by HTML5 UP</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<style>
-			/* تنسيق الفقرة */
+			/* پیراگراف اسٹائلنگ */
 			.project-info {
 				max-width: 800px;
 				margin: 40px auto;
@@ -56,22 +51,22 @@
     font-family: sans-serif;
     z-index: 9999;
   ">
-    <img src="loading-image.png" alt="تحميل" style="margin-bottom: 20px; max-width: 200px;">
-    <p style="font-size: 18px;">Cargando...</p>
+    <img src="loading-image.png" alt="لوڈ ہو رہا ہے" style="margin-bottom: 20px; max-width: 200px;">
+    <p style="font-size: 18px;">لوڈ ہو رہا ہے...</p>
   </div>
 
   <div id="page-wrapper">
     <!-- Header -->
     <div id="header-wrapper">
       <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: rtl;">
-        <!-- Logo Left -->
+        <!-- لوگو -->
         <div id="logo" style="order: 1;">
-          <a href="index_es 2.html">
-            <img src="loading-image.png" alt="شعار الموقع" style="max-width: 150px; height: auto;">
+          <a href="index.html">
+            <img src="loading-image.png" alt="سائٹ لوگو" style="max-width: 150px; height: auto;">
           </a>
         </div>
 
-        <!-- Nav Right -->
+        <!-- نیویگیشن -->
         <nav style="order: 2; display: flex; align-items: center;">
           <ul style="
             display: flex; 
@@ -83,7 +78,7 @@
             position: relative;
           ">
             <li style="display: flex; align-items: center;">
-              <a href="index_es 2.html" style="
+              <a href="index.html" style="
                 font-weight: bold;
                 text-decoration: none;
                 color: #444;
@@ -93,10 +88,10 @@
               " 
               onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
               onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
-              >Hogar</a>
+              >ہوم</a>
             </li>
             <li style="display: flex; align-items: center;">
-              <a href="futcher work_es 2.html" style="
+              <a href="futcher work.html" style="
                 font-weight: bold;
                 text-decoration: none;
                 color: #444;
@@ -106,10 +101,10 @@
               " 
               onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
               onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
-              >Trabajo futuro</a>
+              >مستقبل کے کام</a>
             </li>
             <li style="display: flex; align-items: center;">
-              <a href="card_es 2.html" style="
+              <a href="card.html" style="
                 font-weight: bold;
                 text-decoration: none;
                 color: #444;
@@ -119,81 +114,166 @@
               " 
               onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
               onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
-              >Tarjeta de Mishkat</a>
+              >مشکات کارڈ</a>
             </li>
 
-            <!-- Language Dropdown -->
-           
+            <!-- زبان کا ڈراپ ڈاؤن -->
+            <li style="position: relative;">
+              <button onclick="toggleLanguageMenu()" style="
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                padding: 8px;
+              " title="زبان تبدیل کریں">🌐</button>
+              <ul id="language-menu" style="
+                display: none;
+                position: absolute;
+                top: 40px;
+                left: 0;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                list-style: none;
+                padding: 10px 0;
+                margin: 0;
+                min-width: 160px;
+                z-index: 1000;
+              ">
+                <li>
+                  <a href="index.html" style="
+                    display: flex;
+                    align-items: center;
+                    padding: 8px 16px;
+                    text-decoration: none;
+                    color: #444;
+                    font-weight: bold;
+                    transition: background 0.3s;
+                  " onmouseover="this.style.backgroundColor='#f0f0f0';"
+                    onmouseout="this.style.backgroundColor='transparent';">
+                    🇵🇰 &nbsp; اردو
+                  </a>
+                </li>
+                <li>
+                  <a href="index_en.html" style="
+                    display: flex;
+                    align-items: center;
+                    padding: 8px 16px;
+                    text-decoration: none;
+                    color: #444;
+                    font-weight: bold;
+                    transition: background 0.3s;
+                  " onmouseover="this.style.backgroundColor='#f0f0f0';"
+                    onmouseout="this.style.backgroundColor='transparent';">
+                    🇺🇸 &nbsp; English
+                  </a>
+                </li>
+                <li>
+                  <a href="index_es 2.html" style="
+                    display: flex;
+                    align-items: center;
+                    padding: 8px 16px;
+                    text-decoration: none;
+                    color: #444;
+                    font-weight: bold;
+                    transition: background 0.3s;
+                  " onmouseover="this.style.backgroundColor='#f0f0f0';"
+                    onmouseout="this.style.backgroundColor='transparent';">
+                    🇪🇸 &nbsp; Español
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </header>
+    </div>
+  </div>
+
+  <!-- Language Toggle Script -->
+  <script>
+    function toggleLanguageMenu() {
+      const menu = document.getElementById('language-menu');
+      if (menu.style.display === 'block') {
+        menu.style.display = 'none';
+      } else {
+        menu.style.display = 'block';
+      }
+    }
+
+    document.addEventListener('click', function (e) {
+      const menu = document.getElementById('language-menu');
+      const button = e.target.closest('button');
+      if (!e.target.closest('#language-menu') && (!button || button.innerText !== '🌐')) {
+        menu.style.display = 'none';
+      }
+    });
+  </script>
+
+  <!-- Project Section -->
+  <section class="project-info">
+    <img src="photo-output.JPEG" alt="پروجیکٹ کی تصویر" />
+    
+    <h2>آڈیو ترجمہ</h2>
+    <p>
+      انٹرایکٹو سلام کارڈ میں منفرد علامات شامل ہیں، ساتھ ہی ایک خاص <strong>QR</strong> کوڈ جو وزیٹرز کو آڈیو ترجمہ سروس تک براہ راست رسائی دیتا ہے۔ یہ سروس وزیٹرز کو آسان اور مؤثر انداز میں دوسرے افراد سے بات چیت کرنے کی سہولت دیتی ہے، زبان کی رکاوٹ کے بغیر۔ متن یا علامات کو وزیٹر کی زبان میں فوری آڈیو ترجمہ میں تبدیل کیا جاتا ہے، تاکہ مدد طلب کرنے اور حرم میں زیادہ محفوظ اور آرام دہ تجربہ فراہم کیا جا سکے۔
+    </p>
+
+    <h2>اسمارٹ قالین</h2>
+    <p>
+      مکہ اسمارٹ قالین پروجیکٹ کا ایک جدید حصہ ہے، جس میں ایمبیڈڈ <strong>QR</strong> مارکر شامل ہیں جو وزیٹر کو قریبی قالین کا پتہ لگانے کی اجازت دیتے ہیں۔ وزیٹر مخصوص ایپ کے ذریعے QR کوڈ اسکین کر سکتے ہیں یا دستیاب نماز کے قالین تک آسانی سے رہنمائی کے لیے اسمارٹ رنگ کے اشاروں پر انحصار کر سکتے ہیں۔ اسمارٹ قالین حرم میں نماز اور حرکت کے تجربے کو بہتر بنانے کا مقصد رکھتا ہے، جس سے آرام اور تنظیم میں اضافہ ہوتا ہے۔
+    </p>
+  </section>
+
+  <!-- Footer -->
+  <div id="footer-wrapper">
+    <footer id="footer" class="container">
+      <div class="row">
+        <div class="col-3 col-6-medium col-12-small">
+          <section class="widget contact last">
+            <h3>رابطہ کریں</h3>
+            <ul>
+              <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+              <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+              <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+              <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+              <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+            </ul>
+            <p>1234 Fictional Road<br />
+            Nashville, TN 00000<br />
+            (800) 555-0000</p>
+          </section>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div id="copyright">
+            <ul class="menu">
+              <li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/jquery.dropotron.min.js"></script>
+  <script src="assets/js/browser.min.js"></script>
+  <script src="assets/js/breakpoints.min.js"></script>
+  <script src="assets/js/util.js"></script>
+  <script src="assets/js/main.js"></script>
+
+  <!-- Hide intro screen after 1.5 seconds -->
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const intro = document.getElementById("intro-screen");
+        if (intro) intro.style.display = "none";
+      }, 1500);
+    });
+  </script>
 </body>
-
-		  <!-- المحتوى الجديد (صورة + شرح) -->
-		  <section class="project-info">
-			<img src="photo-output.JPEG" alt="صورة المشروع" />
-			
-			<h2>Traducción de voz</h2>
-<p>
-  La Tarjeta de Paz interactiva contiene símbolos distintivos, además de un código <strong>QR</strong> especial que permite a los visitantes acceder directamente al servicio de traducción de voz. Este servicio permite a los visitantes comunicarse de manera fácil y eficaz con los demás sin importar la barrera del idioma, ya que convierte textos o símbolos en traducciones de voz inmediatas en el idioma del visitante. Esta solución inteligente facilita la solicitud de ayuda y proporciona una experiencia más segura y cómoda dentro de la Mezquita Sagrada.
-</p>
-
-<h2>La alfombra inteligente</h2>
-<p>
-  La alfombra inteligente de La Meca representa una parte innovadora del proyecto, ya que contiene marcas <strong>QR</strong> inteligentes integradas que permiten al visitante localizar la alfombra más cercana dentro de la mezquita. El visitante puede escanear el código QR mediante una aplicación dedicada o confiar en señales visuales inteligentes para guiarse fácilmente hacia las áreas disponibles. La alfombra inteligente tiene como objetivo mejorar la experiencia de oración y movilidad dentro de la mezquita, promoviendo la comodidad y la organización en los lugares sagrados.
-</p>
-
-		  </section>
-
-		  <!-- Footer -->
-		  <div id="footer-wrapper">
-			<footer id="footer" class="container">
-			  <div class="row">
-				<div class="col-3 col-6-medium col-12-small">
-				  <!-- Contact -->
-				  <section class="widget contact last">
-					<h3>comunicación</h3>
-					<ul>
-					  <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-					  <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-					  <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-					  <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-					  <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-					</ul>
-					<p>1234 Fictional Road<br />
-					Nashville, TN 00000<br />
-					(800) 555-0000</p>
-				  </section>
-				</div>
-			  </div>
-			  <div class="row">
-				<div class="col-12">
-				  <div id="copyright">
-					<ul class="menu">
-					  <li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-					</ul>
-				  </div>
-				</div>
-			  </div>
-			</footer>
-		  </div>
-
-		</div>
-
-		<!-- Scripts -->
-		<script src="assets/js/jquery.min.js"></script>
-		<script src="assets/js/jquery.dropotron.min.js"></script>
-		<script src="assets/js/browser.min.js"></script>
-		<script src="assets/js/breakpoints.min.js"></script>
-		<script src="assets/js/util.js"></script>
-		<script src="assets/js/main.js"></script>
-		<!-- Hide intro screen after 3 seconds -->
-		<script>
-		  window.addEventListener('load', () => {
-			setTimeout(() => {
-			  const intro = document.getElementById("intro-screen");
-			  if (intro) intro.style.display = "none";
-			}, 1500);
-		  });
-		</script>
-	</body>
 </html>
-
-

@@ -178,37 +178,54 @@
 </script>
 
 			<!-- Banner -->
-<!-- Banner -->
 <div id="banner-wrapper" style="background-color: #f8f9fa; padding: 40px 0;">
   <div id="banner" class="box container" style="
     background-color: #a7957c; 
     border-radius: 12px; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
     padding: 30px;
+    text-align: center;
   ">
-<div class="row">
-<div class="col-7 col-12-medium" style="text-align: center;">
-<h2 id="changing-text" style="color: white;">Welcome to our website</h2>
-</div>
-</div>
-</div>
+    <div class="row">
+      <div class="col-12" id="image-container" style="position: relative; overflow: hidden;">
+        <img id="slideshow" src="‎⁨مـشـكاة⁩.JPG" alt="الصورة الأولى" 
+             style="max-width:100%; border-radius: 10px; opacity: 1; transition: opacity 1s ease-in-out;">
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-const phrases = [
-"Welcome to our website",
-"We are here to serve you",
-"Enjoy browsing the content",
-];
+  const images = [
+    { src: "‎⁨مـشـكاة 3⁩.JPG", link: "" },
+    { src: "‎⁨مـشـكاة 4⁩.JPG", link: "" }
+  ];
 
-  let index = 0;
-  const textElement = document.getElementById("changing-text");
+  let imgIndex = 0;
+  const imgElement = document.getElementById("slideshow");
 
   setInterval(() => {
-    index = (index + 1) % phrases.length;
-    textElement.textContent = phrases[index];
-  }, 4000); // يتغير كل 3 ثواني
+    imgIndex = (imgIndex + 1) % images.length;
+    const { src, link } = images[imgIndex];
+
+    // Fade out
+    imgElement.style.opacity = 0;
+
+    setTimeout(() => {
+      if (link) {
+        imgElement.outerHTML = `<a href="${link}"><img id="slideshow" src="${src}" style="max-width:100%; border-radius: 10px; opacity: 0; transition: opacity 1s ease-in-out;"></a>`;
+      } else {
+        imgElement.src = src;
+      }
+      // Fade in
+      setTimeout(() => {
+        const newImg = document.getElementById("slideshow");
+        newImg.style.opacity = 1;
+      }, 50);
+    }, 1000); // يطابق مدة الـ transition
+  }, 4000);
 </script>
+
 <div id="features-wrapper">
   <div class="container">
     <div class="row">
@@ -454,4 +471,5 @@ const phrases = [
 	</body>
 
 </html>
+
 

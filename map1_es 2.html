@@ -7,28 +7,27 @@
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-
   <style>
-  .container-map { display: flex; flex-direction: row; max-width: 1200px; margin: 30px auto; gap: 20px; padding: 0 20px; position: relative; }
-  #map { flex: 2; height: 600px; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.15); }
-  #lists { flex: 1; background: #fff; padding: 15px; border-radius: 16px; max-height: 600px; overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.08); font-family: "Arial", sans-serif; }
-  #lists details { margin-bottom: 12px; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; background: #fdfdfd; transition: 0.3s; }
-  #lists details:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.07); border-color: #d6d6d6; }
-  #lists summary { font-weight: bold; font-size: 16px; padding: 10px; background: linear-gradient(to right, #4facfe, #00f2fe); color: white; border-bottom: 1px solid #ddd; cursor: pointer; outline: none; }
-  .list-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid #f1f1f1; cursor: pointer; transition: background 0.3s; }
-  .list-item:last-child { border-bottom: none; }
-  .list-item:hover { background: #f5f9ff; }
-  .item-name { flex: 1; margin: 0 8px; display: flex; align-items: center; gap: 8px; font-size: 15px; color: #333; }
-  .item-dist { color: #666; font-size: 13px; background: #eef3ff; padding: 2px 8px; border-radius: 8px; }
-  .icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 50%; background: #4facfe; color: white; flex-shrink: 0; }
-  #controls { position: absolute; top: 20px; left: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
-  #controls button, #controls select { padding: 8px 16px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; }
-  #speech-toggle { background-color: #28a745; color: #fff; }
-  #speech-toggle:hover { background-color: #218838; }
-  #voice-btn { background-color: #17a2b8; color: #fff; }
-  #voice-btn:hover { background-color: #117a8b; }
-  #lang-select { background-color: #ffc107; color: #212529; }
-  #lang-select:hover { background-color: #e0a800; }
+    .container-map { display: flex; flex-direction: row; max-width: 1200px; margin: 30px auto; gap: 20px; padding: 0 20px; position: relative; }
+    #map { flex: 2; height: 600px; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.15); }
+    #lists { flex: 1; background: #fff; padding: 15px; border-radius: 16px; max-height: 600px; overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.08); font-family: "Arial", sans-serif; }
+    #lists details { margin-bottom: 12px; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; background: #fdfdfd; transition: 0.3s; }
+    #lists details:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.07); border-color: #d6d6d6; }
+    #lists summary { font-weight: bold; font-size: 16px; padding: 10px; background: linear-gradient(to right, #4facfe, #00f2fe); color: white; border-bottom: 1px solid #ddd; cursor: pointer; outline: none; }
+    .list-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid #f1f1f1; cursor: pointer; transition: background 0.3s; }
+    .list-item:last-child { border-bottom: none; }
+    .list-item:hover { background: #f5f9ff; }
+    .item-name { flex: 1; margin: 0 8px; display: flex; align-items: center; gap: 8px; font-size: 15px; color: #333; }
+    .item-dist { color: #666; font-size: 13px; background: #eef3ff; padding: 2px 8px; border-radius: 8px; }
+    .icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 50%; background: #4facfe; color: white; flex-shrink: 0; }
+    #controls { position: absolute; top: 20px; left: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
+    #controls button, #controls select { padding: 8px 16px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; }
+    #speech-toggle { background-color: #28a745; color: #fff; }
+    #speech-toggle:hover { background-color: #218838; }
+    #voice-btn { background-color: #17a2b8; color: #fff; }
+    #voice-btn:hover { background-color: #117a8b; }
+    #lang-select { background-color: #ffc107; color: #212529; }
+    #lang-select:hover { background-color: #e0a800; }
   </style>
 </head>
 <body class="is-preload homepage">
@@ -92,7 +91,6 @@ const categories = {
 let userLocation = [21.4225,39.8262];
 let speechEnabled = true;
 let lang = "ur-PK";
-
 const map = L.map('map').setView(userLocation, 16);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'&copy; OpenStreetMap contributors' }).addTo(map);
 let userMarker = L.marker(userLocation).addTo(map).bindPopup("آپ کا موجودہ مقام").openPopup();
@@ -171,10 +169,10 @@ function describeRoute(start,end,placeName){
   speak(text);
 }
 
+// تعديل نطق ليعمل عبر Google TTS
 function speak(text){
-  const utterance=new SpeechSynthesisUtterance(text);
-  utterance.lang = lang;
-  speechSynthesis.speak(utterance);
+  const audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${lang}&client=tw-ob`);
+  audio.play();
 }
 
 function calcDistance(lat1,lon1,lat2,lon2){

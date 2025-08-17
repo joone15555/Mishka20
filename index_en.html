@@ -182,11 +182,8 @@
     text-align: center;
   ">
     <div class="row">
-      <div class="col-12" id="image-container" style="position: relative; overflow: hidden;">
-        <a id="img-link" href="">
-          <img id="slideshow" src="ph112.JPG" alt="First Image" 
-               style="max-width:100%; border-radius: 10px; opacity: 1; transition: opacity 1s ease-in-out;">
-        </a>
+      <div class="col-12" id="image-container">
+        <img src="ph10.JPG" alt="الصورة الأولى" style="max-width:100%; border-radius: 10px;">
       </div>
     </div>
   </div>
@@ -194,26 +191,23 @@
 
 <script>
   const images = [
-    { src: "ph113.JPG", link: "" },
-    { src: "ph114.JPG", link: "" }
+    { src: "ph113.JPG", link: "" },               // بدون رابط
+    { src: "ph114.JPG", link: "" }    // برابط
   ];
 
   let imgIndex = 0;
-  const imgElement = document.getElementById("slideshow");
-  const linkElement = document.getElementById("img-link");
+  const container = document.getElementById("image-container");
 
   setInterval(() => {
     imgIndex = (imgIndex + 1) % images.length;
     const { src, link } = images[imgIndex];
 
-    imgElement.style.opacity = 0;
-
-    setTimeout(() => {
-      imgElement.src = src;
-      linkElement.href = link || "#";
-      imgElement.style.opacity = 1;
-    }, 1000);
-  }, 4000);
+    if (link) {
+      container.innerHTML = `<a href="${link}"><img src="${src}" style="max-width:100%; border-radius: 10px;"></a>`;
+    } else {
+      container.innerHTML = `<img src="${src}" style="max-width:100%; border-radius: 10px;">`;
+    }
+  }, 4000); // يتغير كل 4 ثواني
 </script>
 
 <div id="features-wrapper">
@@ -446,6 +440,7 @@
 
 </body>
 </html>
+
 
 
 

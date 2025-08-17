@@ -156,28 +156,7 @@
   </header>
 </div>
 
-<!-- سكريبت فتح/إغلاق القائمة -->
-<script>
-  function toggleLanguageMenu() {
-    const menu = document.getElementById('language-menu');
-    if (menu.style.display === 'block') {
-      menu.style.display = 'none';
-    } else {
-      menu.style.display = 'block';
-    }
-  }
-
-  // إغلاق القائمة إذا ضغط المستخدم خارجها
-  document.addEventListener('click', function (e) {
-    const menu = document.getElementById('language-menu');
-    const button = e.target.closest('button');
-    if (!e.target.closest('#language-menu') && (!button || button.innerText !== '🌐')) {
-      menu.style.display = 'none';
-    }
-  });
-</script>
-
-			<!-- Banner -->
+<!-- Banner -->
 <div id="banner-wrapper" style="background-color: #f8f9fa; padding: 40px 0;">
   <div id="banner" class="box container" style="
     background-color: #a7957c; 
@@ -188,8 +167,10 @@
   ">
     <div class="row">
       <div class="col-12" id="image-container" style="position: relative; overflow: hidden;">
-        <img id="slideshow" src="‎⁨IMG_0211.JPG⁩" alt="الصورة الأولى" 
-             style="max-width:100%; border-radius: 10px; opacity: 1; transition: opacity 1s ease-in-out;">
+        <a id="img-link" href="">
+          <img id="slideshow" src="IMG_0211.JPG" alt="الصورة الأولى" 
+               style="max-width:100%; border-radius: 10px; opacity: 1; transition: opacity 1s ease-in-out;">
+        </a>
       </div>
     </div>
   </div>
@@ -197,12 +178,13 @@
 
 <script>
   const images = [
-    { src: "‎⁨IMG_02112.JPG", link: "" },
-    { src: "‎⁨IMG_02113.JPG", link: "" }
+    { src: "IMG_02112.JPG", link: "" },
+    { src: "IMG_02113.JPG", link: "" }
   ];
 
   let imgIndex = 0;
   const imgElement = document.getElementById("slideshow");
+  const linkElement = document.getElementById("img-link");
 
   setInterval(() => {
     imgIndex = (imgIndex + 1) % images.length;
@@ -212,17 +194,11 @@
     imgElement.style.opacity = 0;
 
     setTimeout(() => {
-      if (link) {
-        imgElement.outerHTML = `<a href="${link}"><img id="slideshow" src="${src}" style="max-width:100%; border-radius: 10px; opacity: 0; transition: opacity 1s ease-in-out;"></a>`;
-      } else {
-        imgElement.src = src;
-      }
+      imgElement.src = src;
+      linkElement.href = link || "#"; // لو ما فيه رابط يحط #
       // Fade in
-      setTimeout(() => {
-        const newImg = document.getElementById("slideshow");
-        newImg.style.opacity = 1;
-      }, 50);
-    }, 1000); // يطابق مدة الـ transition
+      imgElement.style.opacity = 1;
+    }, 1000); // يطابق مدة transition
   }, 4000);
 </script>
 
@@ -471,6 +447,7 @@
 	</body>
 
 </html>
+
 
 
 

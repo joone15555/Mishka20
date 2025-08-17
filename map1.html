@@ -51,106 +51,131 @@
   <p style="font-size: 18px;">جاري التحميل...</p>
 </div>
 
-<div id="page-wrapper">
-  <div id="header-wrapper">
-    <header id="header" class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-      <div id="logo" style="order:1;">
-        <a href="index.html"><img src="loading-image.png" alt="Logo" style="max-width:150px; height:auto;" /></a>
-      </div>
-      <nav style="order:2; display:flex; align-items:center;">
-        <ul style="display:flex; gap:20px; list-style:none; margin:0; padding:0; align-items:center;">
-          <li><a href="index.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">الرئيسية</a></li>
-          <li><a href="future work.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">الأعمال المستقبلية</a></li>
-          <li><a href="card.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px;">بطاقة مشكاة</a></li>
-        </ul>
-      </nav>
-      <!-- Language Dropdown -->
-<li style="position: relative;">
-  <button onclick="toggleLanguageMenu()" style="
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 8px;
-  " title="Change Language">🌐</button>
-  <ul id="language-menu" style="
-    display: none;
-    position: absolute;
-    top: 40px;
-    left: 0;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    list-style: none;
-    padding: 10px 0;
-    margin: 0;
-    min-width: 160px;
-    z-index: 1000;
+<!-- Header Wrapper -->
+<div id="header-wrapper">
+  <header id="header" class="container" style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    direction: rtl;
+    padding: 10px 20px;
   ">
-    <li>
-      <a href="map1.html" style="
-        display: flex;
-        align-items: center;
-        padding: 8px 16px;
-        text-decoration: none;
-        color: #444;
-        font-weight: bold;
-        transition: background 0.3s;
-      " onmouseover="this.style.backgroundColor='#f0f0f0';"
-        onmouseout="this.style.backgroundColor='transparent';">
-        🇸🇦 &nbsp; Arabic
+    
+    <!-- Logo Left -->
+    <div id="logo" style="order: 1;">
+      <a href="index.html">
+        <img src="loading-image.png" alt="شعار الموقع" style="max-width: 150px; height: auto;">
       </a>
-    </li>
-    <li>
-      <a href="map1_en.html" style="
-        display: flex;
-        align-items: center;
-        padding: 8px 16px;
-        text-decoration: none;
-        color: #444;
-        font-weight: bold;
-        transition: background 0.3s;
-      " onmouseover="this.style.backgroundColor='#f0f0f0';"
-        onmouseout="this.style.backgroundColor='transparent';">
-        🇺🇸 &nbsp; English
-      </a>
-    </li>
-    <li>
-      <a href="map1_es 2.html" style="
-        display: flex;
-        align-items: center;
-        padding: 8px 16px;
-        text-decoration: none;
-        color: #444;
-        font-weight: bold;
-        transition: background 0.3s;
-      " onmouseover="this.style.backgroundColor='#f0f0f0';"
-        onmouseout="this.style.backgroundColor='transparent';">
-        🇵🇰 &nbsp; Urdu
-      </a>
-    </li>
-  </ul>
-</li>
-</ul>
-</nav>
+    </div>
 
-</header>
+    <!-- Navigation Links + Language -->
+    <nav style="order: 2; display: flex; align-items: center; gap: 15px;">
+      <ul style="
+        display: flex; 
+        gap: 15px; 
+        list-style: none; 
+        margin: 0; 
+        padding: 0; 
+        align-items: center;
+        position: relative;
+      ">
+        <!-- الروابط -->
+        <li><a href="index.html" class="nav-link">الرئيسية</a></li>
+        <li><a href="futcher work.html" class="nav-link">الأعمال المستقبلية</a></li>
+        <li><a href="card.html" class="nav-link">بطاقة مشكاة</a></li>
+
+        <!-- Language Dropdown -->
+        <li style="position: relative;">
+          <button onclick="toggleLanguageMenu()" style="
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+          " title="تغيير اللغة">🌐</button>
+
+          <ul id="language-menu" style="
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            list-style: none;
+            padding: 10px 0;
+            margin: 0;
+            min-width: 160px;
+            z-index: 1000;
+          ">
+            <li><a href="index.html" class="lang-link">🇸🇦 &nbsp; Arabic</a></li>
+            <li><a href="index_en.html" class="lang-link">🇺🇸 &nbsp; English</a></li>
+            <li><a href="index_es 2.html" class="lang-link">🇵🇰 &nbsp; اردو</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </header>
 </div>
 
-<!-- Script to open/close the menu -->
+<!-- CSS مختصر للهيدر والروابط -->
+<style>
+  .nav-link {
+    font-weight: bold;
+    text-decoration: none;
+    color: #444;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  .nav-link:hover {
+    background-color: #f0f0f0;
+    color: #000;
+  }
+  .lang-link {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #444;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+  .lang-link:hover {
+    background-color: #f0f0f0;
+  }
+
+  /* ظهور القائمة على الجوال */
+  @media screen and (max-width: 768px) {
+    #language-menu {
+      position: fixed !important;
+      top: 0;
+      left: 0;
+      width: 100%;
+      min-width: unset;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 20px 0;
+      background-color: #fff;
+    }
+    #language-menu .lang-link {
+      justify-content: flex-start;
+      padding: 15px 20px;
+      font-size: 20px;
+    }
+  }
+</style>
+
+<!-- JS التحكم بالقائمة -->
 <script>
   function toggleLanguageMenu() {
     const menu = document.getElementById('language-menu');
-    if (menu.style.display === 'block') {
-      menu.style.display = 'none';
-    } else {
-      menu.style.display = 'block';
-    }
+    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
   }
 
-  // Close the menu if the user clicks outside
-  document.addEventListener('click', function (e) {
+  document.addEventListener('click', function(e) {
     const menu = document.getElementById('language-menu');
     const button = e.target.closest('button');
     if (!e.target.closest('#language-menu') && (!button || button.innerText !== '🌐')) {
@@ -159,33 +184,6 @@
   });
 </script>
 
-    </header>
-  </div>
-
-  <div class="container-map">
-    <div id="controls">
-      <button id="speech-toggle">تفعيل وصف الطريق</button>
-      <button id="voice-btn">التحدث</button>
-      <select id="lang-select">
-        <option value="ar-SA" selected>العربية</option>
-        <option value="en-US">English</option>
-        <option value="ur-PK">اردو</option>
-      </select>
-    </div>
-
-    <div id="map"></div>
-    <div id="lists"></div>
-  </div>
-</div>
-
-<footer id="footer" class="container" style="margin-top:30px;">
-  <p style="text-align:center;">&copy; جميع الحقوق محفوظة</p>
-</footer>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
-
-<script>
 const categories = {
   "مطاعم": {filter:'amenity=restaurant', icon:'🍴'},
   "فنادق": {filter:'tourism=hotel', icon:'🏨'},
@@ -321,3 +319,4 @@ window.onload = () => {
 </script>
 </body>
 </html>
+

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
   <style>
-  /* الاحتفاظ بنفس التنسيقات كما في الكود السابق */
+  /* تنسيقات الخريطة والقوائم */
   .container-map { display: flex; flex-direction: column; max-width: 1200px; margin: 30px auto; gap: 20px; padding: 0 20px; position: relative; }
   #map { width: 100%; height: 600px; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.15); }
   #lists { background: linear-gradient(145deg, #c6c6d0, #a7957c); color: #333; padding: 15px; border-radius: 20px; max-height: 600px; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.25); font-family: "Cairo", sans-serif; transition: 0.3s; }
@@ -31,15 +31,54 @@
 </head>
 <body class="is-preload homepage">
 
-<div id="intro-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; color: #000; display: flex; justify-content: center; align-items: center; flex-direction: column; font-family: sans-serif; z-index: 9999;">
-  <img src="loading-image.png" alt="تحميل" style="margin-bottom: 20px; max-width: 200px;">
-  <p style="font-size: 18px;">جاري التحميل...</p>
+<!-- Intro Screen -->
+<div id="intro-screen" style="position: fixed; top:0; left:0; width:100%; height:100%; background:#ffffff; color:#000; display:flex; justify-content:center; align-items:center; flex-direction:column; font-family:sans-serif; z-index:9999;">
+  <img src="loading-image.png" alt="تحميل" style="margin-bottom:20px; max-width:200px;">
+  <p style="font-size:18px;">جارٍ التحميل...</p>
 </div>
 
+<!-- Header -->
+<div id="header-wrapper">
+  <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: rtl;">
+    <div id="logo" style="order: 1;">
+      <a href="index.html">
+        <img src="loading-image.png" alt="شعار الموقع" style="max-width:150px; height:auto;">
+      </a>
+    </div>
+    <nav style="order: 2; display: flex; align-items: center;">
+      <ul style="display:flex; gap:20px; list-style:none; margin:0; padding:0; align-items:center; position:relative;">
+        <li><a href="index.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px; transition:0.3s;"
+          onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
+          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
+        >الرئيسية</a></li>
+        <li><a href="futcher work.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px; transition:0.3s;"
+          onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
+          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
+        >العمل المستقبلي</a></li>
+        <li><a href="card.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px; transition:0.3s;"
+          onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
+          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
+        >بطاقة مشكاة</a></li>
+
+        <!-- Language Dropdown -->
+        <li style="position: relative;">
+          <button onclick="toggleLanguageMenu()" style="background:none; border:none; font-size:24px; cursor:pointer; padding:8px;" title="تغيير اللغة">🌐</button>
+          <ul id="language-menu" style="display:none; position:absolute; top:40px; left:0; background-color:#fff; border:1px solid #ddd; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); list-style:none; padding:10px 0; margin:0; min-width:160px; z-index:1000;">
+            <li><a href="index.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition: background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇸🇦 &nbsp; العربية</a></li>
+            <li><a href="index_en.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition: background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇺🇸 &nbsp; English</a></li>
+            <li><a href="index_es.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition: background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇪🇸 &nbsp; Español</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </header>
+</div>
+
+<!-- الخريطة والمحتوى -->
 <div class="container-map">
   <div id="map"></div>
   <div id="controls">
-    <button id="voice-btn">🎤 التحدث</button>
+    <button id="voice-btn">🎤 تحدث</button>
     <button id="info-btn">ℹ️ معلومات</button>
   </div>
   <div id="lists"></div>
@@ -50,10 +89,39 @@
   </div>
 </div>
 
-<footer id="footer" class="container" style="margin-top:30px;">
-  <p style="text-align:center;">&copy; جميع الحقوق محفوظة</p>
-</footer>
+<!-- Footer -->
+<div id="footer-wrapper">
+  <footer id="footer" class="container">
+    <div class="row">
+      <div class="col-3 col-6-medium col-12-small">
+        <section class="widget contact last">
+          <h3>تواصل معنا</h3>
+          <ul>
+            <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+            <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+            <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+            <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+            <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+          </ul>
+          <p>1234 Fictional Road<br />
+          Nashville, TN 00000<br />
+          (800) 555-0000</p>
+        </section>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div id="copyright">
+          <ul class="menu">
+            <li>&copy; جميع الحقوق محفوظة</li><li>تصميم: <a href="http://html5up.net">HTML5 UP</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
 
+<!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js"></script>
@@ -62,24 +130,24 @@
 const categories = {
   "مطاعم": {filter:'amenity=restaurant', icon:'🍴'},
   "فنادق": {filter:'tourism=hotel', icon:'🏨'},
-  "أجهزة صراف آلي": {filter:'amenity=atm', icon:'🏧'},
+  "أجهزة صراف": {filter:'amenity=atm', icon:'🏧'},
   "صيدليات": {filter:'amenity=pharmacy', icon:'💊'},
   "مستشفيات": {filter:'amenity=hospital', icon:'🏥'},
-  "محلات": {filter:'shop=*', icon:'🛍️'},
+  "متاجر": {filter:'shop=*', icon:'🛍️'},
   "مقاهي": {filter:'amenity=cafe', icon:'☕'},
   "دورات مياه": {filter:'amenity=toilets', icon:'🚻'}
 };
 
 const categoryDescriptions = {
-  "مطاعم": "مطاعم: توفر أطعمة متنوعة من المحلية إلى العالمية.",
-  "فنادق": "فنادق: إقامة مريحة مع خدمات مميزة.",
-  "أجهزة صراف آلي": "أجهزة صراف آلي: سحب وتحويل الأموال بسهولة.",
-  "صيدليات": "صيدليات: للحصول على الأدوية والمنتجات الصحية.",
-  "مستشفيات": "مستشفيات: خدمات طبية عاجلة ومستمرة.",
-  "محلات": "محلات: ملابس وإكسسوارات متنوعة.",
-  "مقاهي": "مقاهي: مكان للاسترخاء وتناول القهوة.",
-  "دورات مياه": "دورات مياه: متوفرة للاستخدام العام.",
-  "غير معروف": "وصف غير متوفر."
+  "مطاعم": "مطاعم: تقدم مجموعة متنوعة من الأطعمة المحلية والعالمية.",
+  "فنادق": "فنادق: إقامة مريحة مع خدمات عالية الجودة.",
+  "أجهزة صراف": "أجهزة صراف: سحب وتحويل الأموال بسهولة.",
+  "صيدليات": "صيدليات: الوصول إلى الأدوية والمنتجات الصحية.",
+  "مستشفيات": "مستشفيات: خدمات طبية طارئة ومستدامة.",
+  "متاجر": "متاجر: مجموعة متنوعة من الملابس والإكسسوارات.",
+  "مقاهي": "مقاهي: مكان للاسترخاء والاستمتاع بالقهوة.",
+  "دورات مياه": "دورات مياه: متاحة للاستخدام العام.",
+  "Unknown": "الوصف غير متوفر."
 };
 
 let userLocation = [21.4225,39.8262];
@@ -110,9 +178,9 @@ function loadPlaces(lat, lon){
         data.elements.forEach((el,index)=>{
           const placeLat = el.lat;
           const placeLon = el.lon;
-          let placeName = el.tags.name || "غير مسمى";
-          if(name==="أجهزة صراف آلي"){
-            const atmNames = ["الأهلي ATM 1","الأهلي ATM 2","سامبا ATM 1","سامبا ATM 2","الرياض ATM 1","الرياض ATM 2","الجزيرة ATM","الإنماء ATM"];
+          let placeName = el.tags.name || "بدون اسم";
+          if(name==="أجهزة صراف"){
+            const atmNames = ["صراف الأهلي 1","صراف الأهلي 2","صراف سامبا 1","صراف سامبا 2","صراف الرياض 1","صراف الرياض 2","صراف الجزيرة","صراف الإنماء"];
             placeName = atmNames[index % atmNames.length];
           }
           allPlaces.push({name:placeName,lat:placeLat,lon:placeLon,category:name});
@@ -147,11 +215,8 @@ function focusPlace(lat, lon, name, category){
 function describeRoute(start,end,placeName){
   const latDiff=end[0]-start[0];
   const lonDiff=end[1]-start[1];
-  let text = "";
-  if(lang==="ar-SA"){
-    text=`اذهب من موقعك الحالي إلى ${placeName}. `;
-    text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"اتجه شمالًا. ":"اتجه جنوبًا. "):(lonDiff>0?"اتجه شرقًا. ":"اتجه غربًا. ");
-  }
+  let text = `اتجه من موقعك الحالي إلى ${placeName}. `;
+  text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"اتجه شمالاً. ":"اتجه جنوباً. "):(lonDiff>0?"اتجه شرقاً. ":"اتجه غرباً. ");
   speak(text);
 }
 
@@ -171,10 +236,9 @@ function calcDistance(lat1,lon1,lat2,lon2){
   return R*c;
 }
 
-// التعرف الصوتي لتحديد المكان مباشرة على الخريطة
 document.getElementById("voice-btn").addEventListener("click",()=>{
   if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)){
-    alert("التعرف الصوتي غير مدعوم في متصفحك");
+    alert("ميزة التعرف على الصوت غير مدعومة في متصفحك");
     return;
   }
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -182,14 +246,13 @@ document.getElementById("voice-btn").addEventListener("click",()=>{
   recognition.start();
   recognition.onresult = function(event){
     const transcript = event.results[0][0].transcript;
-    // البحث الصوتي باستخدام Fuse.js للعثور على المكان الأقرب
     if(fuse){
       const results = fuse.search(transcript);
       if(results.length>0){
         const match = results[0].item;
         focusPlace(match.lat, match.lon, match.name, match.category);
       } else {
-        speak("لم يتم التعرف على المكان. حاول مرة أخرى.");
+        speak("المكان غير معروف، حاول مرة أخرى.");
       }
     }
   }
@@ -199,18 +262,28 @@ document.getElementById("info-btn").addEventListener("click",()=>{
   const popup = document.getElementById("info-popup");
   if(lastSelectedPlace){
     document.getElementById("info-title").innerText = lastSelectedPlace.name;
-    document.getElementById("info-desc").innerText = categoryDescriptions[lastSelectedPlace.category] || categoryDescriptions["غير معروف"];
+    document.getElementById("info-desc").innerText = categoryDescriptions[lastSelectedPlace.category] || categoryDescriptions["Unknown"];
     popup.style.display = "block";
   } else {
-    alert("اختر مكانًا أولًا");
+    alert("يرجى اختيار مكان أولاً");
   }
 });
 
+function toggleLanguageMenu() {
+  const menu = document.getElementById('language-menu');
+  if (menu.style.display === 'block') { menu.style.display = 'none'; } else { menu.style.display = 'block'; }
+}
+
+document.addEventListener('click', function (e) {
+  const menu = document.getElementById('language-menu');
+  const button = e.target.closest('button');
+  if (!e.target.closest('#language-menu') && (!button || button.innerText !== '🌐')) { menu.style.display = 'none'; }
+});
+
 window.addEventListener("load",()=>{
-  setTimeout(()=>{document.getElementById("intro-screen").style.display="none";},1000);
+  setTimeout(()=>{document.getElementById("intro-screen").style.display="none";},1500);
   loadPlaces(userLocation[0],userLocation[1]);
 });
 </script>
 </body>
 </html>
-

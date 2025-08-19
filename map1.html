@@ -3,47 +3,66 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <title>خريطة الخدمات للحجاج - مسارات مشاة</title>
+  <title>خريطة الخدمات للحجاج - توجيه صوتي</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
-    .container { max-width: 1200px; margin: 0 auto; display: flex; gap: 20px; }
-    #map { width: 70%; height: 600px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    #sidebar { width: 30%; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-height: 600px; overflow-y: auto; }
-    .controls { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
-    button { padding: 10px 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-    #voice-btn { background: #007bff; color: white; }
-    #info-btn { background: #28a745; color: white; }
-    .category { margin-bottom: 15px; }
-    .category-title { background: #6c757d; color: white; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-    .place-item { padding: 8px; margin: 5px 0; background: #f8f9fa; border-radius: 5px; cursor: pointer; border-left: 4px solid #007bff; }
-    .place-item:hover { background: #e9ecef; }
-    .place-name { font-weight: bold; }
-    .place-distance { color: #666; font-size: 14px; }
-    .close { color: #28a745; }
-    .far { color: #dc3545; }
-    #route-details { background: #e8f5e8; padding: 15px; border-radius: 8px; margin-top: 15px; display: none; }
-    #search-box { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; }
-    .walking-route { color: #28a745; font-weight: bold; }
+    /* التنسيقات القديمة */
+    .container-map { display: flex; flex-direction: column; max-width: 1200px; margin: 30px auto; gap: 20px; padding: 0 20px; position: relative; }
+    #map { width: 100%; height: 600px; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.15); }
+    #lists { background: linear-gradient(145deg, #c6c6d0, #a7957c); color: #333; padding: 15px; border-radius: 20px; max-height: 600px; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.25); font-family: "Cairo", sans-serif; transition: 0.3s; }
+    #lists details { margin-bottom: 14px; border-radius: 14px; overflow: hidden; background: rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.3s; border-left: 5px solid #a7957c; }
+    #lists summary { font-weight: bold; font-size: 17px; padding: 12px 16px; background: linear-gradient(to right, #a7957c, #c6c6d0); color: #fff; cursor: pointer; outline: none; border-radius: 12px; }
+    .list-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-radius: 12px; margin: 4px 0; background: rgba(255,255,255,0.2); transition: background 0.3s, transform 0.2s; cursor: pointer; }
+    .list-item:hover { background: rgba(255,255,255,0.3); transform: translateX(5px); }
+    .item-name { flex: 1; margin: 0 8px; display: flex; align-items: center; gap: 10px; font-size: 15px; color: #333; }
+    .item-dist { color: #444; font-size: 13px; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 10px; font-weight: bold; }
+    .icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 16px; border-radius: 50%; background: #a7957c; color: white; flex-shrink: 0; }
+    .walking-time { font-size: 11px; color: #666; margin-top: 2px; }
+    
+    #controls { display: flex; flex-direction: row; justify-content: center; gap: 10px; z-index: 1000; margin-bottom: 20px; }
+    #controls button { display: flex; align-items: center; gap: 6px; padding: 10px 18px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
+    #voice-btn { background-color: #17a2b8; color: #fff; }
+    #voice-btn:hover { background-color: #117a8b; }
+    #navigation-btn { background-color: #28a745; color: #fff; }
+    #navigation-btn:hover { background-color: #218838; }
+    #stop-nav-btn { background-color: #dc3545; color: #fff; display: none; }
+    #stop-nav-btn:hover { background-color: #c82333; }
+    
+    #search-box { width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 12px; border: none; font-size: 14px; }
+    
+    /* نافذة التوجيه الصوتي */
+    #voice-navigation { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; padding: 15px 25px; border-radius: 15px; box-shadow: 0 6px 25px rgba(0,0,0,0.3); z-index: 1002; display: none; max-width: 400px; text-align: center; }
+    #voice-navigation.active { display: block; animation: pulse 2s infinite; }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 6px 25px rgba(40, 167, 69, 0.3); }
+      50% { box-shadow: 0 6px 35px rgba(40, 167, 69, 0.6); }
+      100% { box-shadow: 0 6px 25px rgba(40, 167, 69, 0.3); }
+    }
+    
+    .distance-indicator { background: #fff; color: #28a745; padding: 5px 10px; border-radius: 20px; font-weight: bold; margin-top: 10px; }
   </style>
 </head>
 <body>
 
-<div class="controls">
-  <button id="voice-btn">🎤 بحث صوتي</button>
-  <button id="info-btn">ℹ️ معلومات</button>
+<!-- نافذة التوجيه الصوتي -->
+<div id="voice-navigation">
+  <div id="nav-instruction">جاري بدء التوجيه...</div>
+  <div id="nav-distance" class="distance-indicator">المسافة المتبقية: -- متر</div>
 </div>
 
-<div class="container">
+<div class="container-map">
+  <div id="controls">
+    <button id="voice-btn">🎤 بحث صوتي</button>
+    <button id="navigation-btn">🧭 بدء التوجيه</button>
+    <button id="stop-nav-btn">⏹️ إيقاف التوجيه</button>
+  </div>
+  
   <div id="map"></div>
-  <div id="sidebar">
-    <input type="text" id="search-box" placeholder="ابحث عن مكان...">
-    <div id="places-list"></div>
-    <div id="route-details">
-      <h4>مسار المشاة المختصر</h4>
-      <div id="route-content"></div>
-    </div>
+  
+  <div id="lists">
+    <input type="text" id="search-box" placeholder="ابحث عن أقرب الخدمات..." oninput="filterList()">
   </div>
 </div>
 
@@ -68,168 +87,210 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 let userMarker = L.marker(userLocation).addTo(map).bindPopup("موقعك الحالي");
 let routingControl = null;
 let allPlaces = [];
+let currentDestination = null;
+let isNavigating = false;
+let lastInstruction = '';
+let watchId = null;
 
-// تتبع موقع المستخدم
-if (navigator.geolocation) {
-  navigator.geolocation.watchPosition(pos => {
-    userLocation = [pos.coords.latitude, pos.coords.longitude];
-    userMarker.setLatLng(userLocation);
-    map.panTo(userLocation);
-  });
+// تتبع موقع المستخدم للتوجيه الصوتي
+function startLocationTracking() {
+  if (navigator.geolocation) {
+    watchId = navigator.geolocation.watchPosition(
+      position => {
+        const newLocation = [position.coords.latitude, position.coords.longitude];
+        userLocation = newLocation;
+        userMarker.setLatLng(newLocation);
+        
+        if (isNavigating && currentDestination) {
+          updateVoiceNavigation(newLocation);
+        }
+      },
+      error => console.log('خطأ في تتبع الموقع:', error),
+      { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
+    );
+  }
+}
+
+function updateVoiceNavigation(currentPos) {
+  if (!currentDestination) return;
+  
+  const distanceToDestination = calcDistance(
+    currentPos[0], currentPos[1], 
+    currentDestination.lat, currentDestination.lon
+  ) * 1000; // تحويل إلى متر
+  
+  document.getElementById('nav-distance').textContent = 
+    `المسافة المتبقية: ${Math.round(distanceToDestination)} متر`;
+  
+  // إعطاء تعليمات حسب المسافة
+  let instruction = '';
+  
+  if (distanceToDestination < 10) {
+    instruction = `وصلت إلى ${currentDestination.name}`;
+    stopNavigation();
+    speak(instruction);
+    return;
+  } else if (distanceToDestination < 50) {
+    instruction = `اقتربت من ${currentDestination.name}، المسافة ${Math.round(distanceToDestination)} متر`;
+  } else if (distanceToDestination < 100) {
+    instruction = `استمر في نفس الاتجاه، المسافة ${Math.round(distanceToDestination)} متر`;
+  } else if (distanceToDestination < 200) {
+    const direction = getDirection(currentPos, [currentDestination.lat, currentDestination.lon]);
+    instruction = `اتجه ${direction}، المسافة ${Math.round(distanceToDestination)} متر`;
+  }
+  
+  // تحديث التعليمات كل 30 ثانية أو عند تغيير كبير في المسافة
+  if (instruction && instruction !== lastInstruction) {
+    document.getElementById('nav-instruction').textContent = instruction;
+    speak(instruction);
+    lastInstruction = instruction;
+  }
+}
+
+function getDirection(from, to) {
+  const latDiff = to[0] - from[0];
+  const lonDiff = to[1] - from[1];
+  
+  if (Math.abs(latDiff) > Math.abs(lonDiff)) {
+    return latDiff > 0 ? 'شمالاً' : 'جنوباً';
+  } else {
+    return lonDiff > 0 ? 'شرقاً' : 'غرباً';
+  }
 }
 
 function loadPlaces() {
-  const placesList = document.getElementById('places-list');
-  placesList.innerHTML = '';
+  const listsDiv = document.getElementById("lists");
+  const searchHTML = listsDiv.querySelector("#search-box").outerHTML;
+  listsDiv.innerHTML = searchHTML;
   allPlaces = [];
   
-  Object.entries(categories).forEach(([categoryName, categoryData]) => {
-    const url = `https://overpass-api.de/api/interpreter?data=[out:json];node[${categoryData.filter}](around:2000,${userLocation[0]},${userLocation[1]});out;`;
+  for(const [name, cat] of Object.entries(categories)){
+    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:2000,${userLocation[0]},${userLocation[1]});out;`;
     
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        if (data.elements.length === 0) return;
-        
-        // ترتيب الأماكن حسب المسافة (أقرب أولاً)
-        const places = data.elements.map(el => {
-          const distance = calcDistance(userLocation[0], userLocation[1], el.lat, el.lon);
+    fetch(overpassUrl)
+      .then(res=>res.json())
+      .then(data=>{
+        const placesWithDistance = data.elements.map((el, index) => {
+          const placeLat = el.lat;
+          const placeLon = el.lon;
+          let placeName = el.tags.name || "بدون اسم";
+          
+          if(name==="أجهزة صراف"){
+            const atmNames = ["صراف الأهلي","صراف سامبا","صراف الرياض","صراف الجزيرة"];
+            placeName = atmNames[index % atmNames.length];
+          }
+          
+          const dist = calcDistance(userLocation[0],userLocation[1],placeLat,placeLon);
           return {
-            name: el.tags.name || `${categoryName} بدون اسم`,
-            lat: el.lat,
-            lon: el.lon,
-            distance: distance,
-            category: categoryName
+            name: placeName,
+            lat: placeLat,
+            lon: placeLon,
+            category: name,
+            distance: dist
           };
-        }).sort((a, b) => a.distance - b.distance).slice(0, 10); // أخذ أقرب 10 أماكن فقط
+        }).sort((a, b) => a.distance - b.distance).slice(0, 8); // أقرب 8 أماكن
         
-        allPlaces.push(...places);
+        let html = `<details open><summary>${cat.icon} ${name} (${placesWithDistance.length})</summary>`;
         
-        const categoryDiv = document.createElement('div');
-        categoryDiv.className = 'category';
-        categoryDiv.innerHTML = `
-          <div class="category-title">${categoryData.icon} ${categoryName} (${places.length})</div>
-          <div class="category-places" style="display: block;">
-            ${places.map(place => {
-              const distanceText = place.distance < 0.5 ? 'قريب جداً' : place.distance < 1 ? 'قريب' : 'متوسط';
-              const distanceClass = place.distance < 1 ? 'close' : 'far';
-              
-              L.marker([place.lat, place.lon])
-                .addTo(map)
-                .bindPopup(`${place.name}<br>${place.distance.toFixed(2)} كم`);
-              
-              return `
-                <div class="place-item" onclick="showWalkingRoute(${place.lat}, ${place.lon}, '${place.name}')">
-                  <div class="place-name">${place.name}</div>
-                  <div class="place-distance ${distanceClass}">
-                    ${place.distance.toFixed(2)} كم - ${distanceText} - مسار مشاة
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        `;
+        placesWithDistance.forEach(place => {
+          allPlaces.push(place);
+          const distKm = place.distance.toFixed(2);
+          const walkingTimeMinutes = Math.ceil(place.distance * 12);
+          
+          L.marker([place.lat, place.lon]).addTo(map)
+            .bindPopup(`${place.name}<br>${distKm} كم - ${walkingTimeMinutes} دقيقة مشي`);
+          
+          html += `<div class="list-item" onclick="selectDestination(${place.lat},${place.lon},'${place.name.replace(/'/g, "&#39;")}')">
+            <span class="item-name">
+              <span class="icon">${cat.icon}</span>
+              <div>
+                ${place.name}
+                <div class="walking-time">🚶‍♂️ ${walkingTimeMinutes} دقيقة مشي</div>
+              </div>
+            </span>
+            <span class="item-dist">${distKm} كم</span>
+          </div>`;
+        });
         
-        placesList.appendChild(categoryDiv);
-        
-        categoryDiv.querySelector('.category-title').onclick = function() {
-          const placesDiv = categoryDiv.querySelector('.category-places');
-          placesDiv.style.display = placesDiv.style.display === 'none' ? 'block' : 'none';
-        };
+        html += "</details>";
+        listsDiv.innerHTML += html;
       });
-  });
+  }
 }
 
-function showWalkingRoute(lat, lon, placeName) {
+function selectDestination(lat, lon, name) {
+  currentDestination = { lat, lon, name };
   map.setView([lat, lon], 18);
   
-  if (routingControl) {
-    map.removeControl(routingControl);
-  }
+  if (routingControl) map.removeControl(routingControl);
   
-  // إعدادات خاصة بمسارات المشاة
   routingControl = L.Routing.control({
-    waypoints: [
-      L.latLng(userLocation[0], userLocation[1]),
-      L.latLng(lat, lon)
-    ],
+    waypoints: [L.latLng(userLocation[0], userLocation[1]), L.latLng(lat, lon)],
     router: L.Routing.osrmv1({
       serviceUrl: 'https://router.project-osrm.org/route/v1',
-      profile: 'foot' // استخدام مسارات المشاة
+      profile: 'foot'
     }),
     lineOptions: {
-      styles: [{ 
-        color: '#28a745', 
-        weight: 6, 
-        opacity: 0.8,
-        dashArray: '10, 5' // خط متقطع للإشارة لمسار المشاة
-      }]
+      styles: [{ color: '#28a745', weight: 6, opacity: 0.8 }]
     },
     addWaypoints: false,
     draggableWaypoints: false,
     createMarker: () => null,
-    routeWhileDragging: false,
-    fitSelectedRoutes: true,
-    show: false // إخفاء التعليمات الافتراضية
+    show: false
   }).addTo(map);
   
-  showWalkingDetails(lat, lon, placeName);
+  speak(`تم اختيار ${name} كوجهة. اضغط على بدء التوجيه للحصول على إرشادات صوتية أثناء المشي.`);
 }
 
-function showWalkingDetails(lat, lon, placeName) {
-  const distance = calcDistance(userLocation[0], userLocation[1], lat, lon);
-  const walkingTime = Math.ceil(distance * 15); // 15 دقيقة لكل كيلومتر (مشي بطيء)
-  
-  // حساب الاتجاه المبسط
-  const latDiff = lat - userLocation[0];
-  const lonDiff = lon - userLocation[1];
-  
-  let simpleDirection = '';
-  let walkingInstructions = '';
-  
-  if (Math.abs(latDiff) > Math.abs(lonDiff)) {
-    if (latDiff > 0) {
-      simpleDirection = 'شمالاً';
-      walkingInstructions = 'امش شمالاً في خط مستقيم';
-    } else {
-      simpleDirection = 'جنوباً';
-      walkingInstructions = 'امش جنوباً في خط مستقيم';
-    }
-  } else {
-    if (lonDiff > 0) {
-      simpleDirection = 'شرقاً';
-      walkingInstructions = 'امش شرقاً في خط مستقيم';
-    } else {
-      simpleDirection = 'غرباً';
-      walkingInstructions = 'امش غرباً في خط مستقيم';
-    }
+function startNavigation() {
+  if (!currentDestination) {
+    alert('يرجى اختيار وجهة أولاً');
+    return;
   }
   
-  const routeContent = `
-    <div class="walking-route">
-      <strong>🚶‍♂️ مسار مشاة مختصر</strong><br><br>
-      
-      <strong>الوجهة:</strong> ${placeName}<br>
-      <strong>المسافة:</strong> ${distance.toFixed(2)} كم<br>
-      <strong>وقت المشي:</strong> ${walkingTime} دقيقة<br>
-      <strong>نوع المسار:</strong> مسار مشاة آمن<br><br>
-      
-      <strong>التعليمات المبسطة:</strong><br>
-      1️⃣ ${walkingInstructions}<br>
-      2️⃣ اتبع الخط الأخضر المتقطع<br>
-      3️⃣ تجنب الطرق الرئيسية<br>
-      4️⃣ استخدم الممرات والأرصفة<br><br>
-      
-      <em>💡 نصيحة: هذا أقصر وأآمن مسار للمشي</em>
-    </div>
-  `;
+  isNavigating = true;
+  document.getElementById('voice-navigation').classList.add('active');
+  document.getElementById('navigation-btn').style.display = 'none';
+  document.getElementById('stop-nav-btn').style.display = 'inline-flex';
   
-  document.getElementById('route-content').innerHTML = routeContent;
-  document.getElementById('route-details').style.display = 'block';
+  const initialDistance = calcDistance(
+    userLocation[0], userLocation[1], 
+    currentDestination.lat, currentDestination.lon
+  ) * 1000;
   
-  // تعليمات صوتية مبسطة
-  const speechText = `مسار مشاة إلى ${placeName}. المسافة ${distance.toFixed(2)} كيلومتر. ${walkingInstructions}. وقت المشي ${walkingTime} دقيقة.`;
-  speak(speechText);
+  document.getElementById('nav-instruction').textContent = 
+    `بدء التوجيه إلى ${currentDestination.name}`;
+  document.getElementById('nav-distance').textContent = 
+    `المسافة المتبقية: ${Math.round(initialDistance)} متر`;
+  
+  speak(`بدء التوجيه إلى ${currentDestination.name}. اتبع الخط الأخضر على الخريطة.`);
+  
+  startLocationTracking();
+}
+
+function stopNavigation() {
+  isNavigating = false;
+  document.getElementById('voice-navigation').classList.remove('active');
+  document.getElementById('navigation-btn').style.display = 'inline-flex';
+  document.getElementById('stop-nav-btn').style.display = 'none';
+  
+  if (watchId) {
+    navigator.geolocation.clearWatch(watchId);
+    watchId = null;
+  }
+  
+  lastInstruction = '';
+  speak('تم إيقاف التوجيه الصوتي');
+}
+
+function speak(text) {
+  if ('speechSynthesis' in window) {
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ar-SA';
+    utterance.rate = 0.9;
+    speechSynthesis.speak(utterance);
+  }
 }
 
 function calcDistance(lat1, lon1, lat2, lon2) {
@@ -243,14 +304,17 @@ function calcDistance(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-function speak(text) {
-  if ('speechSynthesis' in window) {
-    speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ar-SA';
-    utterance.rate = 0.9;
-    speechSynthesis.speak(utterance);
-  }
+function filterList() {
+  const query = document.getElementById("search-box").value.toLowerCase();
+  document.querySelectorAll("#lists details").forEach(detail => {
+    detail.querySelectorAll(".list-item").forEach(item => {
+      if (item.innerText.toLowerCase().includes(query)) {
+        item.style.display = "flex";
+      } else {
+        item.style.display = "none";
+      }
+    });
+  });
 }
 
 // البحث الصوتي
@@ -263,29 +327,15 @@ document.getElementById('voice-btn').onclick = function() {
     recognition.onresult = function(event) {
       const searchTerm = event.results[0][0].transcript;
       document.getElementById('search-box').value = searchTerm;
-      filterPlaces();
+      filterList();
     };
   } else {
     alert('البحث الصوتي غير مدعوم في هذا المتصفح');
   }
 };
 
-// البحث النصي
-document.getElementById('search-box').oninput = filterPlaces;
-
-function filterPlaces() {
-  const searchTerm = document.getElementById('search-box').value.toLowerCase();
-  const placeItems = document.querySelectorAll('.place-item');
-  
-  placeItems.forEach(item => {
-    const placeName = item.querySelector('.place-name').textContent.toLowerCase();
-    if (placeName.includes(searchTerm)) {
-      item.style.display = 'block';
-    } else {
-      item.style.display = 'none';
-    }
-  });
-}
+document.getElementById('navigation-btn').onclick = startNavigation;
+document.getElementById('stop-nav-btn').onclick = stopNavigation;
 
 window.onload = function() {
   loadPlaces();

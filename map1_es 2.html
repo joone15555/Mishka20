@@ -14,6 +14,7 @@
   #lists { background: linear-gradient(145deg, #c6c6d0, #a7957c); color: #333; padding: 15px; border-radius: 20px; max-height: 600px; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.25); font-family: "Noto Nastaliq Urdu", serif; transition: 0.3s; }
   #lists details { margin-bottom: 14px; border-radius: 14px; overflow: hidden; background: rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.3s; border-left: 5px solid #a7957c; }
   #lists summary { font-weight: bold; font-size: 17px; padding: 12px 16px; background: linear-gradient(to right, #a7957c, #c6c6d0); color: #fff; cursor: pointer; outline: none; border-radius: 12px; }
+  #lists .search-box { width: 100%; padding: 10px 14px; margin-bottom: 12px; border-radius: 12px; border: none; font-size: 15px; outline: none; }
   .list-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-radius: 12px; margin: 4px 0; background: rgba(255,255,255,0.2); transition: background 0.3s, transform 0.2s; cursor: pointer; }
   .list-item:hover { background: rgba(255,255,255,0.3); transform: translateX(5px); }
   .item-name { flex: 1; margin: 0 8px; display: flex; align-items: center; gap: 10px; font-size: 15px; color: #333; }
@@ -77,7 +78,9 @@
     <button id="voice-btn">🎤 بولیں</button>
     <button id="info-btn">ℹ️ معلومات</button>
   </div>
-  <div id="lists"></div>
+  <div id="lists">
+    <input type="text" id="search-box" class="search-box" placeholder="کسی بھی جگہ کا نام یہاں تلاش کریں..." oninput="filterList()">
+  </div>
   <div id="info-popup">
     <strong id="info-title"></strong>
     <p id="info-desc" style="margin-top: 8px; font-size: 14px;"></p>
@@ -123,7 +126,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js"></script>
 
 <script>
-// کیٹیگریز اور آئیکونز
+// نفس الكود السابق مع الفلترة
 const categories = {
   "ریسٹورنٹس": {filter:'amenity=restaurant', icon:'🍴'},
   "ہوٹلز": {filter:'tourism=hotel', icon:'🏨'},
@@ -164,7 +167,7 @@ navigator.geolocation.getCurrentPosition(pos => {
 
 function loadPlaces(lat, lon){
   const listsDiv = document.getElementById("lists");
-  listsDiv.innerHTML = "";
+  listsDiv.innerHTML = '<input type="text" id="search-box" class="search-box" placeholder="کسی بھی جگہ کا نام یہاں تلاش کریں..." oninput="filterList()">';
   allPlaces = [];
   for(const [name, cat] of Object.entries(categories)){
     const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:1500,${lat},${lon});out;`;
@@ -272,6 +275,14 @@ document.addEventListener('click', function (e) {
   const button = e.target.closest('button');
   if (!e.target.closest('#language-menu') && (!button || button.innerText !== '🌐')) { menu.style.display = 'none'; }
 });
+
+function filterList(){
+  const query = document.getElementById("search-box").value.toLowerCase();
+  document.querySelectorAll(".list-item").forEach(item=>{
+    const name = item.querySelector(".item-name").innerText.toLowerCase();
+    item.style.display = name.includes(query) ? "flex" : "none";
+  });
+}
 
 window.addEventListener("load",()=>{
   setTimeout(()=>{document.getElementById("intro-screen").style.display="none";},1500);

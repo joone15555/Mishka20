@@ -7,62 +7,204 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
   <style>
-    /* التنسيقات القديمة */
-    .container-map { display: flex; flex-direction: column; max-width: 1200px; margin: 30px auto; gap: 20px; padding: 0 20px; position: relative; }
-    #map { width: 100%; height: 600px; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.15); }
-    #lists { background: linear-gradient(145deg, #c6c6d0, #a7957c); color: #333; padding: 15px; border-radius: 20px; max-height: 600px; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.25); font-family: "Cairo", sans-serif; transition: 0.3s; }
-    #lists details { margin-bottom: 14px; border-radius: 14px; overflow: hidden; background: rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.3s; border-left: 5px solid #a7957c; }
-    #lists summary { font-weight: bold; font-size: 17px; padding: 12px 16px; background: linear-gradient(to right, #a7957c, #c6c6d0); color: #fff; cursor: pointer; outline: none; border-radius: 12px; }
-    .list-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-radius: 12px; margin: 4px 0; background: rgba(255,255,255,0.2); transition: background 0.3s, transform 0.2s; cursor: pointer; }
-    .list-item:hover { background: rgba(255,255,255,0.3); transform: translateX(5px); }
-    .item-name { flex: 1; margin: 0 8px; display: flex; align-items: center; gap: 10px; font-size: 15px; color: #333; }
-    .item-dist { color: #444; font-size: 13px; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 10px; font-weight: bold; }
-    .icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 16px; border-radius: 50%; background: #a7957c; color: white; flex-shrink: 0; }
-    .walking-time { font-size: 11px; color: #666; margin-top: 2px; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: "Cairo", Arial, sans-serif; height: 100vh; overflow: hidden; background: #f0f2f5; }
     
-    #controls { display: flex; flex-direction: row; justify-content: center; gap: 10px; z-index: 1000; margin-bottom: 20px; }
-    #controls button { display: flex; align-items: center; gap: 6px; padding: 10px 18px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
-    #voice-btn { background-color: #17a2b8; color: #fff; }
-    #voice-btn:hover { background-color: #117a8b; }
-    #navigation-btn { background-color: #28a745; color: #fff; }
-    #navigation-btn:hover { background-color: #218838; }
-    #stop-nav-btn { background-color: #dc3545; color: #fff; display: none; }
-    #stop-nav-btn:hover { background-color: #c82333; }
-    
-    #search-box { width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 12px; border: none; font-size: 14px; }
-    
-    /* نافذة التوجيه الصوتي */
-    #voice-navigation { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; padding: 15px 25px; border-radius: 15px; box-shadow: 0 6px 25px rgba(0,0,0,0.3); z-index: 1002; display: none; max-width: 400px; text-align: center; }
-    #voice-navigation.active { display: block; animation: pulse 2s infinite; }
-    
-    @keyframes pulse {
-      0% { box-shadow: 0 6px 25px rgba(40, 167, 69, 0.3); }
-      50% { box-shadow: 0 6px 35px rgba(40, 167, 69, 0.6); }
-      100% { box-shadow: 0 6px 25px rgba(40, 167, 69, 0.3); }
+    /* تصميم متجاوب للشاشة الكاملة */
+    .main-container { 
+      display: grid; 
+      grid-template-columns: 1fr 350px; 
+      height: 100vh; 
+      gap: 0;
     }
     
-    .distance-indicator { background: #fff; color: #28a745; padding: 5px 10px; border-radius: 20px; font-weight: bold; margin-top: 10px; }
+    @media (max-width: 768px) {
+      .main-container { 
+        grid-template-columns: 1fr; 
+        grid-template-rows: 60vh 1fr;
+      }
+      #sidebar { 
+        order: 2; 
+        max-height: 40vh;
+      }
+    }
+    
+    #map { 
+      width: 100%; 
+      height: 100vh; 
+      z-index: 1;
+    }
+    
+    #sidebar { 
+      background: linear-gradient(145deg, #ffffff, #f8f9fa); 
+      padding: 20px; 
+      overflow-y: auto; 
+      box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+      border-left: 3px solid #007bff;
+    }
+    
+    /* أزرار التحكم العائمة */
+    #controls { 
+      position: fixed; 
+      top: 20px; 
+      right: 20px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 10px; 
+      z-index: 1000; 
+    }
+    
+    #controls button { 
+      padding: 12px 16px; 
+      border: none; 
+      border-radius: 50px; 
+      cursor: pointer; 
+      font-weight: bold; 
+      font-size: 14px; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+      transition: all 0.3s;
+      min-width: 140px;
+    }
+    
+    #controls button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+    
+    #voice-btn { background: linear-gradient(45deg, #17a2b8, #20c997); color: white; }
+    #navigation-btn { background: linear-gradient(45deg, #28a745, #20c997); color: white; }
+    #stop-nav-btn { background: linear-gradient(45deg, #dc3545, #fd7e14); color: white; display: none; }
+    
+    /* نافذة التوجيه الصوتي */
+    #voice-navigation { 
+      position: fixed; 
+      top: 50%; 
+      left: 50%; 
+      transform: translate(-50%, -50%); 
+      background: linear-gradient(135deg, #28a745, #20c997); 
+      color: white; 
+      padding: 25px 35px; 
+      border-radius: 20px; 
+      box-shadow: 0 10px 40px rgba(40, 167, 69, 0.4); 
+      z-index: 1002; 
+      display: none; 
+      text-align: center;
+      min-width: 300px;
+    }
+    
+    #voice-navigation.active { 
+      display: block; 
+      animation: pulse 2s infinite; 
+    }
+    
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.05); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    
+    .distance-indicator { 
+      background: rgba(255,255,255,0.9); 
+      color: #28a745; 
+      padding: 8px 15px; 
+      border-radius: 25px; 
+      font-weight: bold; 
+      margin-top: 15px; 
+    }
+    
+    /* تصميم القائمة الجانبية */
+    #search-box { 
+      width: 100%; 
+      padding: 12px 15px; 
+      margin-bottom: 20px; 
+      border: 2px solid #e9ecef; 
+      border-radius: 25px; 
+      font-size: 14px; 
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    
+    #search-box:focus { border-color: #007bff; }
+    
+    .category { 
+      margin-bottom: 20px; 
+      border-radius: 15px; 
+      overflow: hidden; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .category-title { 
+      padding: 15px 20px; 
+      font-weight: bold; 
+      cursor: pointer; 
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .category-title:hover { transform: translateX(5px); }
+    
+    .place-item { 
+      padding: 12px 20px; 
+      margin: 0; 
+      background: white; 
+      cursor: pointer; 
+      transition: all 0.3s;
+      border-bottom: 1px solid #f8f9fa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .place-item:hover { 
+      background: #f8f9fa; 
+      transform: translateX(10px); 
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .place-item:last-child { border-bottom: none; }
+    
+    .place-name { font-weight: 600; color: #333; }
+    .place-distance { font-size: 12px; color: #666; margin-top: 3px; }
+    .distance-badge { 
+      background: #007bff; 
+      color: white; 
+      padding: 4px 8px; 
+      border-radius: 12px; 
+      font-size: 11px; 
+      font-weight: bold;
+    }
+    
+    /* ألوان مختلفة لكل فئة */
+    .restaurants { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+    .hotels { background: linear-gradient(135deg, #4834d4, #686de0); }
+    .atms { background: linear-gradient(135deg, #00d2d3, #01a3a4); }
+    .pharmacies { background: linear-gradient(135deg, #ff9ff3, #f368e0); }
+    .hospitals { background: linear-gradient(135deg, #ff3838, #ff6b6b); }
+    .shops { background: linear-gradient(135deg, #ffb142, #ff793f); }
+    .cafes { background: linear-gradient(135deg, #8c7ae6, #9c88ff); }
+    .toilets { background: linear-gradient(135deg, #00d2d3, #01a3a4); }
   </style>
 </head>
 <body>
 
 <!-- نافذة التوجيه الصوتي -->
 <div id="voice-navigation">
-  <div id="nav-instruction">جاري بدء التوجيه...</div>
+  <div id="nav-instruction" style="font-size: 16px; font-weight: bold;">جاري بدء التوجيه...</div>
   <div id="nav-distance" class="distance-indicator">المسافة المتبقية: -- متر</div>
 </div>
 
-<div class="container-map">
-  <div id="controls">
-    <button id="voice-btn">🎤 بحث صوتي</button>
-    <button id="navigation-btn">🧭 بدء التوجيه</button>
-    <button id="stop-nav-btn">⏹️ إيقاف التوجيه</button>
-  </div>
-  
+<!-- أزرار التحكم العائمة -->
+<div id="controls">
+  <button id="voice-btn">🎤 بحث صوتي</button>
+  <button id="navigation-btn">🧭 بدء التوجيه</button>
+  <button id="stop-nav-btn">⏹️ إيقاف التوجيه</button>
+</div>
+
+<div class="main-container">
   <div id="map"></div>
   
-  <div id="lists">
-    <input type="text" id="search-box" placeholder="ابحث عن أقرب الخدمات..." oninput="filterList()">
+  <div id="sidebar">
+    <input type="text" id="search-box" placeholder="ابحث عن أقرب الخدمات...">
+    <div id="places-list"></div>
   </div>
 </div>
 
@@ -71,20 +213,84 @@
 
 <script>
 const categories = {
-  "مطاعم": {filter:'amenity=restaurant', icon:'🍴'},
-  "فنادق": {filter:'tourism=hotel', icon:'🏨'},
-  "أجهزة صراف": {filter:'amenity=atm', icon:'🏧'},
-  "صيدليات": {filter:'amenity=pharmacy', icon:'💊'},
-  "مستشفيات": {filter:'amenity=hospital', icon:'🏥'},
-  "متاجر": {filter:'shop=*', icon:'🛍️'},
-  "مقاهي": {filter:'amenity=cafe', icon:'☕'},
-  "دورات مياه": {filter:'amenity=toilets', icon:'🚻'}
+  "مطاعم": {
+    filter: 'amenity=restaurant', 
+    icon: '🍴', 
+    color: '#ff6b6b',
+    className: 'restaurants'
+  },
+  "فنادق": {
+    filter: 'tourism=hotel', 
+    icon: '🏨', 
+    color: '#4834d4',
+    className: 'hotels'
+  },
+  "أجهزة صراف": {
+    filter: 'amenity=atm', 
+    icon: '🏧', 
+    color: '#00d2d3',
+    className: 'atms'
+  },
+  "صيدليات": {
+    filter: 'amenity=pharmacy', 
+    icon: '💊', 
+    color: '#ff9ff3',
+    className: 'pharmacies'
+  },
+  "مستشفيات": {
+    filter: 'amenity=hospital', 
+    icon: '🏥', 
+    color: '#ff3838',
+    className: 'hospitals'
+  },
+  "متاجر": {
+    filter: 'shop=*', 
+    icon: '🛍️', 
+    color: '#ffb142',
+    className: 'shops'
+  },
+  "مقاهي": {
+    filter: 'amenity=cafe', 
+    icon: '☕', 
+    color: '#8c7ae6',
+    className: 'cafes'
+  },
+  "دورات مياه": {
+    filter: 'amenity=toilets', 
+    icon: '🚻', 
+    color: '#00d2d3',
+    className: 'toilets'
+  }
 };
 
 let userLocation = [21.4225, 39.8262];
 let map = L.map('map').setView(userLocation, 16);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-let userMarker = L.marker(userLocation).addTo(map).bindPopup("موقعك الحالي");
+
+// إنشاء أيقونة مميزة للموقع الحالي
+const userIcon = L.divIcon({
+  className: 'user-location-marker',
+  html: `<div style="
+    width: 20px; 
+    height: 20px; 
+    background: linear-gradient(45deg, #007bff, #0056b3); 
+    border: 3px solid white; 
+    border-radius: 50%; 
+    box-shadow: 0 0 10px rgba(0,123,255,0.5);
+    animation: userPulse 2s infinite;
+  "></div>
+  <style>
+    @keyframes userPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+  </style>`,
+  iconSize: [20, 20],
+  iconAnchor: [10, 10]
+});
+
+let userMarker = L.marker(userLocation, {icon: userIcon}).addTo(map).bindPopup("📍 موقعك الحالي");
 let routingControl = null;
 let allPlaces = [];
 let currentDestination = null;
@@ -92,7 +298,27 @@ let isNavigating = false;
 let lastInstruction = '';
 let watchId = null;
 
-// تتبع موقع المستخدم للتوجيه الصوتي
+// إنشاء أيقونات مخصصة لكل فئة
+function createCategoryIcon(category, categoryData) {
+  return L.divIcon({
+    className: 'category-marker',
+    html: `<div style="
+      width: 30px; 
+      height: 30px; 
+      background: ${categoryData.color}; 
+      border: 2px solid white; 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-size: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    ">${categoryData.icon}</div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 15]
+  });
+}
+
 function startLocationTracking() {
   if (navigator.geolocation) {
     watchId = navigator.geolocation.watchPosition(
@@ -117,12 +343,11 @@ function updateVoiceNavigation(currentPos) {
   const distanceToDestination = calcDistance(
     currentPos[0], currentPos[1], 
     currentDestination.lat, currentDestination.lon
-  ) * 1000; // تحويل إلى متر
+  ) * 1000;
   
   document.getElementById('nav-distance').textContent = 
     `المسافة المتبقية: ${Math.round(distanceToDestination)} متر`;
   
-  // إعطاء تعليمات حسب المسافة
   let instruction = '';
   
   if (distanceToDestination < 10) {
@@ -139,7 +364,6 @@ function updateVoiceNavigation(currentPos) {
     instruction = `اتجه ${direction}، المسافة ${Math.round(distanceToDestination)} متر`;
   }
   
-  // تحديث التعليمات كل 30 ثانية أو عند تغيير كبير في المسافة
   if (instruction && instruction !== lastInstruction) {
     document.getElementById('nav-instruction').textContent = instruction;
     speak(instruction);
@@ -159,63 +383,95 @@ function getDirection(from, to) {
 }
 
 function loadPlaces() {
-  const listsDiv = document.getElementById("lists");
-  const searchHTML = listsDiv.querySelector("#search-box").outerHTML;
-  listsDiv.innerHTML = searchHTML;
+  const placesList = document.getElementById("places-list");
+  placesList.innerHTML = '';
   allPlaces = [];
   
-  for(const [name, cat] of Object.entries(categories)){
-    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:2000,${userLocation[0]},${userLocation[1]});out;`;
+  Object.entries(categories).forEach(([categoryName, categoryData]) => {
+    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${categoryData.filter}](around:2000,${userLocation[0]},${userLocation[1]});out;`;
     
     fetch(overpassUrl)
-      .then(res=>res.json())
-      .then(data=>{
+      .then(res => res.json())
+      .then(data => {
+        if (data.elements.length === 0) return;
+        
         const placesWithDistance = data.elements.map((el, index) => {
           const placeLat = el.lat;
           const placeLon = el.lon;
           let placeName = el.tags.name || "بدون اسم";
           
-          if(name==="أجهزة صراف"){
-            const atmNames = ["صراف الأهلي","صراف سامبا","صراف الرياض","صراف الجزيرة"];
+          if (categoryName === "أجهزة صراف") {
+            const atmNames = ["صراف الأهلي", "صراف سامبا", "صراف الرياض", "صراف الجزيرة"];
             placeName = atmNames[index % atmNames.length];
           }
           
-          const dist = calcDistance(userLocation[0],userLocation[1],placeLat,placeLon);
+          const dist = calcDistance(userLocation[0], userLocation[1], placeLat, placeLon);
           return {
             name: placeName,
             lat: placeLat,
             lon: placeLon,
-            category: name,
+            category: categoryName,
             distance: dist
           };
-        }).sort((a, b) => a.distance - b.distance).slice(0, 8); // أقرب 8 أماكن
+        }).sort((a, b) => a.distance - b.distance).slice(0, 8);
         
-        let html = `<details open><summary>${cat.icon} ${name} (${placesWithDistance.length})</summary>`;
+        if (placesWithDistance.length === 0) return;
+        
+        // إنشاء قسم الفئة
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'category';
+        
+        const categoryTitle = document.createElement('div');
+        categoryTitle.className = `category-title ${categoryData.className}`;
+        categoryTitle.innerHTML = `${categoryData.icon} ${categoryName} (${placesWithDistance.length})`;
+        categoryDiv.appendChild(categoryTitle);
+        
+        const placesContainer = document.createElement('div');
+        placesContainer.className = 'places-container';
         
         placesWithDistance.forEach(place => {
           allPlaces.push(place);
           const distKm = place.distance.toFixed(2);
           const walkingTimeMinutes = Math.ceil(place.distance * 12);
           
-          L.marker([place.lat, place.lon]).addTo(map)
-            .bindPopup(`${place.name}<br>${distKm} كم - ${walkingTimeMinutes} دقيقة مشي`);
+          // إضافة ماركر مخصص للخريطة
+          const marker = L.marker([place.lat, place.lon], {
+            icon: createCategoryIcon(categoryName, categoryData)
+          }).addTo(map);
           
-          html += `<div class="list-item" onclick="selectDestination(${place.lat},${place.lon},'${place.name.replace(/'/g, "&#39;")}')">
-            <span class="item-name">
-              <span class="icon">${cat.icon}</span>
-              <div>
-                ${place.name}
-                <div class="walking-time">🚶‍♂️ ${walkingTimeMinutes} دقيقة مشي</div>
-              </div>
-            </span>
-            <span class="item-dist">${distKm} كم</span>
-          </div>`;
+          marker.bindPopup(`
+            <div style="text-align: center; font-family: Arial;">
+              <strong>${place.name}</strong><br>
+              <span style="color: ${categoryData.color};">${categoryData.icon} ${categoryName}</span><br>
+              ${distKm} كم - ${walkingTimeMinutes} دقيقة مشي
+            </div>
+          `);
+          
+          // إنشاء عنصر المكان في القائمة
+          const placeItem = document.createElement('div');
+          placeItem.className = 'place-item';
+          placeItem.onclick = () => selectDestination(place.lat, place.lon, place.name);
+          
+          placeItem.innerHTML = `
+            <div>
+              <div class="place-name">${place.name}</div>
+              <div class="place-distance">🚶‍♂️ ${walkingTimeMinutes} دقيقة مشي</div>
+            </div>
+            <div class="distance-badge">${distKm} كم</div>
+          `;
+          
+          placesContainer.appendChild(placeItem);
         });
         
-        html += "</details>";
-        listsDiv.innerHTML += html;
+        categoryDiv.appendChild(placesContainer);
+        placesList.appendChild(categoryDiv);
+        
+        // جعل العنوان قابل للنقر
+        categoryTitle.onclick = function() {
+          placesContainer.style.display = placesContainer.style.display === 'none' ? 'block' : 'none';
+        };
       });
-  }
+  });
 }
 
 function selectDestination(lat, lon, name) {
@@ -231,7 +487,7 @@ function selectDestination(lat, lon, name) {
       profile: 'foot'
     }),
     lineOptions: {
-      styles: [{ color: '#28a745', weight: 6, opacity: 0.8 }]
+      styles: [{ color: '#007bff', weight: 6, opacity: 0.8 }]
     },
     addWaypoints: false,
     draggableWaypoints: false,
@@ -263,7 +519,7 @@ function startNavigation() {
   document.getElementById('nav-distance').textContent = 
     `المسافة المتبقية: ${Math.round(initialDistance)} متر`;
   
-  speak(`بدء التوجيه إلى ${currentDestination.name}. اتبع الخط الأخضر على الخريطة.`);
+  speak(`بدء التوجيه إلى ${currentDestination.name}. اتبع الخط الأزرق على الخريطة.`);
   
   startLocationTracking();
 }
@@ -304,18 +560,18 @@ function calcDistance(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-function filterList() {
-  const query = document.getElementById("search-box").value.toLowerCase();
-  document.querySelectorAll("#lists details").forEach(detail => {
-    detail.querySelectorAll(".list-item").forEach(item => {
-      if (item.innerText.toLowerCase().includes(query)) {
-        item.style.display = "flex";
-      } else {
-        item.style.display = "none";
-      }
-    });
+// البحث والتصفية
+document.getElementById('search-box').oninput = function() {
+  const query = this.value.toLowerCase();
+  document.querySelectorAll('.place-item').forEach(item => {
+    const placeName = item.querySelector('.place-name').textContent.toLowerCase();
+    if (placeName.includes(query)) {
+      item.style.display = 'flex';
+    } else {
+      item.style.display = 'none';
+    }
   });
-}
+};
 
 // البحث الصوتي
 document.getElementById('voice-btn').onclick = function() {
@@ -327,7 +583,7 @@ document.getElementById('voice-btn').onclick = function() {
     recognition.onresult = function(event) {
       const searchTerm = event.results[0][0].transcript;
       document.getElementById('search-box').value = searchTerm;
-      filterList();
+      document.getElementById('search-box').oninput();
     };
   } else {
     alert('البحث الصوتي غير مدعوم في هذا المتصفح');

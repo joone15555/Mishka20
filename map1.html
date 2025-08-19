@@ -1,310 +1,426 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مشكاة - الخدمات حول الحرم</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-<style>
-* {margin:0;padding:0;box-sizing:border-box;}
-body {font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#e8e2f0 0%,#d4c5e8 100%);min-height:100vh;direction:rtl;}
-.container {max-width:600px;margin:0 auto;padding:20px;}
-.header {text-align:center;margin-bottom:30px;}
-.logo {width:120px;height:120px;margin:0 auto 15px;display:block;}
-.services-container {margin-bottom:30px;}
-.services-scroll {display:flex;gap:15px;overflow-x:auto;padding:10px 0;scrollbar-width:none;}
-.services-scroll::-webkit-scrollbar {display:none;}
-.service-item {position: relative;min-width:120px;height:50px;background:#8b5a96;border-radius:25px;display:flex;align-items:center;justify-content:flex-end;padding:0 15px;color:white;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 8px rgba(139,90,150,0.3);}
-.service-item:hover {background:#9d6ba8;transform:translateY(-2px);}
-.service-item.active {background:#6b4c75;transform:scale(1.05);}
-.service-text {font-size:12px;font-weight:500;flex:1;text-align:right;}
-.service-item img {position: absolute;left:10px;top:50%;transform:translateY(-50%);width:24px;height:24px;pointer-events:none;}
-.map-section {margin-top:20px;background:white;border-radius:20px;padding:20px;box-shadow:0 4px 12px rgba(139,90,150,0.2);}
-#map {width:100%;height:450px;border-radius:16px;box-shadow:0 4px 12px rgba(139,90,150,0.2);margin-bottom:10px;}
-#lists {background:#f8f5fb;border-radius:16px;padding:20px;max-height:350px;overflow-y:auto;margin-bottom:10px;}
-#lists details {margin-bottom:15px;border:1px solid #e0e0e0;border-radius:12px;overflow:hidden;}
-#lists summary {padding:15px;background:#8b5a96;color:white;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:10px;min-height:44px;}
-.list-item {display:flex;align-items:center;justify-content:space-between;padding:15px;border-bottom:1px solid #f0f0f0;cursor:pointer;transition:background 0.3s ease;min-height:44px;background:white;}
-.list-item:hover {background:#f8f5fb;}
-.list-item:last-child {border-bottom:none;}
-.item-name {display:flex;align-items:center;gap:10px;flex:1;}
-.item-dist {color:#666;font-size:14px;font-weight:500;}
-.icon {font-size:18px;width:24px;text-align:center;}
-.cat-count {background:#c4b5d4;color:#5a4a6b;padding:4px 8px;border-radius:20px;font-size:12px;font-weight:bold;}
-.voice-btn {display:block;width:100%;padding:12px 0;background:#8b5a96;color:white;border:none;border-radius:25px;font-size:16px;cursor:pointer;margin-top:10px;box-shadow:0 4px 8px rgba(139,90,150,0.3);transition:all 0.3s ease;}
-.voice-btn:hover {background:#9d6ba8;}
-.leaflet-popup-content-wrapper {padding:4px 8px !important;}
-.leaflet-popup-content {font-size:12px !important;}
-.leaflet-popup-tip {background:#fff !important;}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <title>خريطة الخدمات القريبة</title>
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  <style>
+  /* تنسيقات الخريطة والقوائم */
+  .container-map { display: flex; flex-direction: column; max-width: 1200px; margin: 30px auto; gap: 20px; padding: 0 20px; position: relative; }
+  #map { width: 100%; height: 600px; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.15); }
+  #lists { background: linear-gradient(145deg, #c6c6d0, #a7957c); color: #333; padding: 15px; border-radius: 20px; max-height: 600px; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.25); font-family: "Cairo", sans-serif; transition: 0.3s; }
+  #lists details { margin-bottom: 14px; border-radius: 14px; overflow: hidden; background: rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.3s; border-left: 5px solid #a7957c; }
+  #lists summary { font-weight: bold; font-size: 17px; padding: 12px 16px; background: linear-gradient(to right, #a7957c, #c6c6d0); color: #fff; cursor: pointer; outline: none; border-radius: 12px; }
+  .list-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-radius: 12px; margin: 4px 0; background: rgba(255,255,255,0.2); transition: background 0.3s, transform 0.2s; cursor: pointer; }
+  .list-item:hover { background: rgba(255,255,255,0.3); transform: translateX(5px); }
+  .item-name { flex: 1; margin: 0 8px; display: flex; align-items: center; gap: 10px; font-size: 15px; color: #333; }
+  .item-dist { color: #444; font-size: 13px; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 10px; font-weight: bold; }
+  .icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 16px; border-radius: 50%; background: #a7957c; color: white; flex-shrink: 0; }
+  #controls { display: flex; flex-direction: row; justify-content: center; gap: 10px; z-index: 1000; }
+  #controls button { display: flex; align-items: center; gap: 6px; padding: 10px 18px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
+  #voice-btn { background-color: #17a2b8; color: #fff; }
+  #voice-btn:hover { background-color: #117a8b; }
+  #info-btn { background-color: #ffc107; color: #212529; }
+  #info-btn:hover { background-color: #e0a800; }
+  #info-popup { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: white; padding: 16px 22px; border-radius: 16px; box-shadow: 0 6px 25px rgba(0,0,0,0.25); z-index: 1001; display: none; max-width: 320px; font-family: Cairo, sans-serif; transition: 0.3s; }
+  #info-popup button { margin-top: 10px; padding: 6px 12px; font-size: 13px; border: none; border-radius: 10px; background: #4facfe; color: white; cursor: pointer; }
+  #search-box { width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 12px; border: none; font-size: 14px; }
+  </style>
 </head>
-<body>
-<div class="container">
-    <div class="header"><img src="LOGO2.png" alt="مشكاة" class="logo"></div>
-    <div class="services-container">
-        <div class="services-scroll">
-            <div class="service-item" onclick="toggleService('المقاهي')"><span class="service-text">المقاهي</span><img src="11.png" alt="مقهى"></div>
-            <div class="service-item" onclick="toggleService('المطاعم')"><span class="service-text">المطاعم</span><img src="13.png" alt="مطعم"></div>
-            <div class="service-item" onclick="toggleService('صرافات')"><span class="service-text">صراف آلي</span><img src="8.png" alt="صراف"></div>
-            <div class="service-item" onclick="toggleService('صيدليات')"><span class="service-text">الصيدليات</span><img src="7.png" alt="صيدلية"></div>
-            <div class="service-item" onclick="toggleService('مستشفيات')"><span class="service-text">مستشفى</span><img src="15.png" alt="مستشفى"></div>
-            <div class="service-item" onclick="toggleService('دورات المياه')"><span class="service-text">دورات المياه</span><img src="17.png" alt="دورات مياه"></div>
-            <div class="service-item" onclick="toggleService('سوق')"><span class="service-text">سوق</span><img src="16.png" alt="تسوق"></div>
-            <div class="service-item" onclick="toggleService('اتصالات')"><span class="service-text">اتصالات</span><img src="10.png" alt="اتصالات"></div>
-        </div>
-    </div>
-   <div class="map-section">
-    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
-        <!-- زر التحدث -->
-        <button class="voice-btn" id="voice-btn">🎤 التحدث</button>
+<body class="is-preload homepage">
 
-        <!-- زر اختيار اللغة -->
-        <div style="position:relative;">
-            <button id="language-btn" style="
-                padding:12px 20px;
-                border:none;
-                border-radius:25px;
-                background:#8b5a96;
-                color:white;
-                font-size:16px;
-                cursor:pointer;
-                box-shadow:0 4px 8px rgba(139,90,150,0.3);
-                transition:all 0.3s ease;
-            ">🌐 اللغة</button>
-            <ul id="language-menu" style="
-                display:none;
-                position:absolute;
-                top:50px;
-                right:0;
-                background:white;
-                border:1px solid #ddd;
-                border-radius:12px;
-                list-style:none;
-                padding:10px 0;
-                margin:0;
-                min-width:140px;
-                z-index:1000;
-            ">
-                <li><a href="index.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition:background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇸🇦 العربية</a></li>
-                <li><a href="index_en.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition:background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇺🇸 English</a></li>
-                <li><a href="index_es 2.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition:background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇵🇰 اردو</a></li>
-            </ul>
-        </div>
-
-        <!-- زر العودة للصفحة الرئيسية -->
-        <a href="index.html" style="
-            padding:12px 20px;
-            border:none;
-            border-radius:25px;
-            background:#8b5a96;
-            color:white;
-            font-size:16px;
-            text-decoration:none;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            box-shadow:0 4px 8px rgba(139,90,150,0.3);
-            transition:all 0.3s ease;
-            cursor:pointer;
-        ">🏠 الرئيسية</a>
-    </div>
-
-    <div id="map"></div>
-    <div id="lists"></div>
+<!-- Intro Screen -->
+<div id="intro-screen" style="position: fixed; top:0; left:0; width:100%; height:100%; background:#ffffff; color:#000; display:flex; justify-content:center; align-items:center; flex-direction:column; font-family:sans-serif; z-index:9999;">
+  <img src="loading-image.png" alt="تحميل" style="margin-bottom:20px; max-width:200px;">
+  <p style="font-size:18px;">جارٍ التحميل...</p>
 </div>
 
+<!-- Header -->
+<div id="header-wrapper">
+  <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: rtl;">
+    <div id="logo" style="order: 1;">
+      <a href="index.html">
+        <img src="loading-image.png" alt="شعار الموقع" style="max-width:150px; height:auto;">
+      </a>
+    </div>
+    <nav style="order: 2; display: flex; align-items: center;">
+      <ul style="display:flex; gap:20px; list-style:none; margin:0; padding:0; align-items:center; position:relative;">
+        <li><a href="index.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px; transition:0.3s;"
+          onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
+          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
+        >الرئيسية</a></li>
+        <li><a href="card.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px; transition:0.3s;"
+          onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
+          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
+        >بطاقة مشكاة</a></li>
+
+        <!-- Language Dropdown -->
+        <li style="position: relative;">
+          <button onclick="toggleLanguageMenu()" style="background:none; border:none; font-size:24px; cursor:pointer; padding:8px;" title="تغيير اللغة">🌐</button>
+                   <ul id="language-menu" style="display:none; position:absolute; top:40px; left:0; background-color:#fff; border:1px solid #ddd; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); list-style:none; padding:10px 0; margin:0; min-width:160px; z-index:1000;">
+            <li><a href="map1.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition: background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇸🇦 &nbsp; عربی</a></li>
+            <li><a href="map1_en.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition: background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇺🇸 &nbsp; English</a></li>
+            <li><a href="map1_es 2.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition: background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇵🇰 &nbsp; اردو</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </header>
+  <div class="services-box">
+  <div class="services-scroll">
+    <div class="service-item" onclick="filterList('مقاهي')">
+      <img src="11.png" alt="مقهى">
+      <span class="service-text">المقاهي</span>
+    </div>
+    <div class="service-item" onclick="filterList('تحويل عملات')">
+      <img src="9.png" alt="تحويل عملات">
+      <span class="service-text">تحويل عملات</span>
+    </div>
+    <div class="service-item" onclick="filterList('دورات المياه')">
+      <img src="17.png" alt="دورات مياه">
+      <span class="service-text">دورات المياه</span>
+    </div>
+    <div class="service-item" onclick="filterList('حلاق')">
+      <img src="6.png" alt="حلاق">
+      <span class="service-text">حلاق</span>
+    </div>
+    <div class="service-item" onclick="filterList('صراف آلي')">
+      <img src="8.png" alt="صراف آلي">
+      <span class="service-text">صراف آلي</span>
+    </div>
+    <div class="service-item" onclick="filterList('المطاعم')">
+      <img src="13.png" alt="مطعم">
+      <span class="service-text">المطاعم</span>
+    </div>
+    <div class="service-item" onclick="filterList('صيدليات')">
+      <img src="7.png" alt="صيدلية">
+      <span class="service-text">الصيدليات</span>
+    </div>
+    <div class="service-item" onclick="filterList('هدايا تذكارية')">
+      <img src="12.png" alt="هدايا تذكارية">
+      <span class="service-text">هدايا تذكارية</span>
+    </div>
+    <div class="service-item" onclick="filterList('سوق')">
+      <img src="16.png" alt="سوق">
+      <span class="service-text">سوق</span>
+    </div>
+    <div class="service-item" onclick="filterList('بقالة')">
+      <img src="14.png" alt="بقالة">
+      <span class="service-text">بقالة</span>
+    </div>
+    <div class="service-item" onclick="filterList('مستشفى')">
+      <img src="15.png" alt="مستشفى">
+      <span class="service-text">مستشفى</span>
+    </div>
+    <div class="service-item" onclick="filterList('اتصالات')">
+      <img src="10.png" alt="اتصالات">
+      <span class="service-text">اتصالات</span>
+    </div>
+  </div>
+</div>
+
+<style>
+.services-box {
+  width: fit-content;
+  background: linear-gradient(145deg, #c6c6d0, #a7957c); /* نفس ألوان القائمة */
+  border-radius: 15px; 
+  padding: 6px 10px;
+  margin: 10px auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25); /* نفس ظل القائمة */
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+
+.services-scroll {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.service-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 60px;
+  height: 60px; /* نفس شكل المستطيل الصغير */
+  background: rgba(240, 240, 240, 0.7);
+  border-radius: 10px;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  padding: 4px;
+  transition: transform 0.2s;
+}
+
+.service-item:hover {
+  transform: scale(1.1);
+}
+
+.service-item img {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 2px;
+}
+
+.service-text {
+  font-size: 10px;
+  text-align: center;
+  white-space: nowrap;
+}
+</style>
+
 <script>
-    // التعامل مع زر اللغة
-    const languageBtn = document.getElementById('language-btn');
-    const languageMenu = document.getElementById('language-menu');
-
-    languageBtn.addEventListener('click', () => {
-        languageMenu.style.display = (languageMenu.style.display === 'block') ? 'none' : 'block';
-    });
-
-    // إغلاق القائمة عند الضغط خارجها
-    document.addEventListener('click', (e) => {
-        if(!languageBtn.contains(e.target) && !languageMenu.contains(e.target)){
-            languageMenu.style.display = 'none';
-        }
-    });
+function filterList(cat){
+  const listsDiv = document.getElementById("lists");
+  listsDiv.querySelectorAll('details').forEach(detail=>{
+    const summaryText = detail.querySelector('summary').innerText;
+    if(summaryText.includes(cat)){
+      detail.style.display = 'block';
+      detail.open = true;
+    } else {
+      detail.style.display = 'none';
+    }
+  });
+}
 </script>
 
-
 </div>
 
+<!-- الخريطة والمحتوى -->
+<div class="container-map">
+  <div id="map"></div>
+  <div id="controls">
+    <button id="voice-btn">🎤 تحدث</button>
+    <button id="info-btn">ℹ️ معلومات</button>
+  </div>
+  <div id="lists">
+    <input type="text" id="search-box" placeholder="ابحث عن أي مكان هنا..." oninput="filterList()">
+  </div>
+  <div id="info-popup">
+    <strong id="info-title"></strong>
+    <p id="info-desc" style="margin-top: 8px; font-size: 14px;"></p>
+    <button onclick="document.getElementById('info-popup').style.display='none'">إغلاق</button>
+  </div>
+</div>
+
+<!-- Footer -->
+<div id="footer-wrapper">
+  <footer id="footer" class="container">
+    <div class="row">
+      <div class="col-3 col-6-medium col-12-small">
+        <section class="widget contact last">
+          <h3>تواصل معنا</h3>
+          <ul>
+            <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+            <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+            <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+            <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+            <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+          </ul>
+          <p>1234 Fictional Road<br />
+          Nashville, TN 00000<br />
+          (800) 555-0000</p>
+        </section>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div id="copyright">
+          <ul class="menu">
+            <li>&copy; جميع الحقوق محفوظة</li><li>تصميم: <a href="http://html5up.net">HTML5 UP</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js"></script>
+
 <script>
 const categories = {
-    "المطاعم": {filter:'amenity=restaurant', icon:'🍽️'},
-    "صرافات": {filter:'amenity=atm', icon:'🏧'},
-    "صيدليات": {filter:'amenity=pharmacy', icon:'💊'},
-    "مستشفيات": {filter:'amenity=hospital', icon:'🏥'},
-    "المقاهي": {filter:'amenity=cafe', icon:'☕'},
-    "دورات المياه": {filter:'amenity=toilets', icon:'🚻'},
-    "سوق": {filter:'shop=supermarket', icon:'🛒'},
-    "اتصالات": {filter:'shop=mobile_phone', icon:'📱'}
+  "مطاعم": {filter:'amenity=restaurant', icon:'🍴'},
+  "فنادق": {filter:'tourism=hotel', icon:'🏨'},
+  "أجهزة صراف": {filter:'amenity=atm', icon:'🏧'},
+  "صيدليات": {filter:'amenity=pharmacy', icon:'💊'},
+  "مستشفيات": {filter:'amenity=hospital', icon:'🏥'},
+  "متاجر": {filter:'shop=*', icon:'🛍️'},
+  "مقاهي": {filter:'amenity=cafe', icon:'☕'},
+  "دورات مياه": {filter:'amenity=toilets', icon:'🚻'}
 };
 
-const haramLocation = [21.4225,39.8262];
-let map, allMarkers=[], userMarker, routingControl=null;
-let userLocation = haramLocation.slice(); 
+const categoryDescriptions = {
+  "مطاعم": "مطاعم: تقدم مجموعة متنوعة من الأطعمة المحلية والعالمية.",
+  "فنادق": "فنادق: إقامة مريحة مع خدمات عالية الجودة.",
+  "أجهزة صراف": "أجهزة صراف: سحب وتحويل الأموال بسهولة.",
+  "صيدليات": "صيدليات: الوصول إلى الأدوية والمنتجات الصحية.",
+  "مستشفيات": "مستشفيات: خدمات طبية طارئة ومستدامة.",
+  "متاجر": "متاجر: مجموعة متنوعة من الملابس والإكسسوارات.",
+  "مقاهي": "مقاهي: مكان للاسترخاء والاستمتاع بالقهوة.",
+  "دورات مياه": "دورات مياه: متاحة للاستخدام العام.",
+  "Unknown": "الوصف غير متوفر."
+};
+
+let userLocation = [21.4225,39.8262];
+let lang = "ar-SA";
 let lastSelectedPlace = null;
+const map = L.map('map').setView(userLocation, 16);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'&copy; OpenStreetMap contributors' }).addTo(map);
+let userMarker = L.marker(userLocation).addTo(map).bindPopup("موقعك الحالي").openPopup();
+let routingControl = null;
+let allPlaces = [];
+let fuse = null;
 
-function getIcon(category){
-    return L.divIcon({
-        html: categories[category]?.icon || '📍',
-        className:'',
-        iconSize:[30,30],
-        popupAnchor:[0,-10]
-    });
-}
+navigator.geolocation.getCurrentPosition(pos => {
+  userLocation = [pos.coords.latitude, pos.coords.longitude];
+  userMarker.setLatLng(userLocation).bindPopup("موقعك الحالي");
+}, ()=>{});
 
-function initMap(){
-    map=L.map('map').setView(haramLocation,16);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap'}).addTo(map);
-    userMarker=L.marker(userLocation).addTo(map).bindPopup("موقعك الحالي").openPopup();
-
-    if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(pos=>{
-            userLocation=[pos.coords.latitude,pos.coords.longitude];
-            userMarker.setLatLng(userLocation).bindPopup("موقعك الحالي").openPopup();
+function loadPlaces(lat, lon){
+  const listsDiv = document.getElementById("lists");
+  // نحتفظ بالبحث في الأعلى
+  const searchHTML = listsDiv.querySelector("#search-box").outerHTML;
+  listsDiv.innerHTML = searchHTML;
+  allPlaces = [];
+  for(const [name, cat] of Object.entries(categories)){
+    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:1500,${lat},${lon});out;`;
+    fetch(overpassUrl)
+      .then(res=>res.json())
+      .then(data=>{
+        let html = `<details open><summary>${cat.icon} ${name} (<span class="cat-count">${data.elements.length}</span>)</summary>`;
+        data.elements.forEach((el,index)=>{
+          const placeLat = el.lat;
+          const placeLon = el.lon;
+          let placeName = el.tags.name || "بدون اسم";
+          if(name==="أجهزة صراف"){
+            const atmNames = ["صراف الأهلي 1","صراف الأهلي 2","صراف سامبا 1","صراف سامبا 2","صراف الرياض 1","صراف الرياض 2","صراف الجزيرة","صراف الإنماء"];
+            placeName = atmNames[index % atmNames.length];
+          }
+          allPlaces.push({name:placeName,lat:placeLat,lon:placeLon,category:name});
+          const dist = calcDistance(userLocation[0],userLocation[1],placeLat,placeLon).toFixed(2);
+          L.marker([placeLat, placeLon]).addTo(map).bindPopup(`${placeName}<br>${dist} كم`);
+          html += `<div class="list-item" onclick="focusPlace(${placeLat},${placeLon},'${placeName.replace(/'/g, "&#39;")}','${name}')"><span class="item-name"><span class="icon">${cat.icon}</span>${placeName}</span><span class="item-dist">${dist} كم</span></div>`;
         });
-    }
-
-    loadAllCategories();
+        html += "</details>";
+        listsDiv.innerHTML += html;
+        fuse = new Fuse(allPlaces, {keys:["name"], threshold:0.4});
+      });
+  }
 }
 
-function loadAllCategories(){
-    const listsDiv=document.getElementById("lists");
-    listsDiv.innerHTML="";
-    allMarkers.forEach(m=>map.removeLayer(m));
-    allMarkers=[];
-
-    const defaultNames = {}; // لتعداد الأسماء الافتراضية لكل فئة
-
-    for(const [name,cat] of Object.entries(categories)){
-        defaultNames[name]=1;
-
-        fetch(`https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:2000,${haramLocation[0]},${haramLocation[1]});out;`)
-        .then(r=>r.json()).then(data=>{
-            let html=`<details open><summary>${cat.icon} ${name} <span class="cat-count">${data.elements.length}</span></summary>`;
-            data.elements.forEach(el=>{
-                let placeName=el.tags.name;
-                if(!placeName || placeName.trim()===""){
-                    placeName=`${name} ${defaultNames[name]}`; // اسم افتراضي
-                    defaultNames[name]++;
-                }
-                const dist=calcDistance(userLocation[0],userLocation[1],el.lat,el.lon).toFixed(2);
-                const marker=L.marker([el.lat,el.lon],{icon:getIcon(name)}).addTo(map).bindPopup(`${placeName}<br>${dist} كم`);
-                allMarkers.push(marker);
-                html+=`<div class="list-item" onclick="focusPlace(${el.lat},${el.lon},'${placeName}','${name}')"><span class="item-name"><span class="icon">${cat.icon}</span>${placeName}</span><span class="item-dist">${dist} كم</span></div>`;
-            });
-            html+="</details>";
-            listsDiv.innerHTML+=html;
-        });
-    }
-}
-
-function toggleService(serviceName){
-    const listsDiv=document.getElementById("lists");
-    listsDiv.innerHTML="";
-    allMarkers.forEach(m=>map.removeLayer(m));
-    allMarkers=[];
-
-    const defaultNames = {};
-    defaultNames[serviceName]=1;
-
-    for(const [name,cat] of Object.entries(categories)){
-        if(name!==serviceName) continue;
-        fetch(`https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:2000,${haramLocation[0]},${haramLocation[1]});out;`)
-        .then(r=>r.json()).then(data=>{
-            let html=`<details open><summary>${cat.icon} ${name} <span class="cat-count">${data.elements.length}</span></summary>`;
-            data.elements.forEach(el=>{
-                let placeName=el.tags.name;
-                if(!placeName || placeName.trim()===""){
-                    placeName=`${name} ${defaultNames[name]}`;
-                    defaultNames[name]++;
-                }
-                const dist=calcDistance(userLocation[0],userLocation[1],el.lat,el.lon).toFixed(2);
-                const marker=L.marker([el.lat,el.lon],{icon:getIcon(name)}).addTo(map).bindPopup(`${placeName}<br>${dist} كم`);
-                allMarkers.push(marker);
-                html+=`<div class="list-item" onclick="focusPlace(${el.lat},${el.lon},'${placeName}','${name}')"><span class="item-name"><span class="icon">${cat.icon}</span>${placeName}</span><span class="item-dist">${dist} كم</span></div>`;
-            });
-            html+="</details>";
-            listsDiv.innerHTML=html;
-        });
-    }
-}
-
-function focusPlace(lat,lon,name,category){
-    map.setView([lat,lon],18);
-    L.popup().setLatLng([lat,lon]).setContent(name).openOn(map);
-    lastSelectedPlace={name,lat,lon,category};
-
-    if(routingControl) map.removeControl(routingControl);
-
-    routingControl = L.Routing.control({
-        waypoints:[L.latLng(userLocation[0],userLocation[1]),L.latLng(lat,lon)],
-        lineOptions:{styles:[{color:'blue',opacity:0.6,weight:5}]},
-        addWaypoints:false, draggableWaypoints:false, routeWhileDragging:false, showAlternatives:false,
-        createMarker:()=>null
-    }).addTo(map);
-
-    describeRoute(userLocation,[lat,lon],name);
+function focusPlace(lat, lon, name, category){
+  map.setView([lat, lon],18);
+  L.popup().setLatLng([lat,lon]).setContent(name).openOn(map);
+  lastSelectedPlace = {name, lat, lon, category};
+  if(routingControl) map.removeControl(routingControl);
+  routingControl = L.Routing.control({
+    waypoints:[L.latLng(userLocation[0],userLocation[1]),L.latLng(lat,lon)],
+    lineOptions:{styles:[{color:'blue',opacity:0.6,weight:5}]},
+    addWaypoints:false,
+    draggableWaypoints:false,
+    routeWhileDragging:false,
+    showAlternatives:false,
+    createMarker:()=>null
+  }).addTo(map);
+  describeRoute(userLocation,[lat,lon],name);
 }
 
 function describeRoute(start,end,placeName){
-    let latDiff=end[0]-start[0];
-    let lonDiff=end[1]-start[1];
-    let text=`اذهب من موقعك الحالي إلى ${placeName}. `;
-    text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"اتجه شمالًا. ":"اتجه جنوبًا. "):(lonDiff>0?"اتجه شرقًا. ":"اتجه غربًا. ");
-    speak(text);
+  const latDiff=end[0]-start[0];
+  const lonDiff=end[1]-start[1];
+  let text = `اتجه من موقعك الحالي إلى ${placeName}. `;
+  text+=Math.abs(latDiff)>Math.abs(lonDiff)?(latDiff>0?"اتجه شمالاً. ":"اتجه جنوباً. "):(lonDiff>0?"اتجه شرقاً. ":"اتجه غرباً. ");
+  speak(text);
 }
 
-function speak(text){ speechSynthesis.cancel(); const utterance=new SpeechSynthesisUtterance(text); utterance.lang="ar-SA"; speechSynthesis.speak(utterance); }
+function speak(text){
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = lang;
+  speechSynthesis.speak(utterance);
+}
 
 function calcDistance(lat1,lon1,lat2,lon2){
-    const R=6371;
-    const dLat=(lat2-lat1)*Math.PI/180;
-    const dLon=(lon2-lon1)*Math.PI/180;
-    const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
-    return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  const R=6371;
+  const dLat=(lat2-lat1)*Math.PI/180;
+  const dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  return R*c;
 }
 
-// التعرف على الصوت
-const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
-let recognition=null;
-if(SpeechRecognition){
-    recognition=new SpeechRecognition();
-    recognition.continuous=false;
-    recognition.interimResults=false;
-    document.getElementById("voice-btn").addEventListener("click",()=>{
-        recognition.lang="ar-SA";
-        recognition.start();
+document.getElementById("voice-btn").addEventListener("click",()=>{
+  if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)){
+    alert("ميزة التعرف على الصوت غير مدعومة في متصفحك");
+    return;
+  }
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = lang;
+  recognition.start();
+  recognition.onresult = function(event){
+    const transcript = event.results[0][0].transcript;
+    if(fuse){
+      const results = fuse.search(transcript);
+      if(results.length>0){
+        const match = results[0].item;
+        focusPlace(match.lat, match.lon, match.name, match.category);
+      } else {
+        speak("المكان غير معروف، حاول مرة أخرى.");
+      }
+    }
+  }
+});
+
+document.getElementById("info-btn").addEventListener("click",()=>{
+  const popup = document.getElementById("info-popup");
+  if(lastSelectedPlace){
+    document.getElementById("info-title").innerText = lastSelectedPlace.name;
+    document.getElementById("info-desc").innerText = categoryDescriptions[lastSelectedPlace.category] || categoryDescriptions["Unknown"];
+    popup.style.display = "block";
+  } else {
+    alert("يرجى اختيار مكان أولاً");
+  }
+});
+
+function filterList(){
+  const query = document.getElementById("search-box").value.toLowerCase();
+  document.querySelectorAll("#lists details").forEach(detail=>{
+    let hasMatch=false;
+    detail.querySelectorAll(".list-item").forEach(item=>{
+      if(item.innerText.toLowerCase().includes(query)){
+        item.style.display="flex";
+        hasMatch=true;
+      } else {
+        item.style.display="none";
+      }
     });
-    recognition.onresult=function(event){
-        const speech=event.results[0][0].transcript.toLowerCase();
-        let found = null;
-        allMarkers.forEach(m=>{
-            if(m.getPopup().getContent().toLowerCase().includes(speech)){
-                const latlng = m.getLatLng();
-                found = {lat:latlng.lat, lon:latlng.lng, name:m.getPopup().getContent()};
-            }
-        });
-        if(found){
-            focusPlace(found.lat,found.lon,found.name.split('<')[0]);
-        } else {
-            alert("المكان غير موجود في القائمة.");
-        }
-    };
-} else {
-    document.getElementById("voice-btn").style.display="none";
+    // نترك الأقسام ظاهرة دائمًا
+  });
 }
 
-window.onload=()=>{ initMap(); };
+function toggleLanguageMenu() {
+  const menu = document.getElementById('language-menu');
+  if (menu.style.display === 'block') { menu.style.display = 'none'; } else { menu.style.display = 'block'; }
+}
+
+document.addEventListener('click', function (e) {
+  const menu = document.getElementById('language-menu');
+  const button = e.target.closest('button');
+  if (!e.target.closest('#language-menu') && (!button || button.innerText !== '🌐')) { menu.style.display = 'none'; }
+});
+
+window.addEventListener("load",()=>{
+  setTimeout(()=>{document.getElementById("intro-screen").style.display="none";},1500);
+  loadPlaces(userLocation[0],userLocation[1]);
+});
 </script>
 </body>
 </html>
+

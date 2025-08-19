@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <title>خريطة الخدمات القريبة للحجاج</title>
+  <title>خريطة الخدمات القريبة - مسارات سهلة للحجاج</title>
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
@@ -14,16 +14,23 @@
     #lists { background: linear-gradient(145deg, #c6c6d0, #a7957c); color: #333; padding: 15px; border-radius: 20px; max-height: 600px; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.25); font-family: "Cairo", sans-serif; transition: 0.3s; }
     #lists details { margin-bottom: 14px; border-radius: 14px; overflow: hidden; background: rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.3s; border-left: 5px solid #a7957c; }
     #lists summary { font-weight: bold; font-size: 17px; padding: 12px 16px; background: linear-gradient(to right, #a7957c, #c6c6d0); color: #fff; cursor: pointer; outline: none; border-radius: 12px; }
-    .list-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-radius: 12px; margin: 4px 0; background: rgba(255,255,255,0.2); transition: background 0.3s, transform 0.2s; cursor: pointer; position: relative; }
+    .list-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-radius: 12px; margin: 4px 0; background: rgba(255,255,255,0.2); transition: background 0.3s, transform 0.2s; cursor: pointer; }
     .list-item:hover { background: rgba(255,255,255,0.3); transform: translateX(5px); }
     .item-name { flex: 1; margin: 0 8px; display: flex; align-items: center; gap: 10px; font-size: 15px; color: #333; }
     .item-dist { color: #444; font-size: 13px; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 10px; font-weight: bold; }
-    .distance-badge { position: absolute; top: 5px; right: 5px; padding: 2px 6px; border-radius: 8px; font-size: 10px; font-weight: bold; }
-    .very-close { background: #28a745; color: white; }
-    .close { background: #ffc107; color: #212529; }
-    .far { background: #dc3545; color: white; }
-    .walking-time { font-size: 11px; color: #666; margin-top: 2px; }
     .icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 16px; border-radius: 50%; background: #a7957c; color: white; flex-shrink: 0; }
+    
+    /* إضافة تصنيف المسافات بالألوان */
+    .distance-very-close { background: #28a745 !important; color: white; }
+    .distance-close { background: #ffc107 !important; color: #212529; }
+    .distance-far { background: #dc3545 !important; color: white; }
+    
+    /* إضافة عرض وقت المشي */
+    .walking-time { font-size: 11px; color: #666; margin-top: 2px; }
+    
+    /* تحسين عرض التوجيهات */
+    .route-instructions { background: #e8f5e8; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 14px; border-right: 4px solid #28a745; }
+    
     #controls { display: flex; flex-direction: row; justify-content: center; gap: 10px; z-index: 1000; }
     #controls button { display: flex; align-items: center; gap: 6px; padding: 10px 18px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
     #voice-btn { background-color: #17a2b8; color: #fff; }
@@ -33,7 +40,10 @@
     #info-popup { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: white; padding: 16px 22px; border-radius: 16px; box-shadow: 0 6px 25px rgba(0,0,0,0.25); z-index: 1001; display: none; max-width: 320px; font-family: Cairo, sans-serif; transition: 0.3s; }
     #info-popup button { margin-top: 10px; padding: 6px 12px; font-size: 13px; border: none; border-radius: 10px; background: #4facfe; color: white; cursor: pointer; }
     #search-box { width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 12px; border: none; font-size: 14px; }
-    .route-instructions { background: #e8f5e8; padding: 10px; border-radius: 8px; margin: 5px 0; font-size: 12px; color: #2d5a2d; }
+    
+    /* إضافة منطقة التوجيهات */
+    #route-guidance { background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: none; }
+    #route-guidance h4 { margin: 0 0 10px 0; color: #495057; }
   </style>
 </head>
 <body class="is-preload homepage">
@@ -41,7 +51,7 @@
 <!-- Intro Screen -->
 <div id="intro-screen" style="position: fixed; top:0; left:0; width:100%; height:100%; background:#ffffff; color:#000; display:flex; justify-content:center; align-items:center; flex-direction:column; font-family:sans-serif; z-index:9999;">
   <img src="loading-image.png" alt="تحميل" style="margin-bottom:20px; max-width:200px;">
-  <p style="font-size:18px;">جارٍ تحميل خريطة الحجاج...</p>
+  <p style="font-size:18px;">جارٍ التحميل...</p>
 </div>
 
 <!-- Header -->
@@ -57,13 +67,19 @@
     <button id="voice-btn">🎤 تحدث</button>
     <button id="info-btn">ℹ️ معلومات</button>
   </div>
+  
+  <!-- إضافة منطقة التوجيهات -->
+  <div id="route-guidance">
+    <h4>🧭 توجيهات المسار</h4>
+    <div id="guidance-content"></div>
+  </div>
+  
   <div id="lists">
-    <input type="text" id="search-box" placeholder="ابحث عن أقرب الخدمات..." oninput="filterList()">
+    <input type="text" id="search-box" placeholder="ابحث عن أي مكان هنا..." oninput="filterList()">
   </div>
   <div id="info-popup">
     <strong id="info-title"></strong>
     <p id="info-desc" style="margin-top: 8px; font-size: 14px;"></p>
-    <div id="route-details" class="route-instructions" style="display: none;"></div>
     <button onclick="document.getElementById('info-popup').style.display='none'">إغلاق</button>
   </div>
 </div>
@@ -89,29 +105,29 @@ const categories = {
 };
 
 const categoryDescriptions = {
-  "مطاعم": "مطاعم: تقدم مجموعة متنوعة من الأطعمة المحلية والعالمية قريبة من الحرم الشريف.",
-  "فنادق": "فنادق: إقامة مريحة مع خدمات عالية الجودة على مسافة قريبة من المشاعر المقدسة.",
-  "أجهزة صراف": "أجهزة صراف: سحب وتحويل الأموال بسهولة في محيط الحرم المكي الشريف.",
-  "صيدليات": "صيدليات: الوصول إلى الأدوية والمنتجات الصحية الضرورية للحجاج.",
-  "مستشفيات": "مستشفيات: خدمات طبية طارئة ومستدامة متخصصة في خدمة الحجاج.",
-  "متاجر": "متاجر: مجموعة متنوعة من الملابس والإكسسوارات ومستلزمات الحج.",
-  "مقاهي": "مقاهي: مكان للاسترخاء والاستمتاع بالقهوة والمشروبات الباردة.",
-  "دورات مياه": "دورات مياه: متاحة للاستخدام العام ومجهزة خصيصاً لخدمة الحجاج.",
+  "مطاعم": "مطاعم: تقدم مجموعة متنوعة من الأطعمة المحلية والعالمية.",
+  "فنادق": "فنادق: إقامة مريحة مع خدمات عالية الجودة.",
+  "أجهزة صراف": "أجهزة صراف: سحب وتحويل الأموال بسهولة.",
+  "صيدليات": "صيدليات: الوصول إلى الأدوية والمنتجات الصحية.",
+  "مستشفيات": "مستشفيات: خدمات طبية طارئة ومستدامة.",
+  "متاجر": "متاجر: مجموعة متنوعة من الملابس والإكسسوارات.",
+  "مقاهي": "مقاهي: مكان للاسترخاء والاستمتاع بالقهوة.",
+  "دورات مياه": "دورات مياه: متاحة للاستخدام العام.",
   "Unknown": "الوصف غير متوفر."
 };
 
-// معالم مرجعية في الحرم
 const landmarks = {
   "الكعبة المشرفة": [21.4225, 39.8262],
-  "الصفا والمروة": [21.4226, 39.8266],
-  "باب الملك عبدالعزيز": [21.4220, 39.8250],
-  "باب الفتح": [21.4230, 39.8270]
+  "باب الملك عبدالعزيز": [21.4235, 39.8270],
+  "باب الصفا": [21.4215, 39.8255],
+  "الصفا والمروة": [21.4220, 39.8275],
+  "مقام إبراهيم": [21.4226, 39.8264]
 };
 
 let userLocation = [21.4225,39.8262];
 let lang = "ar-SA";
 let lastSelectedPlace = null;
-const map = L.map('map').setView(userLocation, 17);
+const map = L.map('map').setView(userLocation, 16);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'&copy; OpenStreetMap contributors' }).addTo(map);
 let userMarker = L.marker(userLocation).addTo(map).bindPopup("موقعك الحالي").openPopup();
 let routingControl = null;
@@ -139,23 +155,6 @@ if (navigator.geolocation) {
   }, err => console.log(err), {enableHighAccuracy:true, maximumAge:1000});
 }
 
-function getDistanceCategory(distance) {
-  if (distance <= 0.2) return 'very-close';
-  if (distance <= 0.5) return 'close';
-  return 'far';
-}
-
-function getDistanceText(distance) {
-  if (distance <= 0.2) return 'قريب جداً';
-  if (distance <= 0.5) return 'قريب';
-  return 'بعيد نسبياً';
-}
-
-function getWalkingTime(distance) {
-  const timeMinutes = Math.ceil((distance * 1000) / 80); // 80 متر في الدقيقة (سرعة بطيئة للحجاج)
-  return `${timeMinutes} دقيقة مشي`;
-}
-
 function loadPlaces(lat, lon){
   const listsDiv = document.getElementById("lists");
   const searchHTML = listsDiv.querySelector("#search-box").outerHTML;
@@ -163,49 +162,55 @@ function loadPlaces(lat, lon){
   allPlaces = [];
   
   for(const [name, cat] of Object.entries(categories)){
-    // تقليل نطاق البحث إلى 800 متر بدلاً من 1500
-    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:800,${lat},${lon});out;`;
+    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:3000,${lat},${lon});out;`;
     fetch(overpassUrl)
       .then(res=>res.json())
       .then(data=>{
-        // ترتيب الأماكن حسب المسافة
-        const sortedPlaces = data.elements.map(el => {
-          const dist = calcDistance(userLocation[0], userLocation[1], el.lat, el.lon);
-          return { ...el, distance: dist };
-        }).sort((a, b) => a.distance - b.distance);
-
-        let html = `<details open><summary>${cat.icon} ${name} (<span class="cat-count">${sortedPlaces.length}</span>)</summary>`;
-        
-        sortedPlaces.forEach((el,index)=>{
+        const placesWithDistance = data.elements.map((el, index) => {
           const placeLat = el.lat;
           const placeLon = el.lon;
           let placeName = el.tags.name || "بدون اسم";
-          
           if(name==="أجهزة صراف"){
             const atmNames = ["صراف الأهلي 1","صراف الأهلي 2","صراف سامبا 1","صراف سامبا 2","صراف الرياض 1","صراف الرياض 2","صراف الجزيرة","صراف الإنماء"];
             placeName = atmNames[index % atmNames.length];
           }
+          const dist = calcDistance(userLocation[0],userLocation[1],placeLat,placeLon);
+          return {
+            name: placeName,
+            lat: placeLat,
+            lon: placeLon,
+            category: name,
+            distance: dist,
+            element: el
+          };
+        }).sort((a, b) => a.distance - b.distance);
+        
+        let html = `<details open><summary>${cat.icon} ${name} (<span class="cat-count">${placesWithDistance.length}</span>)</summary>`;
+        
+        placesWithDistance.forEach(place => {
+          allPlaces.push(place);
+          const distKm = place.distance.toFixed(2);
           
-          allPlaces.push({name:placeName,lat:placeLat,lon:placeLon,category:name,distance:el.distance});
-          const dist = el.distance.toFixed(2);
-          const distCategory = getDistanceCategory(el.distance);
-          const distText = getDistanceText(el.distance);
-          const walkingTime = getWalkingTime(el.distance);
+          let distanceClass = 'distance-far';
+          if (place.distance <= 1.0) distanceClass = 'distance-very-close';
+          else if (place.distance <= 2.0) distanceClass = 'distance-close';
           
-          L.marker([placeLat, placeLon]).addTo(map).bindPopup(`${placeName}<br>${dist} كم - ${walkingTime}`);
+          const walkingTimeMinutes = Math.ceil(place.distance * 12); // 12 دقيقة لكل كيلومتر
           
-          html += `<div class="list-item" onclick="focusPlace(${placeLat},${placeLon},'${placeName.replace(/'/g, "&#39;")}','${name}')">
-            <span class="distance-badge ${distCategory}">${distText}</span>
+          L.marker([place.lat, place.lon]).addTo(map).bindPopup(`${place.name}<br>${distKm} كم - ${walkingTimeMinutes} دقيقة مشي`);
+          
+          html += `<div class="list-item" onclick="focusPlace(${place.lat},${place.lon},'${place.name.replace(/'/g, "&#39;")}','${name}')">
             <span class="item-name">
               <span class="icon">${cat.icon}</span>
               <div>
-                <div>${placeName}</div>
-                <div class="walking-time">${walkingTime}</div>
+                ${place.name}
+                <div class="walking-time">🚶‍♂️ ${walkingTimeMinutes} دقيقة مشي</div>
               </div>
             </span>
-            <span class="item-dist">${dist} كم</span>
+            <span class="item-dist ${distanceClass}">${distKm} كم</span>
           </div>`;
         });
+        
         html += "</details>";
         listsDiv.innerHTML += html;
         fuse = new Fuse(allPlaces, {keys:["name"], threshold:0.4});
@@ -214,7 +219,7 @@ function loadPlaces(lat, lon){
 }
 
 function focusPlace(lat, lon, name, category){
-  map.setView([lat, lon],19); // زيادة مستوى التكبير
+  map.setView([lat, lon],18);
   L.popup().setLatLng([lat,lon]).setContent(name).openOn(map);
   lastSelectedPlace = {name, lat, lon, category};
   if(routingControl) map.removeControl(routingControl);
@@ -228,7 +233,7 @@ function focusPlace(lat, lon, name, category){
 
   routingControl = L.Routing.control({
     waypoints:[L.latLng(userLocation[0],userLocation[1]),targetPoint],
-    lineOptions:{styles:[{color:'#28a745',opacity:0.8,weight:6}]}, // خط أخضر أكثر وضوحاً
+    lineOptions:{styles:[{color:'#28a745',opacity:0.8,weight:6}]}, // لون أخضر أكثر وضوحاً
     addWaypoints:false,
     draggableWaypoints:false,
     routeWhileDragging:false,
@@ -236,59 +241,76 @@ function focusPlace(lat, lon, name, category){
     createMarker:()=>null
   }).addTo(map);
   
+  showRouteGuidance(userLocation,[lat,lon],name);
   describeRoute(userLocation,[lat,lon],name);
 }
 
-function getClosestLandmark(targetLat, targetLon) {
-  let closestLandmark = null;
-  let minDistance = Infinity;
+function showRouteGuidance(start, end, placeName) {
+  const guidanceDiv = document.getElementById('route-guidance');
+  const contentDiv = document.getElementById('guidance-content');
   
-  for (const [landmarkName, coords] of Object.entries(landmarks)) {
-    const distance = calcDistance(coords[0], coords[1], targetLat, targetLon);
-    if (distance < minDistance) {
-      minDistance = distance;
-      closestLandmark = landmarkName;
+  const distance = calcDistance(start[0], start[1], end[0], end[1]);
+  const walkingTime = Math.ceil(distance * 12);
+  
+  // العثور على أقرب معلم
+  let nearestLandmark = null;
+  let minLandmarkDistance = Infinity;
+  
+  for (const [landmarkName, landmarkCoords] of Object.entries(landmarks)) {
+    const landmarkDistance = calcDistance(end[0], end[1], landmarkCoords[0], landmarkCoords[1]);
+    if (landmarkDistance < minLandmarkDistance) {
+      minLandmarkDistance = landmarkDistance;
+      nearestLandmark = landmarkName;
     }
   }
   
-  return closestLandmark;
+  let guidance = `
+    <div class="route-instructions">
+      <strong>📍 الوجهة:</strong> ${placeName}<br>
+      <strong>📏 المسافة:</strong> ${distance.toFixed(2)} كم<br>
+      <strong>⏱️ وقت المشي:</strong> ${walkingTime} دقيقة تقريباً<br>
+      <strong>🕋 أقرب معلم:</strong> ${nearestLandmark} (${minLandmarkDistance.toFixed(2)} كم من الوجهة)
+    </div>
+  `;
+  
+  // إضافة توجيهات مبسطة
+  const latDiff = end[0] - start[0];
+  const lonDiff = end[1] - start[1];
+  
+  let direction = "";
+  if (Math.abs(latDiff) > Math.abs(lonDiff)) {
+    direction = latDiff > 0 ? "شمالاً نحو الكعبة المشرفة" : "جنوباً من الكعبة المشرفة";
+  } else {
+    direction = lonDiff > 0 ? "شرقاً نحو الصفا والمروة" : "غرباً من الصفا والمروة";
+  }
+  
+  guidance += `
+    <div style="background: #e3f2fd; padding: 10px; border-radius: 8px; margin-top: 10px;">
+      <strong>🧭 الاتجاه:</strong> ${direction}<br>
+      <strong>💡 نصيحة:</strong> اتبع الخط الأخضر على الخريطة واستخدم ${nearestLandmark} كنقطة مرجعية
+    </div>
+  `;
+  
+  contentDiv.innerHTML = guidance;
+  guidanceDiv.style.display = 'block';
 }
 
 function describeRoute(start,end,placeName){
-  const distance = calcDistance(start[0], start[1], end[0], end[1]);
-  const walkingTime = getWalkingTime(distance);
-  const closestLandmark = getClosestLandmark(end[0], end[1]);
-  
   const latDiff=end[0]-start[0];
   const lonDiff=end[1]-start[1];
+  const distance = calcDistance(start[0], start[1], end[0], end[1]);
+  const walkingTime = Math.ceil(distance * 12);
   
-  let direction = "";
+  let text = `توجه إلى ${placeName}. المسافة ${distance.toFixed(2)} كيلومتر، وقت المشي ${walkingTime} دقيقة. `;
+  
+  // إضافة اتجاهات مع معالم
   if(Math.abs(latDiff)>Math.abs(lonDiff)){
-    direction = latDiff>0 ? "شمالاً" : "جنوباً";
+    text += latDiff>0 ? "اتجه شمالاً نحو الكعبة المشرفة. " : "اتجه جنوباً من الكعبة المشرفة. ";
   } else {
-    direction = lonDiff>0 ? "شرقاً" : "غرباً";
-  }
-  
-  let text = `توجه ${direction} من موقعك الحالي إلى ${placeName}. `;
-  text += `المسافة ${distance.toFixed(2)} كيلومتر، `;
-  text += `وقت المشي المتوقع ${walkingTime}. `;
-  
-  if (closestLandmark) {
-    text += `المكان قريب من ${closestLandmark}. `;
+    text += lonDiff>0 ? "اتجه شرقاً نحو الصفا والمروة. " : "اتجه غرباً من الصفا والمروة. ";
   }
   
   text += "اتبع الخط الأخضر على الخريطة للوصول بأمان.";
-  
-  // عرض التفاصيل في النافذة المنبثقة
-  document.getElementById("route-details").innerHTML = `
-    <strong>تفاصيل المسار:</strong><br>
-    المسافة: ${distance.toFixed(2)} كم<br>
-    وقت المشي: ${walkingTime}<br>
-    الاتجاه: ${direction}<br>
-    ${closestLandmark ? `قريب من: ${closestLandmark}` : ''}
-  `;
-  document.getElementById("route-details").style.display = "block";
-  
   speak(text);
 }
 
@@ -296,7 +318,7 @@ function speak(text){
   speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = lang;
-  utterance.rate = 0.8; // سرعة أبطأ للوضوح
+  utterance.rate = 0.8; // إبطاء السرعة قليلاً للوضوح
   speechSynthesis.speak(utterance);
 }
 
@@ -325,7 +347,7 @@ document.getElementById("voice-btn").addEventListener("click",()=>{
         const match = results[0].item;
         focusPlace(match.lat, match.lon, match.name, match.category);
       } else {
-        speak("المكان غير معروف، حاول مرة أخرى أو ابحث عن أقرب الخدمات.");
+        speak("المكان غير معروف، حاول مرة أخرى.");
       }
     }
   }
@@ -361,7 +383,6 @@ function toggleLanguageMenu() {
   const menu = document.getElementById('language-menu');
   if (menu.style.display === 'block') { menu.style.display = 'none'; } else { menu.style.display = 'block'; }
 }
-
 document.addEventListener('click', function (e) {
   const menu = document.getElementById('language-menu');
   const button = e.target.closest('button');

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <title>خريطة الخدمات للحجاج</title>
+  <title>خريطة الخدمات للحجاج - مسارات مشاة</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
   <style>
@@ -25,6 +25,7 @@
     .far { color: #dc3545; }
     #route-details { background: #e8f5e8; padding: 15px; border-radius: 8px; margin-top: 15px; display: none; }
     #search-box { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; }
+    .walking-route { color: #28a745; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -40,7 +41,7 @@
     <input type="text" id="search-box" placeholder="ابحث عن مكان...">
     <div id="places-list"></div>
     <div id="route-details">
-      <h4>تفاصيل المسار</h4>
+      <h4>مسار المشاة المختصر</h4>
       <div id="route-content"></div>
     </div>
   </div>
@@ -83,14 +84,14 @@ function loadPlaces() {
   allPlaces = [];
   
   Object.entries(categories).forEach(([categoryName, categoryData]) => {
-    const url = `https://overpass-api.de/api/interpreter?data=[out:json];node[${categoryData.filter}](around:3000,${userLocation[0]},${userLocation[1]});out;`;
+    const url = `https://overpass-api.de/api/interpreter?data=[out:json];node[${categoryData.filter}](around:2000,${userLocation[0]},${userLocation[1]});out;`;
     
     fetch(url)
       .then(res => res.json())
       .then(data => {
         if (data.elements.length === 0) return;
         
-        // ترتيب الأماكن حسب المسافة
+        // ترتيب الأماكن حسب المسافة (أقرب أولاً)
         const places = data.elements.map(el => {
           const distance = calcDistance(userLocation[0], userLocation[1], el.lat, el.lon);
           return {
@@ -100,30 +101,28 @@ function loadPlaces() {
             distance: distance,
             category: categoryName
           };
-        }).sort((a, b) => a.distance - b.distance);
+        }).sort((a, b) => a.distance - b.distance).slice(0, 10); // أخذ أقرب 10 أماكن فقط
         
         allPlaces.push(...places);
         
-        // إنشاء قسم الفئة
         const categoryDiv = document.createElement('div');
         categoryDiv.className = 'category';
         categoryDiv.innerHTML = `
           <div class="category-title">${categoryData.icon} ${categoryName} (${places.length})</div>
           <div class="category-places" style="display: block;">
             ${places.map(place => {
-              const distanceText = place.distance < 1 ? 'قريب' : 'بعيد';
+              const distanceText = place.distance < 0.5 ? 'قريب جداً' : place.distance < 1 ? 'قريب' : 'متوسط';
               const distanceClass = place.distance < 1 ? 'close' : 'far';
               
-              // إضافة علامة على الخريطة
               L.marker([place.lat, place.lon])
                 .addTo(map)
                 .bindPopup(`${place.name}<br>${place.distance.toFixed(2)} كم`);
               
               return `
-                <div class="place-item" onclick="showRoute(${place.lat}, ${place.lon}, '${place.name}')">
+                <div class="place-item" onclick="showWalkingRoute(${place.lat}, ${place.lon}, '${place.name}')">
                   <div class="place-name">${place.name}</div>
                   <div class="place-distance ${distanceClass}">
-                    ${place.distance.toFixed(2)} كم - ${distanceText}
+                    ${place.distance.toFixed(2)} كم - ${distanceText} - مسار مشاة
                   </div>
                 </div>
               `;
@@ -133,7 +132,6 @@ function loadPlaces() {
         
         placesList.appendChild(categoryDiv);
         
-        // جعل العنوان قابل للنقر لإخفاء/إظهار الأماكن
         categoryDiv.querySelector('.category-title').onclick = function() {
           const placesDiv = categoryDiv.querySelector('.category-places');
           placesDiv.style.display = placesDiv.style.display === 'none' ? 'block' : 'none';
@@ -142,78 +140,95 @@ function loadPlaces() {
   });
 }
 
-function showRoute(lat, lon, placeName) {
+function showWalkingRoute(lat, lon, placeName) {
   map.setView([lat, lon], 18);
   
   if (routingControl) {
     map.removeControl(routingControl);
   }
   
+  // إعدادات خاصة بمسارات المشاة
   routingControl = L.Routing.control({
     waypoints: [
       L.latLng(userLocation[0], userLocation[1]),
       L.latLng(lat, lon)
     ],
+    router: L.Routing.osrmv1({
+      serviceUrl: 'https://router.project-osrm.org/route/v1',
+      profile: 'foot' // استخدام مسارات المشاة
+    }),
     lineOptions: {
-      styles: [{ color: '#007bff', weight: 5, opacity: 0.8 }]
+      styles: [{ 
+        color: '#28a745', 
+        weight: 6, 
+        opacity: 0.8,
+        dashArray: '10, 5' // خط متقطع للإشارة لمسار المشاة
+      }]
     },
     addWaypoints: false,
     draggableWaypoints: false,
-    createMarker: () => null
+    createMarker: () => null,
+    routeWhileDragging: false,
+    fitSelectedRoutes: true,
+    show: false // إخفاء التعليمات الافتراضية
   }).addTo(map);
   
-  showRouteDetails(lat, lon, placeName);
+  showWalkingDetails(lat, lon, placeName);
 }
 
-function showRouteDetails(lat, lon, placeName) {
+function showWalkingDetails(lat, lon, placeName) {
   const distance = calcDistance(userLocation[0], userLocation[1], lat, lon);
-  const walkingTime = Math.ceil(distance * 12); // 12 دقيقة لكل كيلومتر
+  const walkingTime = Math.ceil(distance * 15); // 15 دقيقة لكل كيلومتر (مشي بطيء)
   
-  // تحديد الاتجاه
+  // حساب الاتجاه المبسط
   const latDiff = lat - userLocation[0];
   const lonDiff = lon - userLocation[1];
   
-  let direction = '';
-  let landmarks = '';
+  let simpleDirection = '';
+  let walkingInstructions = '';
   
   if (Math.abs(latDiff) > Math.abs(lonDiff)) {
     if (latDiff > 0) {
-      direction = 'شمالاً';
-      landmarks = 'باتجاه الكعبة المشرفة';
+      simpleDirection = 'شمالاً';
+      walkingInstructions = 'امش شمالاً في خط مستقيم';
     } else {
-      direction = 'جنوباً';
-      landmarks = 'بعيداً عن الكعبة المشرفة';
+      simpleDirection = 'جنوباً';
+      walkingInstructions = 'امش جنوباً في خط مستقيم';
     }
   } else {
     if (lonDiff > 0) {
-      direction = 'شرقاً';
-      landmarks = 'باتجاه الصفا والمروة';
+      simpleDirection = 'شرقاً';
+      walkingInstructions = 'امش شرقاً في خط مستقيم';
     } else {
-      direction = 'غرباً';
-      landmarks = 'بعيداً عن الصفا والمروة';
+      simpleDirection = 'غرباً';
+      walkingInstructions = 'امش غرباً في خط مستقيم';
     }
   }
   
   const routeContent = `
-    <strong>الوجهة:</strong> ${placeName}<br>
-    <strong>المسافة:</strong> ${distance.toFixed(2)} كم<br>
-    <strong>وقت المشي:</strong> ${walkingTime} دقيقة<br>
-    <strong>الاتجاه:</strong> ${direction} ${landmarks}<br><br>
-    
-    <strong>تعليمات المسار:</strong><br>
-    1. ابدأ من موقعك الحالي<br>
-    2. اتجه ${direction} ${landmarks}<br>
-    3. اتبع الخط الأزرق على الخريطة<br>
-    4. ستصل إلى ${placeName} خلال ${walkingTime} دقيقة تقريباً<br><br>
-    
-    <em>نصيحة: استخدم ${landmarks} كنقطة مرجعية للتوجه</em>
+    <div class="walking-route">
+      <strong>🚶‍♂️ مسار مشاة مختصر</strong><br><br>
+      
+      <strong>الوجهة:</strong> ${placeName}<br>
+      <strong>المسافة:</strong> ${distance.toFixed(2)} كم<br>
+      <strong>وقت المشي:</strong> ${walkingTime} دقيقة<br>
+      <strong>نوع المسار:</strong> مسار مشاة آمن<br><br>
+      
+      <strong>التعليمات المبسطة:</strong><br>
+      1️⃣ ${walkingInstructions}<br>
+      2️⃣ اتبع الخط الأخضر المتقطع<br>
+      3️⃣ تجنب الطرق الرئيسية<br>
+      4️⃣ استخدم الممرات والأرصفة<br><br>
+      
+      <em>💡 نصيحة: هذا أقصر وأآمن مسار للمشي</em>
+    </div>
   `;
   
   document.getElementById('route-content').innerHTML = routeContent;
   document.getElementById('route-details').style.display = 'block';
   
-  // قراءة التعليمات صوتياً
-  const speechText = `الوجهة ${placeName}. المسافة ${distance.toFixed(2)} كيلومتر. اتجه ${direction} ${landmarks}. وقت المشي ${walkingTime} دقيقة.`;
+  // تعليمات صوتية مبسطة
+  const speechText = `مسار مشاة إلى ${placeName}. المسافة ${distance.toFixed(2)} كيلومتر. ${walkingInstructions}. وقت المشي ${walkingTime} دقيقة.`;
   speak(speechText);
 }
 
@@ -233,7 +248,7 @@ function speak(text) {
     speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'ar-SA';
-    utterance.rate = 0.8;
+    utterance.rate = 0.9;
     speechSynthesis.speak(utterance);
   }
 }
@@ -272,7 +287,6 @@ function filterPlaces() {
   });
 }
 
-// تحميل الأماكن عند بدء التشغيل
 window.onload = function() {
   loadPlaces();
 };

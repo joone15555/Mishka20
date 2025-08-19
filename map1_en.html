@@ -69,6 +69,126 @@
     </nav>
   </header>
 </div>
+  </header>
+  <div class="services-box">
+  <div class="services-scroll">
+    <div class="service-item" onclick="filterList('مقاهي')">
+      <img src="11.png" alt="مقهى">
+      <span class="service-text">المقاهي</span>
+    </div>
+    <div class="service-item" onclick="filterList('تحويل عملات')">
+      <img src="9.png" alt="تحويل عملات">
+      <span class="service-text">تحويل عملات</span>
+    </div>
+    <div class="service-item" onclick="filterList('دورات المياه')">
+      <img src="17.png" alt="دورات مياه">
+      <span class="service-text">دورات المياه</span>
+    </div>
+    <div class="service-item" onclick="filterList('حلاق')">
+      <img src="6.png" alt="حلاق">
+      <span class="service-text">حلاق</span>
+    </div>
+    <div class="service-item" onclick="filterList('صراف آلي')">
+      <img src="8.png" alt="صراف آلي">
+      <span class="service-text">صراف آلي</span>
+    </div>
+    <div class="service-item" onclick="filterList('المطاعم')">
+      <img src="13.png" alt="مطعم">
+      <span class="service-text">المطاعم</span>
+    </div>
+    <div class="service-item" onclick="filterList('صيدليات')">
+      <img src="7.png" alt="صيدلية">
+      <span class="service-text">الصيدليات</span>
+    </div>
+    <div class="service-item" onclick="filterList('هدايا تذكارية')">
+      <img src="12.png" alt="هدايا تذكارية">
+      <span class="service-text">هدايا تذكارية</span>
+    </div>
+    <div class="service-item" onclick="filterList('سوق')">
+      <img src="16.png" alt="سوق">
+      <span class="service-text">سوق</span>
+    </div>
+    <div class="service-item" onclick="filterList('بقالة')">
+      <img src="14.png" alt="بقالة">
+      <span class="service-text">بقالة</span>
+    </div>
+    <div class="service-item" onclick="filterList('مستشفى')">
+      <img src="15.png" alt="مستشفى">
+      <span class="service-text">مستشفى</span>
+    </div>
+    <div class="service-item" onclick="filterList('اتصالات')">
+      <img src="10.png" alt="اتصالات">
+      <span class="service-text">اتصالات</span>
+    </div>
+  </div>
+</div>
+
+<style>
+.services-box {
+  width: fit-content;
+  background: linear-gradient(145deg, #c6c6d0, #a7957c); /* نفس ألوان القائمة */
+  border-radius: 15px; 
+  padding: 6px 10px;
+  margin: 10px auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25); /* نفس ظل القائمة */
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+
+.services-scroll {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.service-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 60px;
+  height: 60px; /* نفس شكل المستطيل الصغير */
+  background: rgba(240, 240, 240, 0.7);
+  border-radius: 10px;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  padding: 4px;
+  transition: transform 0.2s;
+}
+
+.service-item:hover {
+  transform: scale(1.1);
+}
+
+.service-item img {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 2px;
+}
+
+.service-text {
+  font-size: 10px;
+  text-align: center;
+  white-space: nowrap;
+}
+</style>
+
+<script>
+function filterList(cat){
+  const listsDiv = document.getElementById("lists");
+  listsDiv.querySelectorAll('details').forEach(detail=>{
+    const summaryText = detail.querySelector('summary').innerText;
+    if(summaryText.includes(cat)){
+      detail.style.display = 'block';
+      detail.open = true;
+    } else {
+      detail.style.display = 'none';
+    }
+  });
+}
+</script>
+
 <!-- الخريطة والمحتوى -->
 <div class="container-map">
   <div id="map"></div>
@@ -287,6 +407,7 @@ window.addEventListener("load",()=>{
 </script>
 </body>
 </html>
+
 
 
 

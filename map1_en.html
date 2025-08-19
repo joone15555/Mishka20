@@ -37,7 +37,7 @@
   <p style="font-size:18px;">Loading...</p>
 </div>
 
-<!-- Header (من الصفحة الجديدة) -->
+<!-- Header -->
 <div id="header-wrapper">
   <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: rtl;">
     <div id="logo" style="order: 1;">
@@ -69,125 +69,6 @@
     </nav>
   </header>
 </div>
-  </header>
-  <div class="services-box">
-  <div class="services-scroll">
-    <div class="service-item" onclick="filterList('مقاهي')">
-      <img src="11.png" alt="مقهى">
-      <span class="service-text">المقاهي</span>
-    </div>
-    <div class="service-item" onclick="filterList('تحويل عملات')">
-      <img src="9.png" alt="تحويل عملات">
-      <span class="service-text">تحويل عملات</span>
-    </div>
-    <div class="service-item" onclick="filterList('دورات المياه')">
-      <img src="17.png" alt="دورات مياه">
-      <span class="service-text">دورات المياه</span>
-    </div>
-    <div class="service-item" onclick="filterList('حلاق')">
-      <img src="6.png" alt="حلاق">
-      <span class="service-text">حلاق</span>
-    </div>
-    <div class="service-item" onclick="filterList('صراف آلي')">
-      <img src="8.png" alt="صراف آلي">
-      <span class="service-text">صراف آلي</span>
-    </div>
-    <div class="service-item" onclick="filterList('المطاعم')">
-      <img src="13.png" alt="مطعم">
-      <span class="service-text">المطاعم</span>
-    </div>
-    <div class="service-item" onclick="filterList('صيدليات')">
-      <img src="7.png" alt="صيدلية">
-      <span class="service-text">الصيدليات</span>
-    </div>
-    <div class="service-item" onclick="filterList('هدايا تذكارية')">
-      <img src="12.png" alt="هدايا تذكارية">
-      <span class="service-text">هدايا تذكارية</span>
-    </div>
-    <div class="service-item" onclick="filterList('سوق')">
-      <img src="16.png" alt="سوق">
-      <span class="service-text">سوق</span>
-    </div>
-    <div class="service-item" onclick="filterList('بقالة')">
-      <img src="14.png" alt="بقالة">
-      <span class="service-text">بقالة</span>
-    </div>
-    <div class="service-item" onclick="filterList('مستشفى')">
-      <img src="15.png" alt="مستشفى">
-      <span class="service-text">مستشفى</span>
-    </div>
-    <div class="service-item" onclick="filterList('اتصالات')">
-      <img src="10.png" alt="اتصالات">
-      <span class="service-text">اتصالات</span>
-    </div>
-  </div>
-</div>
-
-<style>
-.services-box {
-  width: fit-content;
-  background: linear-gradient(145deg, #c6c6d0, #a7957c); /* نفس ألوان القائمة */
-  border-radius: 15px; 
-  padding: 6px 10px;
-  margin: 10px auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25); /* نفس ظل القائمة */
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
-
-.services-scroll {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.service-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 60px;
-  height: 60px; /* نفس شكل المستطيل الصغير */
-  background: rgba(240, 240, 240, 0.7);
-  border-radius: 10px;
-  justify-content: center;
-  flex-shrink: 0;
-  cursor: pointer;
-  padding: 4px;
-  transition: transform 0.2s;
-}
-
-.service-item:hover {
-  transform: scale(1.1);
-}
-
-.service-item img {
-  width: 28px;
-  height: 28px;
-  margin-bottom: 2px;
-}
-
-.service-text {
-  font-size: 10px;
-  text-align: center;
-  white-space: nowrap;
-}
-</style>
-
-<script>
-function filterList(cat){
-  const listsDiv = document.getElementById("lists");
-  listsDiv.querySelectorAll('details').forEach(detail=>{
-    const summaryText = detail.querySelector('summary').innerText;
-    if(summaryText.includes(cat)){
-      detail.style.display = 'block';
-      detail.open = true;
-    } else {
-      detail.style.display = 'none';
-    }
-  });
-}
-</script>
 
 <!-- الخريطة والمحتوى -->
 <div class="container-map">
@@ -196,7 +77,11 @@ function filterList(cat){
     <button id="voice-btn">🎤 Speak</button>
     <button id="info-btn">ℹ️ Info</button>
   </div>
-  <div id="lists"></div>
+  <div id="lists">
+    <input type="text" id="search-box" placeholder="Search..." 
+           style="width:100%; padding:10px 12px; margin-bottom:10px; border-radius:12px; border:1px solid #ccc; font-size:14px; box-sizing:border-box;"
+           oninput="filterList()">
+  </div>
   <div id="info-popup">
     <strong id="info-title"></strong>
     <p id="info-desc" style="margin-top: 8px; font-size: 14px;"></p>
@@ -204,7 +89,7 @@ function filterList(cat){
   </div>
 </div>
 
-<!-- Footer (من الصفحة الجديدة) -->
+<!-- Footer -->
 <div id="footer-wrapper">
   <footer id="footer" class="container">
     <div class="row">
@@ -236,7 +121,7 @@ function filterList(cat){
   </footer>
 </div>
 
-<!-- Scripts الخريطة والوظائف -->
+<!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js"></script>
@@ -282,7 +167,9 @@ navigator.geolocation.getCurrentPosition(pos => {
 
 function loadPlaces(lat, lon){
   const listsDiv = document.getElementById("lists");
-  listsDiv.innerHTML = "";
+  // لا نغير search-box
+  const searchBoxHTML = listsDiv.querySelector("#search-box").outerHTML;
+  listsDiv.innerHTML = searchBoxHTML;
   allPlaces = [];
   for(const [name, cat] of Object.entries(categories)){
     const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:1500,${lat},${lon});out;`;
@@ -354,6 +241,14 @@ function calcDistance(lat1,lon1,lat2,lon2){
   return R*c;
 }
 
+function filterList(){
+  const query = document.getElementById("search-box").value.toLowerCase();
+  document.querySelectorAll(".list-item").forEach(item=>{
+    const name = item.querySelector(".item-name").innerText.toLowerCase();
+    item.style.display = name.includes(query) ? "flex" : "none";
+  });
+}
+
 document.getElementById("voice-btn").addEventListener("click",()=>{
   if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)){
     alert("Voice recognition not supported in your browser");
@@ -407,7 +302,3 @@ window.addEventListener("load",()=>{
 </script>
 </body>
 </html>
-
-
-
-

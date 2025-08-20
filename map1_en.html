@@ -1,21 +1,20 @@
 <!DOCTYPE HTML>
-<html lang="en" dir="ltr">
+<html lang="ur" dir="rtl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<title>Services Map</title>
+  <title>سروسز کا نقشہ</title>
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
   <style>
-    /* Complete CSS styles with English text alignment */
     .container-map { display: flex; flex-direction: column; max-width: 1200px; margin: 30px auto; gap: 20px; padding: 0 20px; position: relative; }
     #map { width: 100%; height: 600px; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.15); }
-    #lists { background: linear-gradient(145deg, #c6c6d0, #a7957c); color: #333; padding: 15px; border-radius: 20px; max-height: 600px; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.25); font-family: "Arial", sans-serif; transition: 0.3s; }
+    #lists { background: linear-gradient(145deg, #c6c6d0, #a7957c); color: #333; padding: 15px; border-radius: 20px; max-height: 600px; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.25); font-family: "Noto Nastaliq Urdu", sans-serif; transition: 0.3s; }
     #lists details { margin-bottom: 14px; border-radius: 14px; overflow: hidden; background: rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.3s; border-left: 5px solid #a7957c; }
     #lists summary { font-weight: bold; font-size: 17px; padding: 12px 16px; background: linear-gradient(to right, #a7957c, #c6c6d0); color: #fff; cursor: pointer; outline: none; border-radius: 12px; }
     .list-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-radius: 12px; margin: 4px 0; background: rgba(255,255,255,0.2); transition: background 0.3s, transform 0.2s; cursor: pointer; }
-    .list-item:hover { background: rgba(255,255,255,0.3); transform: translateX(-5px); }
+    .list-item:hover { background: rgba(255,255,255,0.3); transform: translateX(5px); }
     .item-name { flex: 1; margin: 0 8px; display: flex; align-items: center; gap: 10px; font-size: 15px; color: #333; }
     .item-dist { color: #444; font-size: 13px; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 10px; font-weight: bold; }
     .icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 16px; border-radius: 50%; background: #a7957c; color: white; flex-shrink: 0; }
@@ -32,7 +31,7 @@
     #info-btn { background-color: #ffc107; color: #212529; }
     #info-btn:hover { background-color: #e0a800; }
     
-    #info-popup { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: white; padding: 16px 22px; border-radius: 16px; box-shadow: 0 6px 25px rgba(0,0,0,0.25); z-index: 1001; display: none; max-width: 320px; font-family: Arial, sans-serif; transition: 0.3s; }
+    #info-popup { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: white; padding: 16px 22px; border-radius: 16px; box-shadow: 0 6px 25px rgba(0,0,0,0.25); z-index: 1001; display: none; max-width: 320px; font-family: "Noto Nastaliq Urdu", sans-serif; transition: 0.3s; }
     #info-popup button { margin-top: 10px; padding: 6px 12px; font-size: 13px; border: none; border-radius: 10px; background: #4facfe; color: white; cursor: pointer; }
     
     #voice-navigation { 
@@ -127,36 +126,35 @@
 </head>
 <body class="is-preload homepage">
 
-<!-- Loading screen with English text -->
 <div id="intro-screen" style="position: fixed; top:0; left:0; width:100%; height:100%; background:#ffffff; color:#000; display:flex; justify-content:center; align-items:center; flex-direction:column; font-family:sans-serif; z-index:9999;">
-  <img src="loading-image.png" alt="Loading" style="margin-bottom:20px; max-width:200px;">
- <p style="font-size:18px;">Loading...</p>
+  <img src="loading-image.png" alt="لوڈنگ" style="margin-bottom:20px; max-width:200px;">
+  <p style="font-size:18px;">لوڈ ہو رہا ہے...</p>
 </div>
 
-<!-- Header with English navigation -->
 <div id="header-wrapper">
-  <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: ltr;">
+  <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: rtl;">
     <div id="logo" style="order: 1;">
-      <a href="index_en.html">
-        <img src="loading-image.png" alt="Logo" style="max-width:150px; height:auto;">
+      <a href="index_es 2.html">
+        <img src="loading-image.png" alt="لوگو" style="max-width:150px; height:auto;">
       </a>
     </div>
     <nav style="order: 2; display: flex; align-items: center;">
       <ul style="display:flex; gap:20px; list-style:none; margin:0; padding:0; align-items:center; position:relative;">
-        <li><a href="index_en.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px; transition:0.3s;"
+        <li><a href="index_es 2.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px; transition:0.3s;"
           onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
           onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
-        >Home</a></li>
-        <li><a href="card_en.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px; transition:0.3s;"
+        >ہوم</a></li>
+        <li><a href="card_es 2.html" style="font-weight:bold; text-decoration:none; color:#444; padding:8px 16px; border-radius:8px; transition:0.3s;"
           onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
           onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
-        >Mishkah Card</a></li>
+        >مشکاۃ کارڈ</a></li>
+
         <li style="position: relative;">
-          <button onclick="toggleLanguageMenu()" style="background:none; border:none; font-size:24px; cursor:pointer; padding:8px;" title="Change Language">🌐</button>
-          <ul id="language-menu" style="display:none; position:absolute; top:40px; right:0; background-color:#fff; border:1px solid #ddd; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); list-style:none; padding:10px 0; margin:0; min-width:160px; z-index:1000;">
-            <li><a href="map1.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition: background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇸🇦 &nbsp; Arabic</a></li>
-            <li><a href="map1_en.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition: background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇺🇸 &nbsp; English</a></li>
-            <li><a href="map1_es 2.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition: background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇵🇰 &nbsp; Urdu</a></li>
+          <button onclick="toggleLanguageMenu()" style="background:none; border:none; font-size:24px; cursor:pointer; padding:8px;" title="زبان تبدیل کریں">🌐</button>
+          <ul id="language-menu" style="display:none; position:absolute; top:40px; left:0; background-color:#fff; border:1px solid #ddd; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); list-style:none; padding:10px 0; margin:0; min-width:160px; z-index:1000;">
+            <li><a href="map1.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition: background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇸🇦 &nbsp; عربی</a></li>
+            <li><a href="map1_en.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition: background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇺🇸 &nbsp; انگریزی</a></li>
+            <li><a href="map1_es 2.html" style="display:flex; align-items:center; padding:8px 16px; text-decoration:none; color:#444; font-weight:bold; transition: background 0.3s;" onmouseover="this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.backgroundColor='transparent';">🇵🇰 &nbsp; اردو</a></li>
           </ul>
         </li>
       </ul>
@@ -164,61 +162,58 @@
   </header>
 </div>
 
-<!-- Services bar with English labels -->
 <div class="services-bar">
   <div class="services-scroll">
-    <div class="service-item active" onclick="selectService('all')"><img src="11.png" alt="All Services"><span class="service-text">All Services</span></div>
-    <div class="service-item" onclick="selectService('Cafes')"><img src="11.png" alt="Cafe"><span class="service-text">Cafes</span></div>
-    <div class="service-item" onclick="selectService('ATMs')"><img src="8.png" alt="ATM"><span class="service-text">ATMs</span></div>
-    <div class="service-item" onclick="selectService('Restrooms')"><img src="17.png" alt="Restroom"><span class="service-text">Restrooms</span></div>
-    <div class="service-item" onclick="selectService('Restaurants')"><img src="13.png" alt="Restaurant"><span class="service-text">Restaurants</span></div>
-    <div class="service-item" onclick="selectService('Pharmacies')"><img src="7.png" alt="Pharmacy"><span class="service-text">Pharmacies</span></div>
-    <div class="service-item" onclick="selectService('Hotels')"><img src="12.png" alt="Hotel"><span class="service-text">Hotels</span></div>
-    <div class="service-item" onclick="selectService('Shops')"><img src="16.png" alt="Shop"><span class="service-text">Shops</span></div>
-    <div class="service-item" onclick="selectService('Hospitals')"><img src="15.png" alt="Hospital"><span class="service-text">Hospitals</span></div>
+    <div class="service-item active" onclick="selectService('all')"><img src="11.png" alt="تمام خدمات"><span class="service-text">تمام خدمات</span></div>
+    <div class="service-item" onclick="selectService('کیفے')"><img src="11.png" alt="کیفے"><span class="service-text">کیفے</span></div>
+    <div class="service-item" onclick="selectService('اے ٹی ایم')"><img src="8.png" alt="اے ٹی ایم"><span class="service-text">اے ٹی ایم</span></div>
+    <div class="service-item" onclick="selectService('بیت الخلاء')"><img src="17.png" alt="بیت الخلاء"><span class="service-text">بیت الخلاء</span></div>
+    <div class="service-item" onclick="selectService('ریسٹورنٹ')"><img src="13.png" alt="ریسٹورنٹ"><span class="service-text">ریسٹورنٹ</span></div>
+    <div class="service-item" onclick="selectService('فارمیسی')"><img src="7.png" alt="فارمیسی"><span class="service-text">فارمیسی</span></div>
+    <div class="service-item" onclick="selectService('ہوٹل')"><img src="12.png" alt="ہوٹل"><span class="service-text">ہوٹل</span></div>
+    <div class="service-item" onclick="selectService('دکانیں')"><img src="16.png" alt="دکانیں"><span class="service-text">دکانیں</span></div>
+    <div class="service-item" onclick="selectService('ہسپتال')"><img src="15.png" alt="ہسپتال"><span class="service-text">ہسپتال</span></div>
   </div>
 </div>
 
-<!-- Voice navigation box with English instructions -->
 <div id="voice-navigation">
-  <div id="nav-instruction" style="font-size: 16px; font-weight: bold;">Starting navigation...</div>
-  <div id="nav-distance" class="distance-indicator">Remaining distance: -- meters</div>
+  <div id="nav-instruction" style="font-size: 16px; font-weight: bold;">رہنمائی شروع ہو رہی ہے...</div>
+  <div id="nav-distance" class="distance-indicator">باقی فاصلہ: -- میٹر</div>
 </div>
 
 <div class="container-map">
   <div id="map"></div>
   <div id="controls">
-    <button id="voice-btn">🎤 Voice Search</button>
-    <button id="navigation-btn">🧭 Start Navigation</button>
-    <button id="stop-nav-btn">⏹️ Stop Navigation</button>
-    <button id="info-btn">ℹ️ Information</button>
+    <button id="voice-btn">🎤 صوتی تلاش</button>
+    <button id="navigation-btn">🧭 رہنمائی شروع کریں</button>
+    <button id="stop-nav-btn">⏹️ رہنمائی بند کریں</button>
+    <button id="info-btn">ℹ️ معلومات</button>
   </div>
   <div id="lists">
-    <input type="text" id="search-box" placeholder="Search for nearby services..." oninput="filterList()">
+    <input type="text" id="search-box" placeholder="قریبی خدمات تلاش کریں..." oninput="filterList()">
   </div>
   <div id="info-popup">
     <strong id="info-title"></strong>
     <p id="info-desc" style="margin-top: 8px; font-size: 14px;"></p>
-    <button onclick="document.getElementById('info-popup').style.display='none'">Close</button>
+    <button onclick="document.getElementById('info-popup').style.display='none'">بند کریں</button>
   </div>
 </div>
 
-<!-- Footer with English content -->
 <div id="footer-wrapper">
   <footer id="footer" class="container">
     <div class="row">
       <div class="col-3 col-6-medium col-12-small">
         <section class="widget contact last">
-          <h3>Contact Us</h3>
+          <h3>ہم سے رابطہ کریں</h3>
           <ul>
-            <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-            <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-            <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-            <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-            <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+            <li><a href="#" class="icon brands fa-twitter"><span class="label">ٹویٹر</span></a></li>
+            <li><a href="#" class="icon brands fa-facebook-f"><span class="label">فیس بک</span></a></li>
+            <li><a href="#" class="icon brands fa-instagram"><span class="label">انسٹاگرام</span></a></li>
+            <li><a href="#" class="icon brands fa-dribbble"><span class="label">ڈریبل</span></a></li>
+            <li><a href="#" class="icon brands fa-pinterest"><span class="label">پنٹرسٹ</span></a></li>
           </ul>
-          <p>Kingdom of Saudi Arabia<br />
-          Makkah Al-Mukarramah<br />
+          <p>سعودی عرب<br />
+          مکہ مکرمہ<br />
           (800) 555-0000</p>
         </section>
       </div>
@@ -227,7 +222,7 @@
       <div class="col-12">
         <div id="copyright">
           <ul class="menu">
-            <li>&copy; All Rights Reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+            <li>&copy; تمام حقوق محفوظ ہیں</li><li>ڈیزائن: <a href="http://html5up.net">HTML5 UP</a></li>
           </ul>
         </div>
       </div>
@@ -241,30 +236,30 @@
 
 <script>
 const categories = {
-  "Restaurants": {filter:'amenity=restaurant', icon:'🍴', color:'#ff6b6b'},
-  "Hotels": {filter:'tourism=hotel', icon:'🏨', color:'#4834d4'},
-  "ATMs": {filter:'amenity=atm', icon:'🏧', color:'#00d2d3'},
-  "Pharmacies": {filter:'amenity=pharmacy', icon:'💊', color:'#ff9ff3'},
-  "Hospitals": {filter:'amenity=hospital', icon:'🏥', color:'#ff3838'},
-  "Shops": {filter:'shop=*', icon:'🛍️', color:'#ffb142'},
-  "Cafes": {filter:'amenity=cafe', icon:'☕', color:'#8c7ae6'},
-  "Restrooms": {filter:'amenity=toilets', icon:'🚻', color:'#00d2d3'}
+  "ریسٹورنٹ": {filter:'amenity=restaurant', icon:'🍴', color:'#ff6b6b'},
+  "ہوٹل": {filter:'tourism=hotel', icon:'🏨', color:'#4834d4'},
+  "اے ٹی ایم": {filter:'amenity=atm', icon:'🏧', color:'#00d2d3'},
+  "فارمیسی": {filter:'amenity=pharmacy', icon:'💊', color:'#ff9ff3'},
+  "ہسپتال": {filter:'amenity=hospital', icon:'🏥', color:'#ff3838'},
+  "دکانیں": {filter:'shop=*', icon:'🛍️', color:'#ffb142'},
+  "کیفے": {filter:'amenity=cafe', icon:'☕', color:'#8c7ae6'},
+  "بیت الخلاء": {filter:'amenity=toilets', icon:'🚻', color:'#00d2d3'}
 };
 
 const categoryDescriptions = {
-  "Restaurants": "Restaurants: Offering a variety of local and international cuisines near the Holy Haram.",
-  "Hotels": "Hotels: Comfortable accommodation with high-quality services close to the sacred sites.",
-  "ATMs": "ATMs: Easy money withdrawal and transfer services within the Haram area.",
-  "Pharmacies": "Pharmacies: Access to medicines and health products necessary for pilgrims.",
-  "Hospitals": "Hospitals: Emergency and ongoing medical services specialized for pilgrims.",
-  "Shops": "Shops: Variety of clothing, accessories and Hajj necessities.",
-  "Cafes": "Cafes: Places to relax and enjoy coffee and cold beverages.",
-  "Restrooms": "Restrooms: Available for public use and equipped specifically for pilgrims.",
-  "Unknown": "Description not available."
+  "ریسٹورنٹ": "ریسٹورنٹ: مقامی اور بین الاقوامی کھانوں کی مختلف اقسام۔",
+  "ہوٹل": "ہوٹل: اعلیٰ معیار کی خدمات کے ساتھ آرام دہ قیام۔",
+  "اے ٹی ایم": "اے ٹی ایم: آسانی سے رقم نکالنا اور منتقل کرنا۔",
+  "فارمیسی": "فارمیسی: دوائیں اور صحت کی مصنوعات تک رسائی۔",
+  "ہسپتال": "ہسپتال: ہنگامی اور مستقل طبی خدمات۔",
+  "دکانیں": "دکانیں: کپڑے اور لوازمات کی مختلف اقسام۔",
+  "کیفے": "کیفے: آرام اور کافی کا لطف اٹھانے کی جگہ۔",
+  "بیت الخلاء": "بیت الخلاء: عوامی استعمال کے لیے دستیاب۔",
+  "Unknown": "تفصیل دستیاب نہیں۔"
 };
 
 let userLocation = [21.4225, 39.8262];
-let lang = "en-US";
+let lang = "ur-PK";
 let lastSelectedPlace = null;
 const map = L.map('map').setView(userLocation, 16);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'&copy; OpenStreetMap contributors' }).addTo(map);
@@ -291,7 +286,7 @@ const userIcon = L.divIcon({
   iconAnchor: [10, 10]
 });
 
-let userMarker = L.marker(userLocation, {icon: userIcon}).addTo(map).bindPopup("Your Current Location");
+let userMarker = L.marker(userLocation, {icon: userIcon}).addTo(map).bindPopup("آپ کا موجودہ مقام");
 let routingControl = null;
 let allPlaces = [];
 let fuse = null;
@@ -344,22 +339,22 @@ function updateVoiceNavigation(currentPos) {
   ) * 1000;
   
   document.getElementById('nav-distance').textContent = 
-    `Remaining distance: ${Math.round(distanceToDestination)} meters`;
+    `باقی فاصلہ: ${Math.round(distanceToDestination)} میٹر`;
   
   let instruction = '';
   
   if (distanceToDestination < 10) {
-    instruction = `You have arrived at ${currentDestination.name}`;
+    instruction = `آپ ${currentDestination.name} پہنچ گئے ہیں`;
     stopNavigation();
     speak(instruction);
     return;
   } else if (distanceToDestination < 50) {
-    instruction = `Approaching ${currentDestination.name}, ${Math.round(distanceToDestination)} meters remaining`;
+    instruction = `آپ ${currentDestination.name} کے قریب پہنچ گئے ہیں، فاصلہ ${Math.round(distanceToDestination)} میٹر`;
   } else if (distanceToDestination < 100) {
-    instruction = `Continue straight ahead, ${Math.round(distanceToDestination)} meters remaining`;
+    instruction = `اسی سمت میں جاری رکھیں، فاصلہ ${Math.round(distanceToDestination)} میٹر`;
   } else if (distanceToDestination < 200) {
     const direction = getDirection(currentPos, [currentDestination.lat, currentDestination.lon]);
-    instruction = `Head ${direction}, ${Math.round(distanceToDestination)} meters remaining`;
+    instruction = `${direction} کی طرف جائیں، فاصلہ ${Math.round(distanceToDestination)} میٹر`;
   }
   
   if (instruction && instruction !== lastInstruction) {
@@ -374,9 +369,9 @@ function getDirection(from, to) {
   const lonDiff = to[1] - from[1];
   
   if (Math.abs(latDiff) > Math.abs(lonDiff)) {
-    return latDiff > 0 ? 'north towards the Holy Kaaba' : 'south from the Holy Kaaba';
+    return latDiff > 0 ? 'شمال' : 'جنوب';
   } else {
-    return lonDiff > 0 ? 'east towards Safa and Marwa' : 'west from Safa and Marwa';
+    return lonDiff > 0 ? 'مشرق' : 'مغرب';
   }
 }
 
@@ -397,10 +392,10 @@ function loadPlaces(lat, lon) {
         const placesWithDistance = data.elements.map((el, index) => {
           const placeLat = el.lat;
           const placeLon = el.lon;
-          let placeName = el.tags.name || "Unnamed";
+          let placeName = el.tags.name || "نام نہیں";
           
-          if(name === "ATMs") {
-            const atmNames = ["Al Ahli ATM", "SAMBA ATM", "Riyadh Bank ATM", "Al Jazira ATM"];
+          if(name === "اے ٹی ایم") {
+            const atmNames = ["الاہلی اے ٹی ایم", "سامبا اے ٹی ایم", "الریاض اے ٹی ایم", "الجزیرہ اے ٹی ایم"];
             placeName = atmNames[index % atmNames.length];
           }
           
@@ -425,7 +420,7 @@ function loadPlaces(lat, lon) {
             icon: createCategoryIcon(cat)
           }).addTo(map);
           
-          marker.bindPopup(`${place.name}<br>${distKm} km - ${walkingTimeMinutes} min walk`);
+          marker.bindPopup(`${place.name}<br>${distKm} کلومیٹر - ${walkingTimeMinutes} منٹ پیدل`);
           marker.category = name;
           allMarkers.push(marker);
           
@@ -434,10 +429,10 @@ function loadPlaces(lat, lon) {
               <span class="icon">${cat.icon}</span>
               <div>
                 ${place.name}
-                <div class="walking-time">🚶‍♂️ ${walkingTimeMinutes} min walk</div>
+                <div class="walking-time">🚶‍♂️ ${walkingTimeMinutes} منٹ پیدل</div>
               </div>
             </span>
-            <span class="item-dist">${distKm} km</span>
+            <span class="item-dist">${distKm} کلومیٹر</span>
           </div>`;
         });
         
@@ -475,12 +470,12 @@ function selectDestination(lat, lon, name) {
     show: false
   }).addTo(map);
   
-  speak(`${name} selected as destination. Press Start Navigation to get voice guidance while walking.`);
+  speak(`${name} کو منزل کے طور پر منتخب کیا گیا ہے۔ چلتے وقت صوتی ہدایات کے لیے رہنمائی شروع کریں پر دبائیں۔`);
 }
 
 function startNavigation() {
   if (!currentDestination) {
-    alert('Please select a destination first');
+    alert('پہلے کوئی منزل منتخب کریں');
     return;
   }
   
@@ -495,11 +490,11 @@ function startNavigation() {
   ) * 1000;
   
   document.getElementById('nav-instruction').textContent = 
-    `Starting navigation to ${currentDestination.name}`;
+    `${currentDestination.name} کی طرف رہنمائی شروع`;
   document.getElementById('nav-distance').textContent = 
-    `Remaining distance: ${Math.round(initialDistance)} meters`;
+    `باقی فاصلہ: ${Math.round(initialDistance)} میٹر`;
   
-  speak(`Starting navigation to ${currentDestination.name}. Follow the green line on the map to reach your destination safely.`);
+  speak(`${currentDestination.name} کی طرف رہنمائی شروع۔ نقشے پر سبز لائن کی پیروی کریں۔`);
 }
 
 function stopNavigation() {
@@ -509,7 +504,7 @@ function stopNavigation() {
   document.getElementById('stop-nav-btn').style.display = 'none';
   
   lastInstruction = '';
-  speak('Voice navigation has been stopped');
+  speak('صوتی رہنمائی بند کر دی گئی');
 }
 
 function speak(text) {
@@ -541,7 +536,7 @@ function filterList() {
 
 document.getElementById("voice-btn").addEventListener("click", () => {
   if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-    alert("Voice recognition is not supported in your browser");
+    alert("آپ کے براؤزر میں صوتی شناخت کی سہولت دستیاب نہیں");
     return;
   }
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -555,7 +550,7 @@ document.getElementById("voice-btn").addEventListener("click", () => {
         const match = results[0].item;
         selectDestination(match.lat, match.lon, match.name);
       } else {
-        speak("Location not found, please try again or search for nearby services.");
+        speak("جگہ معلوم نہیں، دوبارہ کوشش کریں۔");
       }
     }
   }
@@ -568,7 +563,7 @@ document.getElementById("info-btn").addEventListener("click", () => {
     document.getElementById("info-desc").innerText = categoryDescriptions[lastSelectedPlace.category] || categoryDescriptions["Unknown"];
     popup.style.display = "block";
   } else {
-    alert("Please select a location first");
+    alert("پہلے کوئی جگہ منتخب کریں");
   }
 });
 

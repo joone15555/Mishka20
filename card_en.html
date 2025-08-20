@@ -1,9 +1,4 @@
 <!DOCTYPE HTML>
-<!--
-	Verti by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
 	<head>
 		<title>Verti by HTML5 UP</title>
@@ -12,7 +7,7 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 	</head>
 	<body class="is-preload homepage">
-  <!-- Intro Screen -->
+  <!-- Loading screen -->
   <div id="intro-screen" style="
     position: fixed;
     top: 0; left: 0;
@@ -34,14 +29,14 @@
     <!-- Header -->
     <div id="header-wrapper">
       <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: ltr;">
-        <!-- Logo Left -->
+        <!-- Logo -->
         <div id="logo" style="order: 1;">
-          <a href="index_en.html">
-            <img src="loading-image.png" alt="Site Logo" style="max-width: 150px; height: auto;">
+          <a href="index.html">
+            <img src="loading-image.png" alt="Website Logo" style="max-width: 150px; height: auto;">
           </a>
         </div>
 
-        <!-- Nav Right -->
+        <!-- Main menu -->
         <nav style="order: 2; display: flex; align-items: center;">
           <ul style="
             display: flex; 
@@ -53,7 +48,7 @@
             position: relative;
           ">
             <li style="display: flex; align-items: center;">
-              <a href="index_en.html" style="
+              <a href="index.html" style="
                 font-weight: bold;
                 text-decoration: none;
                 color: #444;
@@ -65,9 +60,8 @@
               onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
               >Home</a>
             </li>
-            </li>
             <li style="display: flex; align-items: center;">
-              <a href="card_en.html" style="
+              <a href="card.html" style="
                 font-weight: bold;
                 text-decoration: none;
                 color: #444;
@@ -79,11 +73,132 @@
               onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
               >Mishkat Card</a>
             </li>
+          </ul>
+        </nav>
       </header>
     </div>
   </div>
 
-  <!-- Language Switch -->
+  <!-- Replaced flip card with simple clickable image and download button -->
+  <style>
+    .center-card-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 50px 0;
+      gap: 30px;
+    }
+
+    .card-image-container {
+      background-color: #a7957c;
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card-image-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+    }
+
+    .card-image {
+      width: 300px;
+      height: 300px;
+      border-radius: 16px;
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      color: white;
+      font-size: 1.8em;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .download-button {
+      padding: 15px 30px;
+      background: linear-gradient(45deg, #a7957c, #c6c6d0);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .download-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      background: linear-gradient(45deg, #c6c6d0, #a7957c);
+    }
+  </style>
+
+  <div class="center-card-wrapper">
+    <!-- Clickable image -->
+    <div class="card-image-container" onclick="window.location.href='map1.html'">
+      <img src="ph900.jpg" alt="Mishkat Card" class="card-image">
+      <h2 class="card-title">Mishkat Card</h2>
+    </div>
+
+    <!-- Download button -->
+    <a href="mocap card11.pdf" download="mishkat-card.pdf" class="download-button">
+      📥 Download Card PDF
+    </a>
+  </div>
+
+<br><br>
+
+  <!-- Footer -->
+  <div id="footer-wrapper">
+    <footer id="footer" class="container">
+      <div class="row">
+        <div class="col-3 col-6-medium col-12-small">
+          <!-- Contact information -->
+          <section class="widget contact last">
+            <h3>Contact Us</h3>
+            <ul>
+              <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+              <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+              <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+              <li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+              <li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
+            </ul>
+            <p>1234 Fictional Street<br />
+            Nashville, TN 00000<br />
+            (800) 555-0000</p>
+          </section>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div id="copyright">
+            <ul class="menu">
+              <li>&copy; All Rights Reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/jquery.dropotron.min.js"></script>
+  <script src="assets/js/browser.min.js"></script>
+  <script src="assets/js/breakpoints.min.js"></script>
+  <script src="assets/js/util.js"></script>
+  <script src="assets/js/main.js"></script>
+
+  <!-- Language selection screen -->
   <script>
     function toggleLanguageMenu() {
       const menu = document.getElementById('language-menu');
@@ -94,7 +209,7 @@
       }
     }
 
-    // Close the menu if user clicks outside
+    // Close menu when clicking outside
     document.addEventListener('click', function (e) {
       const menu = document.getElementById('language-menu');
       const button = e.target.closest('button');
@@ -103,156 +218,16 @@
       }
     });
   </script>
-</body>
 
-<style>
-  .center-card-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 50px 0;
-  }
-
-  .flip-card {
-    background-color: transparent;
-    width: 400px;
-    height: 400px;
-    perspective: 1000px;
-  }
-
-  .flip-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-  }
-
-  .flip-card:hover .flip-card-inner {
-    transform: rotateY(180deg);
-  }
-
-  .flip-card-front,
-  .flip-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 16px;
-    backface-visibility: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-    color: white;
-    background-color: #a7957c;
-    text-align: center;
-  }
-
-  .flip-card-front img {
-    width: 180px;
-    height: 180px;
-    border-radius: 16px;
-    object-fit: cover;
-    margin-bottom: 20px;
-  }
-
-  .flip-card-front h2,
-  .flip-card-back h2 {
-    margin: 0;
-    font-size: 1.8em;
-  }
-
-  .flip-card-back {
-    transform: rotateY(180deg);
-  }
-
-  .flip-card-back a {
-    margin-top: 20px;
-    padding: 12px 24px;
-    background: white;
-    color: #a7957c;
-    border-radius: 10px;
-    font-weight: bold;
-    text-decoration: none;
-    font-size: 1em;
-  }
-</style>
-
-<div class="center-card-wrapper">
-  <div class="flip-card">
-    <div class="flip-card-inner">
-      <!-- Front Side -->
-      <div class="flip-card-front">
-        <img src="ph1.png" alt="Mishkat Card">
-        <h2>Mishkat Card</h2>
-      </div>
-
-      <!-- Back Side -->
-      <div class="flip-card-back">
-        <h2>More</h2>
-        <a href="map1_en.html">Click Here</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<br><br>
-			<!-- Footer -->
-				<div id="footer-wrapper">
-					<footer id="footer" class="container">
-						<div class="row">
-							<div class="col-3 col-6-medium col-12-small">
-								<!-- Contact -->
-									<section class="widget contact last">
-										<h3>Contact</h3>
-										<ul>
-											<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-											<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-											<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-											<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
-											<li><a href="#" class="icon brands fa-pinterest"><span class="label">Pinterest</span></a></li>
-										</ul>
-										<p>1234 Fictional Road<br />
-										Nashville, TN 00000<br />
-										(800) 555-0000</p>
-									</section>
-
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-12">
-								<div id="copyright">
-									<ul class="menu">
-										<li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</footer>
-				</div>
-
-			</div>
-
-		<!-- Scripts -->
-
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.dropotron.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-			<!-- Hide intro screen after 1.5 seconds -->
-<script>
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      const intro = document.getElementById("intro-screen");
-      if (intro) intro.style.display = "none";
-    }, 1500);
-  });
-</script>
+  <!-- Hide loading screen after 1.5 seconds -->
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const intro = document.getElementById("intro-screen");
+        if (intro) intro.style.display = "none";
+      }, 1500);
+    });
+  </script>
 
 	</body>
 </html>
-
-

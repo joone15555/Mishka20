@@ -122,15 +122,41 @@
       white-space: nowrap;
       color: #333;
     }
+
+    /* Offline indicator styles */
+    .offline-indicator {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff6b6b;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: bold;
+      z-index: 1003;
+      display: none;
+    }
+
+    .online-indicator {
+      background: #28a745;
+    }
   </style>
 </head>
 <body class="is-preload homepage">
 
+<!-- Connection status indicator -->
+<div id="connection-status" class="offline-indicator">
+  <span id="status-text">آف لائن موڈ</span>
+</div>
+
+<!-- Loading screen -->
 <div id="intro-screen" style="position: fixed; top:0; left:0; width:100%; height:100%; background:#ffffff; color:#000; display:flex; justify-content:center; align-items:center; flex-direction:column; font-family:sans-serif; z-index:9999;">
   <img src="loading-image.png" alt="لوڈنگ" style="margin-bottom:20px; max-width:200px;">
   <p style="font-size:18px;">لوڈ ہو رہا ہے...</p>
 </div>
 
+<!-- Header -->
 <div id="header-wrapper">
   <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: rtl;">
     <div id="logo" style="order: 1;">
@@ -148,7 +174,6 @@
           onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
           onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
         >مشکاۃ کارڈ</a></li>
-
         <li style="position: relative;">
           <button onclick="toggleLanguageMenu()" style="background:none; border:none; font-size:24px; cursor:pointer; padding:8px;" title="زبان تبدیل کریں">🌐</button>
           <ul id="language-menu" style="display:none; position:absolute; top:40px; left:0; background-color:#fff; border:1px solid #ddd; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); list-style:none; padding:10px 0; margin:0; min-width:160px; z-index:1000;">
@@ -162,6 +187,7 @@
   </header>
 </div>
 
+<!-- Services bar -->
 <div class="services-bar">
   <div class="services-scroll">
     <div class="service-item active" onclick="selectService('all')"><img src="11.png" alt="تمام خدمات"><span class="service-text">تمام خدمات</span></div>
@@ -176,11 +202,13 @@
   </div>
 </div>
 
+<!-- Voice navigation box -->
 <div id="voice-navigation">
   <div id="nav-instruction" style="font-size: 16px; font-weight: bold;">رہنمائی شروع ہو رہی ہے...</div>
   <div id="nav-distance" class="distance-indicator">باقی فاصلہ: -- میٹر</div>
 </div>
 
+<!-- Main container -->
 <div class="container-map">
   <div id="map"></div>
   <div id="controls">
@@ -199,6 +227,7 @@
   </div>
 </div>
 
+<!-- Footer -->
 <div id="footer-wrapper">
   <footer id="footer" class="container">
     <div class="row">
@@ -235,6 +264,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js"></script>
 
 <script>
+// Global variables
+let isOnline = navigator.onLine;
+let cachedPlaces = [];
+
 const categories = {
   "ریسٹورنٹ": {filter:'amenity=restaurant', icon:'🍴', color:'#ff6b6b'},
   "ہوٹل": {filter:'tourism=hotel', icon:'🏨', color:'#4834d4'},
@@ -297,6 +330,38 @@ let watchId = null;
 let selectedService = 'all';
 let allMarkers = [];
 
+// Online/Offline status management
+function updateConnectionStatus() {
+  const statusIndicator = document.getElementById('connection-status');
+  const statusText = document.getElementById('status-text');
+  
+  if (isOnline) {
+    statusIndicator.className = 'offline-indicator online-indicator';
+    statusText.textContent = 'آن لائن';
+    statusIndicator.style.display = 'block';
+    setTimeout(() => {
+      statusIndicator.style.display = 'none';
+    }, 3000);
+  } else {
+    statusIndicator.className = 'offline-indicator';
+    statusText.textContent = 'آف لائن موڈ - محفوظ شدہ ڈیٹا استعمال ہو رہا ہے';
+    statusIndicator.style.display = 'block';
+  }
+}
+
+// Listen for online/offline events
+window.addEventListener('online', () => {
+  isOnline = true;
+  updateConnectionStatus();
+  loadPlaces(userLocation[0], userLocation[1]);
+});
+
+window.addEventListener('offline', () => {
+  isOnline = false;
+  updateConnectionStatus();
+  loadCachedPlaces();
+});
+
 function createCategoryIcon(categoryData) {
   return L.divIcon({
     className: 'category-marker',
@@ -317,6 +382,7 @@ function createCategoryIcon(categoryData) {
   });
 }
 
+// Geolocation tracking
 if (navigator.geolocation) {
   navigator.geolocation.watchPosition(pos => {
     const newLocation = [pos.coords.latitude, pos.coords.longitude];
@@ -375,17 +441,43 @@ function getDirection(from, to) {
   }
 }
 
+// Load places from cache when offline
+function loadCachedPlaces() {
+  const cached = localStorage.getItem('cachedPlaces');
+  if (cached) {
+    cachedPlaces = JSON.parse(cached);
+    displayPlaces(cachedPlaces);
+  }
+}
+
+// Save places to cache
+function savePlacesToCache(places) {
+  localStorage.setItem('cachedPlaces', JSON.stringify(places));
+  cachedPlaces = places;
+}
+
 function loadPlaces(lat, lon) {
   const listsDiv = document.getElementById("lists");
   const searchHTML = listsDiv.querySelector("#search-box").outerHTML;
   listsDiv.innerHTML = searchHTML;
   allPlaces = [];
   
+  // Clear existing markers
   allMarkers.forEach(marker => map.removeLayer(marker));
   allMarkers = [];
   
+  if (!isOnline) {
+    loadCachedPlaces();
+    return;
+  }
+  
+  let allNewPlaces = [];
+  let completedRequests = 0;
+  const totalCategories = Object.keys(categories).length;
+  
   for(const [name, cat] of Object.entries(categories)) {
     const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:2000,${lat},${lon});out;`;
+    
     fetch(overpassUrl)
       .then(res => res.json())
       .then(data => {
@@ -409,41 +501,93 @@ function loadPlaces(lat, lon) {
           };
         }).sort((a, b) => a.distance - b.distance).slice(0, 8);
         
-        let html = `<details open data-category="${name}"><summary>${cat.icon} ${name} (<span class="cat-count">${placesWithDistance.length}</span>)</summary>`;
+        allNewPlaces = allNewPlaces.concat(placesWithDistance);
+        completedRequests++;
         
-        placesWithDistance.forEach(place => {
-          allPlaces.push(place);
-          const distKm = place.distance.toFixed(2);
-          const walkingTimeMinutes = Math.ceil(place.distance * 12);
-          
-          const marker = L.marker([place.lat, place.lon], {
-            icon: createCategoryIcon(cat)
-          }).addTo(map);
-          
-          marker.bindPopup(`${place.name}<br>${distKm} کلومیٹر - ${walkingTimeMinutes} منٹ پیدل`);
-          marker.category = name;
-          allMarkers.push(marker);
-          
-          html += `<div class="list-item" data-category="${name}" onclick="selectDestination(${place.lat},${place.lon},'${place.name.replace(/'/g, "&#39;")}')">
-            <span class="item-name">
-              <span class="icon">${cat.icon}</span>
-              <div>
-                ${place.name}
-                <div class="walking-time">🚶‍♂️ ${walkingTimeMinutes} منٹ پیدل</div>
-              </div>
-            </span>
-            <span class="item-dist">${distKm} کلومیٹر</span>
-          </div>`;
-        });
+        // Display category
+        displayCategory(name, cat, placesWithDistance);
         
-        html += "</details>";
-        listsDiv.innerHTML += html;
-        fuse = new Fuse(allPlaces, {keys:["name"], threshold:0.4});
+        // Save to cache when all requests complete
+        if (completedRequests === totalCategories) {
+          savePlacesToCache(allNewPlaces);
+        }
+      })
+      .catch(error => {
+        console.error(`Error loading ${name}:`, error);
+        completedRequests++;
         
-        if (selectedService !== 'all') {
-          filterByService(selectedService);
+        // Load from cache if online request fails
+        if (completedRequests === totalCategories && allNewPlaces.length === 0) {
+          loadCachedPlaces();
         }
       });
+  }
+}
+
+function displayCategory(name, cat, placesWithDistance) {
+  const listsDiv = document.getElementById("lists");
+  
+  let html = `<details open data-category="${name}"><summary>${cat.icon} ${name} (<span class="cat-count">${placesWithDistance.length}</span>)</summary>`;
+  
+  placesWithDistance.forEach(place => {
+    allPlaces.push(place);
+    const distKm = place.distance.toFixed(2);
+    const walkingTimeMinutes = Math.ceil(place.distance * 12);
+    
+    const marker = L.marker([place.lat, place.lon], {
+      icon: createCategoryIcon(cat)
+    }).addTo(map);
+    
+    marker.bindPopup(`${place.name}<br>${distKm} کلومیٹر - ${walkingTimeMinutes} منٹ پیدل`);
+    marker.category = name;
+    allMarkers.push(marker);
+    
+    html += `<div class="list-item" data-category="${name}" onclick="selectDestination(${place.lat},${place.lon},'${place.name.replace(/'/g, "&#39;")}')">
+      <span class="item-name">
+        <span class="icon">${cat.icon}</span>
+        <div>
+          ${place.name}
+          <div class="walking-time">🚶‍♂️ ${walkingTimeMinutes} منٹ پیدل</div>
+        </div>
+      </span>
+      <span class="item-dist">${distKm} کلومیٹر</span>
+    </div>`;
+  });
+  
+  html += "</details>";
+  listsDiv.innerHTML += html;
+  fuse = new Fuse(allPlaces, {keys:["name"], threshold:0.4});
+  
+  if (selectedService !== 'all') {
+    filterByService(selectedService);
+  }
+}
+
+function displayPlaces(places) {
+  const listsDiv = document.getElementById("lists");
+  const searchHTML = listsDiv.querySelector("#search-box").outerHTML;
+  listsDiv.innerHTML = searchHTML;
+  allPlaces = places;
+  
+  // Clear existing markers
+  allMarkers.forEach(marker => map.removeLayer(marker));
+  allMarkers = [];
+  
+  // Group places by category
+  const groupedPlaces = {};
+  places.forEach(place => {
+    if (!groupedPlaces[place.category]) {
+      groupedPlaces[place.category] = [];
+    }
+    groupedPlaces[place.category].push(place);
+  });
+  
+  // Display each category
+  for (const [categoryName, categoryPlaces] of Object.entries(groupedPlaces)) {
+    const cat = categories[categoryName];
+    if (cat) {
+      displayCategory(categoryName, cat, categoryPlaces);
+    }
   }
 }
 
@@ -455,20 +599,22 @@ function selectDestination(lat, lon, name) {
   
   if(routingControl) map.removeControl(routingControl);
   
-  routingControl = L.Routing.control({
-    waypoints: [L.latLng(userLocation[0], userLocation[1]), L.latLng(lat, lon)],
-    router: L.Routing.osrmv1({
-      serviceUrl: 'https://router.project-osrm.org/route/v1',
-      profile: 'foot'
-    }),
-    lineOptions: {
-      styles: [{ color: '#28a745', weight: 6, opacity: 0.8 }]
-    },
-    addWaypoints: false,
-    draggableWaypoints: false,
-    createMarker: () => null,
-    show: false
-  }).addTo(map);
+  if (isOnline) {
+    routingControl = L.Routing.control({
+      waypoints: [L.latLng(userLocation[0], userLocation[1]), L.latLng(lat, lon)],
+      router: L.Routing.osrmv1({
+        serviceUrl: 'https://router.project-osrm.org/route/v1',
+        profile: 'foot'
+      }),
+      lineOptions: {
+        styles: [{ color: '#28a745', weight: 6, opacity: 0.8 }]
+      },
+      addWaypoints: false,
+      draggableWaypoints: false,
+      createMarker: () => null,
+      show: false
+    }).addTo(map);
+  }
   
   speak(`${name} کو منزل کے طور پر منتخب کیا گیا ہے۔ چلتے وقت صوتی ہدایات کے لیے رہنمائی شروع کریں پر دبائیں۔`);
 }
@@ -494,7 +640,7 @@ function startNavigation() {
   document.getElementById('nav-distance').textContent = 
     `باقی فاصلہ: ${Math.round(initialDistance)} میٹر`;
   
-  speak(`${currentDestination.name} کی طرف رہنمائی شروع۔ نقشے پر سبز لائن کی پیروی کریں۔`);
+  speak(`${currentDestination.name} کی طرف رہنمائی شروع۔ ${isOnline ? 'نقشے پر سبز لائن کی پیروی کریں۔' : 'آف لائن موڈ میں بنیادی رہنمائی۔'}`);
 }
 
 function stopNavigation() {
@@ -508,11 +654,13 @@ function stopNavigation() {
 }
 
 function speak(text) {
-  speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = lang;
-  utterance.rate = 0.9;
-  speechSynthesis.speak(utterance);
+  if ('speechSynthesis' in window) {
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = 0.9;
+    speechSynthesis.speak(utterance);
+  }
 }
 
 function calcDistance(lat1, lon1, lat2, lon2) {
@@ -534,11 +682,18 @@ function filterList() {
   });
 }
 
+// Event listeners
 document.getElementById("voice-btn").addEventListener("click", () => {
+  if (!isOnline) {
+    alert("صوتی تلاش کے لیے انٹرنیٹ کنکشن درکار ہے");
+    return;
+  }
+  
   if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
     alert("آپ کے براؤزر میں صوتی شناخت کی سہولت دستیاب نہیں");
     return;
   }
+  
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
   recognition.lang = lang;
   recognition.start();
@@ -639,13 +794,22 @@ function filterByService(serviceName) {
   });
 }
 
+// Initialize app
 window.addEventListener("load", () => {
-  setTimeout(() => {document.getElementById("intro-screen").style.display="none";}, 1500);
+  setTimeout(() => {
+    document.getElementById("intro-screen").style.display="none";
+  }, 1500);
+  
+  updateConnectionStatus();
   loadPlaces(userLocation[0], userLocation[1]);
 });
+
+// Register service worker for offline functionality
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(registration => console.log('SW registered'))
+    .catch(error => console.log('SW registration failed'));
+}
 </script>
 </body>
 </html>
-
-
-

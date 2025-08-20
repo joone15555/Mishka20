@@ -4,9 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
   <title>خريطة الخدمات</title>
+  <!-- Added PWA manifest and theme color -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#a7957c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="خريطة الخدمات">
+  
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  
+  <!-- Offline indicator -->
   <style>
     /* دمج التنسيقات الأصلية مع التحسينات الجديدة */
     .container-map { display: flex; flex-direction: column; max-width: 1200px; margin: 30px auto; gap: 20px; padding: 0 20px; position: relative; }
@@ -124,14 +133,47 @@
       white-space: nowrap;
       color: #333;
     }
+    
+    /* Offline indicator */
+    #offline-indicator {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #dc3545;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      z-index: 10000;
+      display: none;
+      font-weight: bold;
+    }
+    
+    #offline-indicator.show {
+      display: block;
+    }
+    
+    .offline-mode .service-item {
+      opacity: 0.7;
+    }
+    
+    .offline-mode #voice-btn {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body class="is-preload homepage">
 
+<!-- Added offline indicator -->
+<div id="offline-indicator">
+  🔌 وضع عدم الاتصال - بعض الميزات قد لا تعمل
+</div>
+
 <!-- إضافة شاشة التحميل -->
 <div id="intro-screen" style="position: fixed; top:0; left:0; width:100%; height:100%; background:#ffffff; color:#000; display:flex; justify-content:center; align-items:center; flex-direction:column; font-family:sans-serif; z-index:9999;">
   <img src="loading-image.png" alt="تحميل" style="margin-bottom:20px; max-width:200px;">
-  <p style="font-size:18px;">جاري تحميل  </p>
+  <p style="font-size:18px;">جاري تحميل خريطة الحجاج...</p>
 </div>
 
 <!-- إضافة الهيدر الأصلي -->
@@ -263,7 +305,7 @@ const categoryDescriptions = {
   "صيدليات": "صيدليات: الوصول إلى الأدوية والمنتجات الصحية.",
   "مستشفيات": "مستشفيات: خدمات طبية طارئة ومستدامة.",
   "متاجر": "متاجر: مجموعة متنوعة من الملابس والإكسسوارات.",
-  "مقاهي": "مقاهي: مكان للاسترخاح والاستمتاع بالقهوة.",
+  "مقاهي": "مقاهي: مكان للاسترخاء والاستمتاع بالقهوة.",
   "دورات مياه": "دورات مياه: متاحة للاستخدام العام.",
   "Unknown": "الوصف غير متوفر."
 };
@@ -386,6 +428,82 @@ function getDirection(from, to) {
   }
 }
 
+let isOnline = navigator.onLine;
+let offlinePlaces = [];
+
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(registration => {
+        console.log('[v0] SW registered: ', registration);
+      })
+      .catch(registrationError => {
+        console.log('[v0] SW registration failed: ', registrationError);
+      });
+  });
+}
+
+// Monitor online/offline status
+window.addEventListener('online', () => {
+  isOnline = true;
+  document.getElementById('offline-indicator').classList.remove('show');
+  document.body.classList.remove('offline-mode');
+  console.log('[v0] Back online');
+});
+
+window.addEventListener('offline', () => {
+  isOnline = false;
+  document.getElementById('offline-indicator').classList.add('show');
+  document.body.classList.add('offline-mode');
+  console.log('[v0] Gone offline');
+});
+
+// Initialize offline status
+if (!isOnline) {
+  document.getElementById('offline-indicator').classList.add('show');
+  document.body.classList.add('offline-mode');
+}
+
+const offlineData = {
+  "مطاعم": [
+    {name: "مطعم الحرمين", lat: 21.4225, lon: 39.8262, distance: 0.1},
+    {name: "مطعم المدينة", lat: 21.4235, lon: 39.8272, distance: 0.2},
+    {name: "مطعم الأندلس", lat: 21.4215, lon: 39.8252, distance: 0.15}
+  ],
+  "فنادق": [
+    {name: "فندق الحرم", lat: 21.4220, lon: 39.8260, distance: 0.05},
+    {name: "فندق المروة", lat: 21.4230, lon: 39.8270, distance: 0.12},
+    {name: "فندق الصفا", lat: 21.4210, lon: 39.8250, distance: 0.18}
+  ],
+  "أجهزة صراف": [
+    {name: "صراف الأهلي", lat: 21.4228, lon: 39.8265, distance: 0.08},
+    {name: "صراف سامبا", lat: 21.4232, lon: 39.8268, distance: 0.11},
+    {name: "صراف الرياض", lat: 21.4218, lon: 39.8255, distance: 0.14}
+  ],
+  "صيدليات": [
+    {name: "صيدلية النهدي", lat: 21.4222, lon: 39.8258, distance: 0.06},
+    {name: "صيدلية الدواء", lat: 21.4238, lon: 39.8275, distance: 0.16},
+    {name: "صيدلية صحتك", lat: 21.4212, lon: 39.8248, distance: 0.19}
+  ],
+  "مستشفيات": [
+    {name: "مستشفى الحرم", lat: 21.4240, lon: 39.8280, distance: 0.22},
+    {name: "مستشفى الملك عبدالله", lat: 21.4200, lon: 39.8240, distance: 0.28}
+  ],
+  "متاجر": [
+    {name: "سوق الحرمين", lat: 21.4226, lon: 39.8264, distance: 0.07},
+    {name: "مجمع الأندلس", lat: 21.4234, lon: 39.8274, distance: 0.13}
+  ],
+  "مقاهي": [
+    {name: "مقهى الحرمين", lat: 21.4224, lon: 39.8261, distance: 0.04},
+    {name: "مقهى الأصالة", lat: 21.4236, lon: 39.8276, distance: 0.17}
+  ],
+  "دورات مياه": [
+    {name: "دورات مياه الحرم", lat: 21.4227, lon: 39.8263, distance: 0.03},
+    {name: "دورات مياه المسجد", lat: 21.4233, lon: 39.8273, distance: 0.09}
+  ]
+};
+
 function loadPlaces(lat, lon) {
   const listsDiv = document.getElementById("lists");
   const searchHTML = listsDiv.querySelector("#search-box").outerHTML;
@@ -397,68 +515,93 @@ function loadPlaces(lat, lon) {
   allMarkers = [];
   
   for(const [name, cat] of Object.entries(categories)) {
-    const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:2000,${lat},${lon});out;`;
-    fetch(overpassUrl)
-      .then(res => res.json())
-      .then(data => {
-        const placesWithDistance = data.elements.map((el, index) => {
-          const placeLat = el.lat;
-          const placeLon = el.lon;
-          let placeName = el.tags.name || "بدون اسم";
-          
-          if(name === "أجهزة صراف") {
-            const atmNames = ["صراف الأهلي", "صراف سامبا", "صراف الرياض", "صراف الجزيرة"];
-            placeName = atmNames[index % atmNames.length];
-          }
-          
-          const dist = calcDistance(userLocation[0], userLocation[1], placeLat, placeLon);
-          return {
-            name: placeName,
-            lat: placeLat,
-            lon: placeLon,
-            category: name,
-            distance: dist
-          };
-        }).sort((a, b) => a.distance - b.distance).slice(0, 8);
-        
-        // إنشاء HTML للقائمة
-        let html = `<details open data-category="${name}"><summary>${cat.icon} ${name} (<span class="cat-count">${placesWithDistance.length}</span>)</summary>`;
-        
-        placesWithDistance.forEach(place => {
-          allPlaces.push(place);
-          const distKm = place.distance.toFixed(2);
-          const walkingTimeMinutes = Math.ceil(place.distance * 12);
-          
-          // إضافة ماركر مخصص للخريطة
-          const marker = L.marker([place.lat, place.lon], {
-            icon: createCategoryIcon(cat)
-          }).addTo(map);
-          
-          marker.bindPopup(`${place.name}<br>${distKm} كم - ${walkingTimeMinutes} دقيقة مشي`);
-          marker.category = name; // إضافة خاصية الفئة للماركر
-          allMarkers.push(marker);
-          
-          html += `<div class="list-item" data-category="${name}" onclick="selectDestination(${place.lat},${place.lon},'${place.name.replace(/'/g, "&#39;")}')">
-            <span class="item-name">
-              <span class="icon">${cat.icon}</span>
-              <div>
-                ${place.name}
-                <div class="walking-time">🚶‍♂️ ${walkingTimeMinutes} دقيقة مشي</div>
-              </div>
-            </span>
-            <span class="item-dist">${distKm} كم</span>
-          </div>`;
+    if (isOnline) {
+      // Online mode - fetch from API
+      const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node[${cat.filter}](around:2000,${lat},${lon});out;`;
+      fetch(overpassUrl)
+        .then(res => res.json())
+        .then(data => {
+          processPlacesData(name, cat, data.elements, true);
+        })
+        .catch(error => {
+          console.log('[v0] API failed, using offline data:', error);
+          // Fallback to offline data
+          const offlineItems = offlineData[name] || [];
+          processPlacesData(name, cat, offlineItems.map(item => ({
+            lat: item.lat,
+            lon: item.lon,
+            tags: {name: item.name}
+          })), false);
         });
-        
-        html += "</details>";
-        listsDiv.innerHTML += html;
-        fuse = new Fuse(allPlaces, {keys:["name"], threshold:0.4});
-        
-        // تطبيق التصفية الحالية
-        if (selectedService !== 'all') {
-          filterByService(selectedService);
-        }
-      });
+    } else {
+      // Offline mode - use cached data
+      const offlineItems = offlineData[name] || [];
+      processPlacesData(name, cat, offlineItems.map(item => ({
+        lat: item.lat,
+        lon: item.lon,
+        tags: {name: item.name}
+      })), false);
+    }
+  }
+}
+
+function processPlacesData(name, cat, elements, isOnlineData) {
+  const placesWithDistance = elements.map((el, index) => {
+    const placeLat = el.lat;
+    const placeLon = el.lon;
+    let placeName = el.tags?.name || "بدون اسم";
+    
+    if(name === "أجهزة صراف" && isOnlineData) {
+      const atmNames = ["صراف الأهلي", "صراف سامبا", "صراف الرياض", "صراف الجزيرة"];
+      placeName = atmNames[index % atmNames.length];
+    }
+    
+    const dist = calcDistance(userLocation[0], userLocation[1], placeLat, placeLon);
+    return {
+      name: placeName,
+      lat: placeLat,
+      lon: placeLon,
+      category: name,
+      distance: dist
+    };
+  }).sort((a, b) => a.distance - b.distance).slice(0, 8);
+  
+  // إنشاء HTML للقائمة
+  let html = `<details open data-category="${name}"><summary>${cat.icon} ${name} (<span class="cat-count">${placesWithDistance.length}</span>)</summary>`;
+  
+  placesWithDistance.forEach(place => {
+    allPlaces.push(place);
+    const distKm = place.distance.toFixed(2);
+    const walkingTimeMinutes = Math.ceil(place.distance * 12);
+    
+    // إضافة ماركر مخصص للخريطة
+    const marker = L.marker([place.lat, place.lon], {
+      icon: createCategoryIcon(cat)
+    }).addTo(map);
+    
+    marker.bindPopup(`${place.name}<br>${distKm} كم - ${walkingTimeMinutes} دقيقة مشي`);
+    marker.category = name;
+    allMarkers.push(marker);
+    
+    html += `<div class="list-item" data-category="${name}" onclick="selectDestination(${place.lat},${place.lon},'${place.name.replace(/'/g, "&#39;")}')">
+      <span class="item-name">
+        <span class="icon">${cat.icon}</span>
+        <div>
+          ${place.name}
+          <div class="walking-time">🚶‍♂️ ${walkingTimeMinutes} دقيقة مشي</div>
+        </div>
+      </span>
+      <span class="item-dist">${distKm} كم</span>
+    </div>`;
+  });
+  
+  html += "</details>";
+  document.getElementById("lists").innerHTML += html;
+  fuse = new Fuse(allPlaces, {keys:["name"], threshold:0.4});
+  
+  // تطبيق التصفية الحالية
+  if (selectedService !== 'all') {
+    filterByService(selectedService);
   }
 }
 
@@ -549,8 +692,12 @@ function filterList() {
   });
 }
 
-// البحث الصوتي
 document.getElementById("voice-btn").addEventListener("click", () => {
+  if (!isOnline) {
+    alert("البحث الصوتي غير متاح في وضع عدم الاتصال");
+    return;
+  }
+  
   if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
     alert("ميزة التعرف على الصوت غير مدعومة في متصفحك");
     return;
@@ -668,6 +815,3 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
-
-
-

@@ -1,18 +1,14 @@
 <!DOCTYPE HTML>
-<!--
-	Verti by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
+<html lang="ur" dir="rtl">
 	<head>
-		<title>Verti HTML5 UP کے ذریعہ</title>
+		<title>Verti by HTML5 UP</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 	</head>
 	<body class="is-preload homepage">
-  <!-- Intro Screen -->
+  <!-- Converting all English text to Urdu -->
+  <!-- لوڈنگ اسکرین -->
   <div id="intro-screen" style="
     position: fixed;
     top: 0; left: 0;
@@ -23,7 +19,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    font-family: sans-serif;
+    font-family: 'Noto Nastaliq Urdu', sans-serif;
     z-index: 9999;
   ">
     <img src="loading-image.png" alt="لوڈ ہو رہا ہے" style="margin-bottom: 20px; max-width: 200px;">
@@ -31,17 +27,17 @@
   </div>
 
   <div id="page-wrapper">
-    <!-- Header -->
+    <!-- ہیڈر -->
     <div id="header-wrapper">
       <header id="header" class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; direction: rtl;">
-        <!-- Logo Left -->
+        <!-- لوگو -->
         <div id="logo" style="order: 1;">
-          <a href="index_es 2.html">
-            <img src="loading-image.png" alt="سائٹ لوگو" style="max-width: 150px; height: auto;">
+          <a href="index.html">
+            <img src="loading-image.png" alt="ویب سائٹ لوگو" style="max-width: 150px; height: auto;">
           </a>
         </div>
 
-        <!-- Nav Right -->
+        <!-- مین مینو -->
         <nav style="order: 2; display: flex; align-items: center;">
           <ul style="
             display: flex; 
@@ -53,7 +49,7 @@
             position: relative;
           ">
             <li style="display: flex; align-items: center;">
-              <a href="index_es 2.html" style="
+              <a href="index.html" style="
                 font-weight: bold;
                 text-decoration: none;
                 color: #444;
@@ -66,7 +62,7 @@
               >ہوم</a>
             </li>
             <li style="display: flex; align-items: center;">
-              <a href="card_es 2.html" style="
+              <a href="card.html" style="
                 font-weight: bold;
                 text-decoration: none;
                 color: #444;
@@ -76,13 +72,131 @@
               " 
               onmouseover="this.style.backgroundColor='#f0f0f0'; this.style.color='#000';"
               onmouseout="this.style.backgroundColor='transparent'; this.style.color='#444';"
-              >مشکاة کارڈ</a>
+              >مشکاۃ کارڈ</a>
             </li>
+          </ul>
+        </nav>
       </header>
     </div>
   </div>
 
-  <!-- زبان کا انتخاب -->
+  <!-- فلپ کارڈ کو سادہ کلک کے قابل تصویر اور ڈاؤن لوڈ بٹن سے تبدیل کیا گیا -->
+  <style>
+    .center-card-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 50px 0;
+      gap: 30px;
+    }
+
+    .card-image-container {
+      background-color: #a7957c;
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card-image-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+    }
+
+    .card-image {
+      width: 450px;
+      height: 450px;
+      border-radius: 16px;
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      color: white;
+      font-size: 1.8em;
+      margin: 0;
+      font-weight: bold;
+      font-family: 'Noto Nastaliq Urdu', sans-serif;
+    }
+
+    .download-button {
+      padding: 15px 30px;
+      background: linear-gradient(45deg, #a7957c, #c6c6d0);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      font-family: 'Noto Nastaliq Urdu', sans-serif;
+    }
+
+    .download-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      background: linear-gradient(45deg, #c6c6d0, #a7957c);
+    }
+  </style>
+
+  <div class="center-card-wrapper">
+    <!-- کلک کے قابل تصویر -->
+    <a href="map1.html" style="text-decoration: none;">
+      <div class="card-image-container">
+        <img src="ph900.jpg" alt="مشکاۃ کارڈ" class="card-image">
+        <h2 class="card-title">مشکاۃ کارڈ</h2>
+      </div>
+    </a>
+
+    <!-- ڈاؤن لوڈ بٹن -->
+    <button onclick="downloadFile()" class="download-button">
+      📥 کارڈ PDF ڈاؤن لوڈ کریں
+    </button>
+  </div>
+
+<br><br>
+
+  <!-- فوٹر -->
+  <div id="footer-wrapper">
+    <footer id="footer" class="container">
+      <div class="row">
+        <div class="col-3 col-6-medium col-12-small">
+          <!-- رابطہ کی معلومات -->
+          <section class="widget contact last">
+            <h3>ہم سے رابطہ کریں</h3>
+            <ul>
+              <li><a href="#" class="icon brands fa-twitter"><span class="label">ٹویٹر</span></a></li>
+              <li><a href="#" class="icon brands fa-facebook-f"><span class="label">فیس بک</span></a></li>
+              <li><a href="#" class="icon brands fa-instagram"><span class="label">انسٹاگرام</span></a></li>
+              <li><a href="#" class="icon brands fa-dribbble"><span class="label">ڈریبل</span></a></li>
+              <li><a href="#" class="icon brands fa-pinterest"><span class="label">پنٹرسٹ</span></a></li>
+            </ul>
+            <p>1234 فرضی سٹریٹ<br />
+            نیش ویل، TN 00000<br />
+            (800) 555-0000</p>
+          </section>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div id="copyright">
+            <ul class="menu">
+              <li>&copy; تمام حقوق محفوظ ہیں</li><li>ڈیزائن: <a href="http://html5up.net">HTML5 UP</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+
+  <!-- زبان کا انتخاب اسکرین -->
   <script>
     function toggleLanguageMenu() {
       const menu = document.getElementById('language-menu');
@@ -93,7 +207,7 @@
       }
     }
 
-    // اگر صارف باہر کلک کرے تو مینو بند کریں
+    // باہر کلک کرنے پر مینو بند کریں
     document.addEventListener('click', function (e) {
       const menu = document.getElementById('language-menu');
       const button = e.target.closest('button');
@@ -102,155 +216,52 @@
       }
     });
   </script>
-</body>
 
-<style>
-  .center-card-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 50px 0;
-  }
+  <!-- 1.5 سیکنڈ بعد لوڈنگ اسکرین چھپائیں -->
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const intro = document.getElementById("intro-screen");
+        if (intro) intro.style.display = "none";
+      }, 1500);
+    });
 
-  .flip-card {
-    background-color: transparent;
-    width: 400px;
-    height: 400px;
-    perspective: 1000px;
-  }
-
-  .flip-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-  }
-
-  .flip-card:hover .flip-card-inner {
-    transform: rotateY(180deg);
-  }
-
-  .flip-card-front,
-  .flip-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 16px;
-    backface-visibility: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-    color: white;
-    background-color: #a7957c;
-    text-align: center;
-  }
-
-  .flip-card-front img {
-    width: 180px;
-    height: 180px;
-    border-radius: 16px;
-    object-fit: cover;
-    margin-bottom: 20px;
-  }
-
-  .flip-card-front h2,
-  .flip-card-back h2 {
-    margin: 0;
-    font-size: 1.8em;
-  }
-
-  .flip-card-back {
-    transform: rotateY(180deg);
-  }
-
-  .flip-card-back a {
-    margin-top: 20px;
-    padding: 12px 24px;
-    background: white;
-    color: #a7957c;
-    border-radius: 10px;
-    font-weight: bold;
-    text-decoration: none;
-    font-size: 1em;
-  }
-</style>
-
-<div class="center-card-wrapper">
-  <div class="flip-card">
-    <div class="flip-card-inner">
-      <!-- سامنے کا حصہ -->
-      <div class="flip-card-front">
-        <img src="ph1.png" alt="مشکاة کارڈ">
-        <h2>مشکاة کارڈ</h2>
-      </div>
-
-      <!-- پیچھے کا حصہ -->
-      <div class="flip-card-back">
-        <h2>مزید</h2>
-        <a href="map1_es 2.html">یہاں کلک کریں</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<br><br>
-			<!-- Footer -->
-				<div id="footer-wrapper">
-					<footer id="footer" class="container">
-						<div class="row">
-							<div class="col-3 col-6-medium col-12-small">
-								<!-- Contact -->
-									<section class="widget contact last">
-										<h3>رابطہ کریں</h3>
-										<ul>
-											<li><a href="#" class="icon brands fa-twitter"><span class="label">ٹویٹر</span></a></li>
-											<li><a href="#" class="icon brands fa-facebook-f"><span class="label">فیس بک</span></a></li>
-											<li><a href="#" class="icon brands fa-instagram"><span class="label">انسٹاگرام</span></a></li>
-											<li><a href="#" class="icon brands fa-dribbble"><span class="label">ڈریبل</span></a></li>
-											<li><a href="#" class="icon brands fa-pinterest"><span class="label">پنٹیرسٹ</span></a></li>
-										</ul>
-										<p>1234 خیالی روڈ<br />
-										ناش وِل، TN 00000<br />
-										(800) 555-0000</p>
-									</section>
-
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-12">
-								<div id="copyright">
-									<ul class="menu">
-										<li>&copy; نامعلوم۔ جملہ حقوق محفوظ ہیں</li><li>ڈیزائن: <a href="http://html5up.net">HTML5 UP</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</footer>
-				</div>
-
-			</div>
-
-		<!-- Scripts -->
-
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.dropotron.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-			<!-- Hide intro screen after 1.5 seconds -->
-<script>
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      const intro = document.getElementById("intro-screen");
-      if (intro) intro.style.display = "none";
-    }, 1500);
-  });
-</script>
+    function downloadFile() {
+      // عارضی لنک ایلیمنٹ بنائیں
+      const link = document.createElement('a');
+      link.href = 'mocap card11.pdf';
+      link.download = 'مشکاۃ-کارڈ.pdf';
+      
+      // کسی بھی نیویگیشن کو روکیں
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // نیویگیشن کے بغیر ڈاؤن لوڈ کو مجبور کریں
+        const url = link.href;
+        const filename = link.download;
+        
+        fetch(url)
+          .then(response => response.blob())
+          .then(blob => {
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const tempLink = document.createElement('a');
+            tempLink.href = downloadUrl;
+            tempLink.download = filename;
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            document.body.removeChild(tempLink);
+            window.URL.revokeObjectURL(downloadUrl);
+          })
+          .catch(() => {
+            // فال بیک: براہ راست ڈاؤن لوڈ
+            window.open(url, '_blank');
+          });
+      });
+      
+      // کلک کو ٹرگر کریں
+      link.click();
+    }
+  </script>
 
 	</body>
 </html>
-
